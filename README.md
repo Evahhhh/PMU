@@ -15,7 +15,20 @@ Ouvrez un terminal de commande à l'endroit où vous souhaitez installer le jeu 
 ### Installer le projet
 `npm i`
 
-### Lancer le projet
+## Installation de la base de données
+Tout d'abord vous aurez besoin de Docker, voici comment l'installer : https://docs.docker.com/get-docker/
+
+Une fois installé, retournez sur votre terminal dans le dossier PMU et exécutez :
+
+`docker-compose up -d --build`
+
+Cela va créer *[ce fichier](/database/db.sqlite)* qui sera votre base de données.
+
+Bravo ! Votre base de données sqlite3 est maintenant prête à être utilisée
+
+*Remarque : Si après avoir supprimé le fichier db.sqlite vous souhaitez l'avoir à nouveau, il suffit de relancer le container docker avec la commande `docker start sqlite-container`*
+
+## Lancer le projet
 `npm run dev`
 
 
