@@ -3,9 +3,8 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS User (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     pseudo TEXT,
-    email TEXT,
-    password TEXT,
-    token TEXT
+    email TEXT UNIQUE,
+    password TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Horse (
