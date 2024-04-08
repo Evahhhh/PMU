@@ -76,14 +76,14 @@ exports.modify = (req, res) => {
       const sel = bcrypt.genSaltSync(10);
       const hachage = bcrypt.hashSync(password , sel );
       // Requête SQL pour mettre à jour l'utilisateur avec les nouvelles valeurs
-      const sqlUpdate = 'UPDATE user SET email = ?,password = ?, pseudo = ? WHERE id_user = ?';
-      db.query(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
+      const sqlUpdate = 'UPDATE user SET email = ?,password = ?, pseudo = ? WHERE user_id = ?';
+      db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err) => {
           if (err) {
               console.error('Error while editing article:', err);
               res.status(400).send('Server error');
               return;
           }
-          if (result.affectedRows === 0) {
+          if (this.changes === 0) {
               res.status(400).send('user not found');
               return;
           }
