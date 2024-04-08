@@ -18,22 +18,24 @@ exports.signup = (req, res) => {
         "Your password must contain at least 8 characters, one lower case, one upper case, one number and one special character",
     });
   } else {
-    /* Connexion BDD => */const db = req.db;
+    const db = req.db;
     const sel = bcrypt.genSaltSync(10);
-    const hachage = bcrypt.hashSync(password , sel ); 
+    const hachage = bcrypt.hashSync(password , sel );
     // Création d'une instance d'utilisateur avec les données reçues
     const newUser = new modelUser(pseudo, email, hachage);
     //requête SQL
     const sqlQuery = 'INSERT INTO User (pseudo, email, password) VALUES (?, ?, ?)';
     // Exécution de la requête
-    db.query(sqlQuery, [newUser.pseudo, newUser.email, newUser.password],(err, results) => {
-    if (err) {
-        console.error('ERROR :', err);
-        return;
-    }
-    console.log('Result:', results.insertId);
-      // Création du token
-      const token = jwt.sign({email: email, password: hachage}, "RANDOM_TOKEN_SECRET");
+    db.run(sqlQuery, [newUser.pseudo, newUser.email, newUser.password],(err) => {
+      if (err) {
+        if(err == "SQLITE_CONSTRAINT") {
+          return res.status(409).json({ error: 'Email existing already' });
+        }
+        else {
+          return res.status(500).json({ error: 'Internal server error' });
+        }
+      }
+      res.status(200).json({ message: 'User created successfully'});
     });
   }
 }
@@ -42,7 +44,7 @@ exports.login = (req, res) => {
   /* Connexion BDD => */const db = req.db;
   const { email, password} = req.body;
   const sqlQuery = 'SELECT * FROM user WHERE email = ?';
-  db.query(sqlQuery, [email], (err, results) => {
+  db.all(sqlQuery, [email], (err, results) => {
     if (results.length === 0) {
       res.status(400).send('invalid data');
       return;
@@ -54,8 +56,8 @@ exports.login = (req, res) => {
           return res.status(400).json({error: "wrong password"})
         }
         res.status(200).json({
-          id: results[0].id_user,
-          token:jwt.sign({id:results.id_user}, "RANDOM_TOKEN_SECRET", {
+          id: results[0].user_id,
+          token:jwt.sign({id:results[0].user_id}, "RANDOM_TOKEN_SECRET", {
             expiresIn: "24h"
           })
         });
@@ -66,20 +68,26 @@ exports.login = (req, res) => {
 }
 
 exports.modify = (req, res) => {
-    /* Connexion BDD => */const db = req.db;
-    const { id_user, email, password, pseudo} = req.body;
-    // Requête SQL pour mettre à jour l'utilisateur avec les nouvelles valeurs
-    const sqlUpdate = 'UPDATE user SET email = ?,password = ?, pseudo = ? WHERE id_user = ?';
-    db.query(sqlUpdate, [email, password, pseudo, id_user], (err, result) => {
-        if (err) {
-            console.error('Error while editing article:', err);
-            res.status(400).send('Server error');
-            return;
-        }
-        if (result.affectedRows === 0) {
-            res.status(400).send('user not found');
-            return;
-        }
-        res.status(200).send('User modified');
-  });
+    const db = req.db;
+    const { user_id, email, password, pseudo} = req.body;
+    if (!regexEmail.test(email.trim()) || !regexPassword.test(password.trim())) {
+      res.status(400).send('Donnée invalide');
+    } else {
+      const sel = bcrypt.genSaltSync(10);
+      const hachage = bcrypt.hashSync(password , sel );
+      // Requête SQL pour mettre à jour l'utilisateur avec les nouvelles valeurs
+      const sqlUpdate = 'UPDATE user SET email = ?,password = ?, pseudo = ? WHERE id_user = ?';
+      db.query(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
+          if (err) {
+              console.error('Error while editing article:', err);
+              res.status(400).send('Server error');
+              return;
+          }
+          if (result.affectedRows === 0) {
+              res.status(400).send('user not found');
+              return;
+          }
+          res.status(200).send('User modified');
+      });
+    }
 }
