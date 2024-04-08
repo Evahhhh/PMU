@@ -56,3 +56,8 @@ CREATE TABLE IF NOT EXISTS Bet (
     FOREIGN KEY(user_id) REFERENCES User(user_id),
     FOREIGN KEY(round_id) REFERENCES Round(round_id)
 );
+
+INSERT INTO Horse (name, asset) VALUES ("Roger", "\src\assets\roger.png");
+INSERT INTO Horse (name, asset) VALUES ("Gerard", "\src\assets\gerard.png");
+INSERT INTO Horse (name, asset) VALUES ("Jean Jacques", "\src\assets\jean-jacques.png");
+INSERT INTO Horse (name, asset) VALUES ("Marcel", "\src\assets\marcel.png");
