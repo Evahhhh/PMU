@@ -21,20 +21,19 @@ exports.signup = (req, res) => {
     /* Connexion BDD => */const db = req.db;
     const sel = bcrypt.genSaltSync(10);
     const hachage = bcrypt.hashSync(password , sel ); 
-    // Création du token
-    const token = jwt.sign({email: email, password: hachage}, "RANDOM_TOKEN_SECRET");
     // Création d'une instance d'utilisateur avec les données reçues
-    const newUser = new modelUser(pseudo, email, hachage, token);
+    const newUser = new modelUser(pseudo, email, hachage);
     //requête SQL
     const sqlQuery = 'INSERT INTO User (pseudo, email, password) VALUES (?, ?, ?)';
-
     // Exécution de la requête
-    db.query(sqlQuery, [newUser.pseudo, newUser.email, newUser.password, newUser.token],(err, results) => {
+    db.query(sqlQuery, [newUser.pseudo, newUser.email, newUser.password],(err, results) => {
     if (err) {
         console.error('ERROR :', err);
         return;
     }
     console.log('Result:', results.insertId);
+      // Création du token
+      const token = jwt.sign({email: email, password: hachage}, "RANDOM_TOKEN_SECRET");
     });
   }
 }
