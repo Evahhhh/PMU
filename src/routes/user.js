@@ -1,6 +1,7 @@
 const express=require('express');
 const router = express.Router();
 const userCtrl = require("../controllers/userCtrl.js");
+const auth = require('../middlewares/authorization.middleware.js');
 
 //Création d'un utilisateur
 router.post('/', userCtrl.signup);
@@ -9,6 +10,6 @@ router.post('/', userCtrl.signup);
 router.get('/', userCtrl.login);
 
 //Modification
-router.put('/', userCtrl.modify);
+router.put('/', auth, userCtrl.modify);
 
 module.exports= router;

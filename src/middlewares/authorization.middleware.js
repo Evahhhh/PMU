@@ -1,28 +1,18 @@
-function authorization(req, res, next) {
-  const listUser = [
-    {
-      id: "1",
-      token: "hashed",
-    },
-    {
-      id: "2",
-      token: "hashed",
-    },
-    {
-      id: "3",
-      token: "hashed",
-    },
-  ];
+const jwt = require('jsonwebtoken');
 
-  // Replace by database query which search for a user with the given token
-  const user = listUser.find((user) => user.token === req.headers.authorization);
-
-  if (!user) {
-    res.status(401).send({
-      message: 'Unauthorized'
-   });
+module.exports = (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decodedToken.id;
+    if (req.body.user_id && req.body.user_id !== userId) {
+      throw 'Invalid user ID';
+    } else {
+      next();
+    }
+  } catch (error) {
+    res.status(401).json({
+      error : error 
+    });
   }
-  next();
-}
-
-module.exports = authorization;
+};
