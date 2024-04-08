@@ -77,7 +77,7 @@ exports.modify = (req, res) => {
       const hachage = bcrypt.hashSync(password , sel );
       // Requête SQL pour mettre à jour l'utilisateur avec les nouvelles valeurs
       const sqlUpdate = 'UPDATE user SET email = ?,password = ?, pseudo = ? WHERE user_id = ?';
-      db.query(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
+      db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
           if (err) {
               console.error('Error while editing article:', err);
               res.status(400).send('Server error');
