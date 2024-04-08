@@ -57,7 +57,7 @@ exports.login = (req, res) => {
         }
         res.status(200).json({
           id: results[0].user_id,
-          token:jwt.sign({id:results[0].user_id}, "RANDOM_TOKEN_SECRET", {
+          token:jwt.sign({id:results[0].user_id}, process.env.JWT_SECRET_KEY, {
             expiresIn: "24h"
           })
         });
@@ -77,7 +77,7 @@ exports.modify = (req, res) => {
       const hachage = bcrypt.hashSync(password , sel );
       // Requête SQL pour mettre à jour l'utilisateur avec les nouvelles valeurs
       const sqlUpdate = 'UPDATE user SET email = ?,password = ?, pseudo = ? WHERE id_user = ?';
-      db.query(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
+      db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
           if (err) {
               console.error('Error while editing article:', err);
               res.status(400).send('Server error');

@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const authorization = require("./src/middlewares/authorization.middleware.js");
+require('dotenv').config();
 
 //Connect to db
 const sqlite3 = require('sqlite3').verbose();
@@ -8,7 +8,6 @@ const connection = new sqlite3.Database('./database/db.sqlite');
 
 const userRoutes = require("./src/routes/user.js");
 
-app.use(authorization);
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
