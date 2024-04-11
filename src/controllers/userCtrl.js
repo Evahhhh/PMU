@@ -8,35 +8,40 @@ const modelUser = require("../models/userModel");
 
 exports.signup = (req, res) => {
   const { pseudo, email, password} = req.body;
-  if (!regexEmail.test(email)) {
-    return res
-      .status(400)
-      .json({ error: "'Please fill in the form fields correctly'" });
-  } else if (!regexPassword.test(password)) {
-    return res.status(400).json({
-      error:
-        "Your password must contain at least 8 characters, one lower case, one upper case, one number and one special character",
-    });
+  if(pseudo && email && password) {
+    if (!regexEmail.test(email)) {
+      return res
+        .status(400)
+        .json({ error: "'Please fill in the form fields correctly'" });
+    } else if (!regexPassword.test(password)) {
+      return res.status(400).json({
+        error:
+          "Your password must contain at least 8 characters, one lower case, one upper case, one number and one special character",
+      });
+    } else {
+      const db = req.db;
+      const sel = bcrypt.genSaltSync(10);
+      const hachage = bcrypt.hashSync(password , sel );
+      // Création d'une instance d'utilisateur avec les données reçues
+      const newUser = new modelUser(pseudo, email, hachage);
+      //requête SQL
+      const sqlQuery = 'INSERT INTO User (pseudo, email, password) VALUES (?, ?, ?)';
+      // Exécution de la requête
+      db.run(sqlQuery, [newUser.pseudo, newUser.email, newUser.password],(err) => {
+        if (err) {
+          console.log(err);
+          if(err.code == "SQLITE_CONSTRAINT") {
+            return res.status(409).json({ error: 'Email existing already' });
+          }
+          else {
+            return res.status(500).json({ error: 'Internal server error' });
+          }
+        }
+        res.status(200).json({ message: 'User created successfully'});
+      });
+    }
   } else {
-    const db = req.db;
-    const sel = bcrypt.genSaltSync(10);
-    const hachage = bcrypt.hashSync(password , sel );
-    // Création d'une instance d'utilisateur avec les données reçues
-    const newUser = new modelUser(pseudo, email, hachage);
-    //requête SQL
-    const sqlQuery = 'INSERT INTO User (pseudo, email, password) VALUES (?, ?, ?)';
-    // Exécution de la requête
-    db.run(sqlQuery, [newUser.pseudo, newUser.email, newUser.password],(err) => {
-      if (err) {
-        if(err == "SQLITE_CONSTRAINT") {
-          return res.status(409).json({ error: 'Email existing already' });
-        }
-        else {
-          return res.status(500).json({ error: 'Internal server error' });
-        }
-      }
-      res.status(200).json({ message: 'User created successfully'});
-    });
+    res.status(400).json({message: "missing data"});
   }
 }
 
