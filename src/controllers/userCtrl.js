@@ -11,12 +11,14 @@ exports.signup = (req, res) => {
   if (pseudo && email && password) {
     if (!regexEmail.test(email)) {
       return res.status(400).json({
-        error: "'Please fill in the form fields correctly'",
+        error: "Please fill in the form fields correctly",
+        errorCode: 1000,
       });
     } else if (!regexPassword.test(password)) {
       return res.status(400).json({
         error:
           "Your password must contain at least 8 characters, one lower case, one upper case, one number and one special character",
+        errorCode: 1001,
       });
     } else {
       const db = req.db;
@@ -35,9 +37,13 @@ exports.signup = (req, res) => {
           if (err) {
             console.log(err);
             if (err.code == "SQLITE_CONSTRAINT") {
-              return res.status(409).json({ error: "Email existing already" });
+              return res
+                .status(409)
+                .json({ error: "Email existing already", errorCode: 1002 });
             } else {
-              return res.status(500).json({ error: "Internal server error" });
+              return res
+                .status(500)
+                .json({ error: "Internal server error", errorCode: 1003 });
             }
           }
           res.status(200).json({ message: "User created successfully" });
@@ -45,7 +51,7 @@ exports.signup = (req, res) => {
       );
     }
   } else {
-    res.status(400).json({ message: "missing data" });
+    res.status(400).json({ error: "missing data", errorCode: 1004 });
   }
 };
 
@@ -55,14 +61,16 @@ exports.login = (req, res) => {
   const sqlQuery = "SELECT * FROM user WHERE email = ?";
   db.all(sqlQuery, [email], (err, results) => {
     if (results.length === 0) {
-      res.status(400).send("invalid data");
+      res.status(400).json({ error: "Invalid data", errorCode: 1010 });;
       return;
     } else {
       bcrypt
         .compare(password, results[0].password)
         .then((valid) => {
           if (!valid) {
-            return res.status(400).json({ error: "wrong password" });
+            return res
+              .status(400)
+              .json({ error: "wrong password", errorCode: 1011 });
           }
           res.status(200).json({
             id: results[0].user_id,
@@ -75,7 +83,7 @@ exports.login = (req, res) => {
             ),
           });
         })
-        .catch((error) => res.status(400).json({ error }));
+        .catch((error) => res.status(400).json({ error, errorCode: 1012 }));
     }
   });
 };
@@ -84,7 +92,7 @@ exports.modify = (req, res) => {
   const db = req.db;
   const { user_id, email, password, pseudo } = req.body;
   if (!regexEmail.test(email.trim()) || !regexPassword.test(password.trim())) {
-    res.status(400).send("Donnée invalide");
+    res.status(400).json({ error: "Invalid data", errorCode: 1020 });
   } else {
     const sel = bcrypt.genSaltSync(10);
     const hachage = bcrypt.hashSync(password, sel);
@@ -94,14 +102,14 @@ exports.modify = (req, res) => {
     db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
       if (err) {
         console.error("Error while editing article:", err);
-        res.status(400).send("Server error");
+        res.status(400).json({ error: "Server error", errorCode: 1021 });
         return;
       }
       if (this.changes === 0) {
-        res.status(400).send("user not found");
+        res.status(400).json({ error: "User not found", errorCode: 1022 });
         return;
       }
-      res.status(200).send("User modified");
+      res.status(200).json({ error: "User modified", errorCode: 1023 });
     });
   }
 };
