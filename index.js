@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
-require('dotenv').config();
+require("dotenv").config();
 
 //Connect to db
-const sqlite3 = require('sqlite3').verbose();
-const connection = new sqlite3.Database('./database/db.sqlite');
+const sqlite3 = require("sqlite3").verbose();
+const connection = new sqlite3.Database("./database/db.sqlite");
 
 const userRoutes = require("./src/routes/user.js");
 
