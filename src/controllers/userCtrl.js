@@ -109,7 +109,7 @@ exports.modify = (req, res) => {
         res.status(400).json({ error: "User not found", errorCode: 1022 });
         return;
       }
-      res.status(200).json({ error: "User modified", errorCode: 1023 });
+      res.status(200).json({ message: "User modified successfully" });
     });
   }
 };
