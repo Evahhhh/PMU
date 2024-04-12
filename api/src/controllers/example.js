@@ -1,11 +1,12 @@
 //Import database connection
-const db = require("../client/dbConnect.js");
+// const db = require("../client/dbConnect.js");
+
+//Connexion à la base de données à rajouter
 
 let pseudo = "Evah";
 let email = "evah@example.com";
 let password = "motdepassetropdur";
 let token = "nfz8fç3NUF";
-
 
 //Insert example
 db.run(
@@ -19,7 +20,6 @@ db.run(
     console.log(`A row has been inserted with rowid ${this.lastID}`);
   }
 );
-
 
 //SElECT example
 db.all(
