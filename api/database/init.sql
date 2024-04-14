@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Horse (
 CREATE TABLE IF NOT EXISTS Room (
     room_id INTEGER PRIMARY KEY AUTOINCREMENT,
     status TINYINT,
-    code TEXT UNIQUE,
+    code INTEGER UNIQUE,
     admin_id INTEGER,
     FOREIGN KEY(admin_id) REFERENCES User(user_id)
 );
