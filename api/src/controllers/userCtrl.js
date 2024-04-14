@@ -35,7 +35,7 @@ exports.signup = (req, res) => {
         [newUser.pseudo, newUser.email, newUser.password],
         (err) => {
           if (err) {
-            console.log(err);
+            console.error(err);
             if (err.code == "SQLITE_CONSTRAINT") {
               return res
                 .status(409)
