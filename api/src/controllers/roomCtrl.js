@@ -66,7 +66,10 @@ function createRoom(req, res, userIds, adminId) {
 
       Promise.all(promises)
         .then(() => {
-          res.status(200).json({ message: "Room created successfully" , "roomdId": this.lastID});
+          res.status(200).json({
+            message: "Room created successfully",
+            roomdId: this.lastID,
+          });
         })
         .catch((err) => {
           res.status(err.status).json(err.json);
@@ -138,5 +141,23 @@ exports.getMessages = (req, res) => {
         });
       }
     });
+  });
+};
+
+exports.disable = (req, res) => {
+  const db = req.db;
+  const roomId = req.params.id;
+
+  const sqlQuery = "UPDATE Room SET status = 0 WHERE room_id = ?";
+  db.run(sqlQuery, roomId, function (err) {
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ error: "Internal server error", errorCode: 2040 });
+    }
+    res
+      .status(200)
+      .json({ message: "Room disabled successfully", numberRowsUpdated: this.changes });
   });
 };
