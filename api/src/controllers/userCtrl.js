@@ -33,7 +33,7 @@ exports.signup = (req, res) => {
       db.run(
         sqlQuery,
         [newUser.pseudo, newUser.email, newUser.password],
-        (err) => {
+        function (err) {
           if (err) {
             console.error(err);
             if (err.code == "SQLITE_CONSTRAINT") {
@@ -46,7 +46,7 @@ exports.signup = (req, res) => {
                 .json({ error: "Internal server error", errorCode: 1003 });
             }
           }
-          res.status(200).json({ message: "User created successfully" });
+          res.status(200).json({ message: "User created successfully" , "userId": this.lastID});
         }
       );
     }

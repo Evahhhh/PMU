@@ -66,7 +66,7 @@ function createRoom(req, res, userIds, adminId) {
 
       Promise.all(promises)
         .then(() => {
-          res.status(200).json({ message: "Room created successfully" });
+          res.status(200).json({ message: "Room created successfully" , "roomdId": this.lastID});
         })
         .catch((err) => {
           res.status(err.status).json(err.json);
