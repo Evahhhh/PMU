@@ -133,7 +133,6 @@ exports.getMessages = (req, res) => {
       if (results.length === 0) {
         res.status(200).json({ msg: "No messages in this room" });
       } else {
-        const userIds = results.map((result) => result.user_id);
         res.status(200).json({
           messages: results,
         });
