@@ -8,6 +8,9 @@ const connection = new sqlite3.Database("./database/db.sqlite");
 
 const userRoutes = require("./src/routes/user.js");
 const roomRoutes = require("./src/routes/room.js");
+const roundRoutes = require("./src/routes/round.js");
+const betRoutes = require("./src/routes/bet.js");
+const messageRoutes = require("./src/routes/message.js");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -26,6 +29,9 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use("/api/user", userRoutes);
 app.use("/api/room", roomRoutes);
+app.use("/api/round", roundRoutes);
+app.use("/api/bet", betRoutes);
+app.use("/api/message", messageRoutes);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
