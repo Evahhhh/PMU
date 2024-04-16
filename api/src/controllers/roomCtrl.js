@@ -96,7 +96,7 @@ exports.get = (req, res) => {
   const code = req.params.code;
 
   const sqlQuery = "SELECT * FROM Room WHERE code = ?";
-  db.all(sqlQuery, [code], (err, results) => {
+  db.all(sqlQuery, code, (err, results) => {
     if (results.length === 0) {
       res.status(400).json({ error: "Invalid data", errorCode: 2010 });
     } else {
@@ -115,7 +115,7 @@ exports.getPlayers = (req, res) => {
   const roomId = req.params.id;
 
   const sqlQuery = "SELECT * FROM User_Room WHERE room_id = ?";
-  db.all(sqlQuery, [roomId], (err, results) => {
+  db.all(sqlQuery, roomId, (err, results) => {
     if (results.length === 0) {
       res.status(400).json({ error: "Invalid data", errorCode: 2020 });
     } else {
@@ -132,7 +132,7 @@ exports.getMessages = (req, res) => {
   const roomId = req.params.id;
 
   const sqlQueryRoom = "SELECT * FROM Room WHERE room_id = ?";
-  db.get(sqlQueryRoom, [roomId], (err, room) => {
+  db.get(sqlQueryRoom, roomId, (err, room) => {
     if (err) {
       console.error(err);
       return res
@@ -144,8 +144,8 @@ exports.getMessages = (req, res) => {
       return res.status(404).json({ error: "Room not found", errorCode: 2031 });
     }
 
-    const sqlQueryUserRoom = "SELECT * FROM Message WHERE room_id = ?";
-    db.all(sqlQueryUserRoom, [roomId], (err, results) => {
+    const sqlQueryMessagesRoom = "SELECT * FROM Message WHERE room_id = ?";
+    db.all(sqlQueryMessagesRoom, roomId, (err, results) => {
       if (results.length === 0) {
         res.status(200).json({ msg: "No messages in this room" });
       } else {
