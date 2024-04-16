@@ -29,6 +29,7 @@ function createRoom(req, res, userIds, adminId) {
     "INSERT INTO Room (status, code, admin_id) VALUES (?, ?, ?)";
   const sqlQueryUserRoom =
     "INSERT INTO User_Room (user_id, room_id) VALUES (?, ?)";
+  const sqlQueryCodeRoom = "SELECT * FROM Room WHERE room_id = ?";
   db.run(
     sqlQueryRoom,
     [newRoom.status, newRoom.code, newRoom.adminId],
@@ -66,9 +67,21 @@ function createRoom(req, res, userIds, adminId) {
 
       Promise.all(promises)
         .then(() => {
-          res.status(200).json({
-            message: "Room created successfully",
-            roomdId: this.lastID,
+          const roomId = this.lastID;
+          db.all(sqlQueryCodeRoom, roomId, (err, results) => {
+            if (results.length === 0) {
+              res
+                .status(400)
+                .json({ error: "Can't get the room object", errorCode: 2005 });
+            } else {
+              res.status(200).json({
+                message: "Room created successfully",
+                roomdId: roomId,
+                status: results[0].status,
+                code: results[0].code,
+                adminId: results[0].admin_id,
+              });
+            }
           });
         })
         .catch((err) => {
@@ -156,8 +169,9 @@ exports.disable = (req, res) => {
         .status(500)
         .json({ error: "Internal server error", errorCode: 2040 });
     }
-    res
-      .status(200)
-      .json({ message: "Room disabled successfully", numberRowsUpdated: this.changes });
+    res.status(200).json({
+      message: "Room disabled successfully",
+      numberRowsUpdated: this.changes,
+    });
   });
 };
