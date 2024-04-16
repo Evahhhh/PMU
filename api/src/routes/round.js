@@ -5,7 +5,7 @@ const auth = require("../middlewares/authorization.middleware.js");
 
 router.post("/", auth, roundCtrl.create);
 router.put("/disable/:id", auth, roundCtrl.disable);
-router.put("/:id", auth, roundCtrl.get);
-router.put("/bet/:id", auth, roundCtrl.getBets);
+router.get("/:id", auth, roundCtrl.get);
+router.get("/bet/:id", auth, roundCtrl.getBets);
 
 module.exports = router;
