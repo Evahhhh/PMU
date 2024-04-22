@@ -30,65 +30,68 @@ function createRoom(req, res, userIds, adminId) {
   const sqlQueryUserRoom =
     "INSERT INTO User_Room (user_id, room_id) VALUES (?, ?)";
   const sqlQueryCodeRoom = "SELECT * FROM Room WHERE room_id = ?";
-  db.run(
-    sqlQueryRoom,
-    [newRoom.status, newRoom.code, newRoom.adminId],
-    function (err) {
-      if (err) {
-        console.error(err);
-        if (err.code == "SQLITE_CONSTRAINT") {
-          // Retry with a new code
-          createRoom(req, res, userIds, adminId);
-        } else {
-          return res
-            .status(500)
-            .json({ error: "Internal server error", errorCode: 2002 });
-        }
-      }
-      const roomId = this.lastID;
 
-      const promises = userIds.map((userId) => {
-        return new Promise((resolve, reject) => {
-          db.run(sqlQueryUserRoom, [userId, roomId], (err) => {
-            if (err) {
-              console.error(err);
-              reject({
-                status: 500,
-                json: {
-                  error: "Internal server error",
-                  errorCode: 2003,
-                },
-              });
-            }
-            resolve();
-          });
-        });
-      });
-
-      Promise.all(promises)
-        .then(() => {
+  const sqlQueryCodeExists = "SELECT * FROM Room WHERE code = ? AND status = 1";
+  db.all(sqlQueryCodeExists, code, (err, results) => {
+    if (results.length === 0) {
+      db.run(
+        sqlQueryRoom,
+        [newRoom.status, newRoom.code, newRoom.adminId],
+        function (err) {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Internal server error", errorCode: 2002 });
+          }
           const roomId = this.lastID;
-          db.all(sqlQueryCodeRoom, roomId, (err, results) => {
-            if (results.length === 0) {
-              res
-                .status(400)
-                .json({ error: "Can't get the room object", errorCode: 2005 });
-            } else {
-              res.status(200).json({
-                message: "Room created successfully",
-                roomdId: roomId,
-                status: results[0].status,
-                code: results[0].code,
-                adminId: results[0].admin_id,
+
+          const promises = userIds.map((userId) => {
+            return new Promise((resolve, reject) => {
+              db.run(sqlQueryUserRoom, [userId, roomId], (err) => {
+                if (err) {
+                  reject({
+                    status: 500,
+                    json: {
+                      error: "Internal server error",
+                      errorCode: 2003,
+                    },
+                  });
+                }
+                resolve();
               });
-            }
+            });
           });
-        })
-        .catch((err) => {
-          res.status(err.status).json(err.json);
-        });
+
+          Promise.all(promises)
+            .then(() => {
+              const roomId = this.lastID;
+              db.all(sqlQueryCodeRoom, roomId, (err, results) => {
+                if (results.length === 0) {
+                  res.status(400).json({
+                    error: "Can't get the room object",
+                    errorCode: 2005,
+                  });
+                } else {
+                  res.status(200).json({
+                    message: "Room created successfully",
+                    roomdId: roomId,
+                    status: results[0].status,
+                    code: results[0].code,
+                    adminId: results[0].admin_id,
+                  });
+                }
+              });
+            })
+            .catch((err) => {
+              res.status(err.status).json(err.json);
+            });
+        }
+      );
+    } else {
+      //Retry with a new code
+      createRoom(req, res, userIds, adminId);
     }
-  );
+  });
 }
 
 exports.get = (req, res) => {
@@ -148,7 +151,7 @@ exports.getPlayers = (req, res) => {
             } else {
               res.status(200).json({
                 users: users,
-                admin: results,
+                admin: results[0],
               });
             }
           });
@@ -174,7 +177,6 @@ exports.getMessages = (req, res) => {
       const sqlQueryRoom = "SELECT * FROM Room WHERE room_id = ?";
       db.get(sqlQueryRoom, roomId, (err, room) => {
         if (err) {
-          console.error(err);
           return res
             .status(500)
             .json({ error: "Internal server error", errorCode: 2030 });
@@ -217,7 +219,6 @@ exports.disable = (req, res) => {
       const sqlQuery = "UPDATE Room SET status = 0 WHERE room_id = ?";
       db.run(sqlQuery, roomId, function (err) {
         if (err) {
-          console.error(err);
           return res
             .status(500)
             .json({ error: "Internal server error", errorCode: 2040 });

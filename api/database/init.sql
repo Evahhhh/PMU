@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Horse (
 CREATE TABLE IF NOT EXISTS Room (
     room_id INTEGER PRIMARY KEY AUTOINCREMENT,
     status TINYINT,
-    code INTEGER UNIQUE,
+    code INTEGER,
     admin_id INTEGER,
     FOREIGN KEY(admin_id) REFERENCES User(user_id)
 );
@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS Bet (
     round_id INTEGER,
     FOREIGN KEY(horse_id) REFERENCES Horse(horse_id),
     FOREIGN KEY(user_id) REFERENCES User(user_id),
-    FOREIGN KEY(round_id) REFERENCES Round(round_id)
+    FOREIGN KEY(round_id) REFERENCES Round(round_id),
+    PRIMARY KEY(user_id, round_id)
 );
 INSERT INTO Horse (name)
 VALUES ("Roger");
