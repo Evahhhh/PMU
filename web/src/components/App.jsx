@@ -10,6 +10,7 @@ import Welcome from '../pages/Welcome';
 import Menu from '../pages/Menu';
 import CreationParty from '../pages/CreationParty';
 import JoinParty from '../pages/JoinParty';
+import Room from '../pages/Room';
 import Party from '../pages/Party';
 import Results from '../pages/Results';
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/menu" element={<><Header/><Menu/></>}/>
           <Route path="/creation" element={<><Header/><CreationParty/></>}/>
           <Route path="/join" element={<><Header/><JoinParty/></>}/>
+          <Route path="/room" element={<><Header/><Room/></>}/>
           <Route path="/party" element={<><Header/><Party/></>}/>
           <Route path="/results" element={<><Header/><Results/></>}/>
         </Routes>
