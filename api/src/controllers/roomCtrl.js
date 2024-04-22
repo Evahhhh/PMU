@@ -114,14 +114,32 @@ exports.getPlayers = (req, res) => {
   const db = req.db;
   const roomId = req.params.id;
 
-  const sqlQuery = "SELECT * FROM User_Room WHERE room_id = ?";
-  db.all(sqlQuery, roomId, (err, results) => {
+  const sqlQueryAdmin = `
+  SELECT u.user_id, u.pseudo, u.email
+  FROM User AS u 
+  JOIN Room AS r ON u.user_id = r.admin_id 
+  WHERE r.room_id = ?`;
+  const sqlQueryUsers = `
+  SELECT u.user_id, u.pseudo, u.email
+  FROM User AS u 
+  JOIN User_Room AS ur ON u.user_id = ur.user_id 
+  WHERE ur.room_id = ? AND u.user_id != (SELECT admin_id FROM Room WHERE room_id = ?)`;
+
+  db.all(sqlQueryUsers, [roomId, roomId], (err, results) => {
     if (results.length === 0) {
       res.status(400).json({ error: "Invalid data", errorCode: 2020 });
     } else {
-      const userIds = results.map((result) => result.user_id);
-      res.status(200).json({
-        userIds: userIds,
+      const users = results;
+
+      db.all(sqlQueryAdmin, roomId, (err, results) => {
+        if (results.length === 0) {
+          res.status(400).json({ error: "Invalid data", errorCode: 2021 });
+        } else {
+          res.status(200).json({
+            users: users,
+            admin: results
+          });
+        }
       });
     }
   });
