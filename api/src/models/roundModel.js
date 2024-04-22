@@ -1,8 +1,8 @@
 class Round {
-  constructor(status, duration, roomId) {
+  constructor(status, duration, gameId) {
     this.status = status;
     this.duration = duration;
-    this.roomId = roomId;
+    this.gameId = gameId;
   }
 }
 

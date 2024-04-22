@@ -1,21 +1,21 @@
 const modelRound = require("../models/roundModel");
 
 exports.create = (req, res) => {
-  const { duration, roomId } = req.body;
-  if (duration && roomId) {
-    if (typeof duration !== "number" || typeof roomId !== "number") {
+  const { duration, gameId } = req.body;
+  if (duration && gameId) {
+    if (typeof duration !== "number" || typeof gameId !== "number") {
       return res.status(400).json({
-        error: "duration and roomId must be numbers",
+        error: "duration and gameId must be numbers",
         errorCode: 5000,
       });
     } else {
       const db = req.db;
-      const newRound = new modelRound(1, duration, roomId);
+      const newRound = new modelRound(1, duration, gameId);
       const sqlQuery =
-        "INSERT INTO Round (status, duration, room_id) VALUES (?, ?, ?)";
+        "INSERT INTO Round (status, duration, game_id) VALUES (?, ?, ?)";
       db.run(
         sqlQuery,
-        [newRound.status, newRound.duration, newRound.roomId],
+        [newRound.status, newRound.duration, newRound.gameId],
         function (err) {
           if (err) {
             console.error(err);
@@ -75,7 +75,7 @@ exports.get = (req, res) => {
             id: results[0].round_id,
             status: results[0].status,
             duration: results[0].duration,
-            roomId: results[0].room_id,
+            gameId: results[0].game_id,
           });
         }
       });
