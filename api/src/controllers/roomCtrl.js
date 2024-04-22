@@ -96,7 +96,7 @@ exports.get = (req, res) => {
   const code = req.params.code;
 
   if (code) {
-    const sqlQuery = "SELECT * FROM Room WHERE code = ?";
+    const sqlQuery = "SELECT * FROM Room WHERE code = ? AND status = 1";
     db.all(sqlQuery, code, (err, results) => {
       if (results.length === 0) {
         res.status(400).json({ error: "Invalid data", errorCode: 2010 });

@@ -20,12 +20,6 @@ CREATE TABLE IF NOT EXISTS Round (
     round_id INTEGER PRIMARY KEY AUTOINCREMENT,
     status TINYINT,
     duration TINYINT,
-    game_id INTEGER,
-    FOREIGN KEY(game_id) REFERENCES Game(game_id)
-);
-CREATE TABLE IF NOT EXISTS Game (
-    game_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    status TINYINT,
     room_id INTEGER,
     FOREIGN KEY(room_id) REFERENCES Room(room_id)
 );

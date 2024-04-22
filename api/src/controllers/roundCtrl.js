@@ -1,21 +1,21 @@
 const modelRound = require("../models/roundModel");
 
 exports.create = (req, res) => {
-  const { duration, gameId } = req.body;
-  if (duration && gameId) {
-    if (typeof duration !== "number" || typeof gameId !== "number") {
+  const { duration, roomId } = req.body;
+  if (duration && roomId) {
+    if (typeof duration !== "number" || typeof roomId !== "number") {
       return res.status(400).json({
-        error: "duration and gameId must be numbers",
+        error: "duration and roomId must be numbers",
         errorCode: 5000,
       });
     } else {
       const db = req.db;
-      const newRound = new modelRound(1, duration, gameId);
+      const newRound = new modelRound(1, duration, roomId);
       const sqlQuery =
-        "INSERT INTO Round (status, duration, game_id) VALUES (?, ?, ?)";
+        "INSERT INTO Round (status, duration, room_id) VALUES (?, ?, ?)";
       db.run(
         sqlQuery,
-        [newRound.status, newRound.duration, newRound.gameId],
+        [newRound.status, newRound.duration, newRound.roomId],
         function (err) {
           if (err) {
             console.error(err);
@@ -66,7 +66,7 @@ exports.get = (req, res) => {
         errorCode: 5021,
       });
     } else {
-      const sqlQuery = "SELECT * FROM Round WHERE round_id = ?";
+      const sqlQuery = "SELECT * FROM Round WHERE round_id = ? AND status = 1";
       db.all(sqlQuery, roundId, (err, results) => {
         if (results.length === 0) {
           res.status(400).json({ error: "Invalid data", errorCode: 5020 });
@@ -75,7 +75,7 @@ exports.get = (req, res) => {
             id: results[0].round_id,
             status: results[0].status,
             duration: results[0].duration,
-            gameId: results[0].game_id,
+            roomId: results[0].room_id,
           });
         }
       });
