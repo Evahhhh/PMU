@@ -11,6 +11,7 @@ const roomRoutes = require("./src/routes/room.js");
 const roundRoutes = require("./src/routes/round.js");
 const betRoutes = require("./src/routes/bet.js");
 const messageRoutes = require("./src/routes/message.js");
+const gameRoutes = require("./src/routes/game.js");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -32,6 +33,7 @@ app.use("/api/room", roomRoutes);
 app.use("/api/round", roundRoutes);
 app.use("/api/bet", betRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/game", gameRoutes);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
