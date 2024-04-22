@@ -7,8 +7,7 @@ CREATE TABLE IF NOT EXISTS User (
 );
 CREATE TABLE IF NOT EXISTS Horse (
     horse_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    asset TEXT
+    name TEXT
 );
 CREATE TABLE IF NOT EXISTS Room (
     room_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,11 +53,11 @@ CREATE TABLE IF NOT EXISTS Bet (
     FOREIGN KEY(user_id) REFERENCES User(user_id),
     FOREIGN KEY(round_id) REFERENCES Round(round_id)
 );
-INSERT INTO Horse (name, asset)
-VALUES ("Roger", "\src\assets\roger.png");
-INSERT INTO Horse (name, asset)
-VALUES ("Gerard", "\src\assets\gerard.png");
-INSERT INTO Horse (name, asset)
-VALUES ("Jean Jacques", "\src\assets\jean-jacques.png");
-INSERT INTO Horse (name, asset)
-VALUES ("Marcel", "\src\assets\marcel.png");
+INSERT INTO Horse (name)
+VALUES ("Roger");
+INSERT INTO Horse (name)
+VALUES ("Gerard");
+INSERT INTO Horse (name)
+VALUES ("Jean Jacques");
+INSERT INTO Horse (name)
+VALUES ("Marcel");
