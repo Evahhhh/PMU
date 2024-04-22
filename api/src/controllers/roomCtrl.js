@@ -95,101 +95,140 @@ exports.get = (req, res) => {
   const db = req.db;
   const code = req.params.code;
 
-  const sqlQuery = "SELECT * FROM Room WHERE code = ?";
-  db.all(sqlQuery, code, (err, results) => {
-    if (results.length === 0) {
-      res.status(400).json({ error: "Invalid data", errorCode: 2010 });
-    } else {
-      res.status(200).json({
-        id: results[0].room_id,
-        status: results[0].status,
-        code: results[0].code,
-        adminId: results[0].admin_id,
-      });
-    }
-  });
+  if (code) {
+    const sqlQuery = "SELECT * FROM Room WHERE code = ?";
+    db.all(sqlQuery, code, (err, results) => {
+      if (results.length === 0) {
+        res.status(400).json({ error: "Invalid data", errorCode: 2010 });
+      } else {
+        res.status(200).json({
+          id: results[0].room_id,
+          status: results[0].status,
+          code: results[0].code,
+          adminId: results[0].admin_id,
+        });
+      }
+    });
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 2011 });
+  }
 };
 
 exports.getPlayers = (req, res) => {
   const db = req.db;
   const roomId = req.params.id;
 
-  const sqlQueryAdmin = `
+  if (roomId) {
+    if (isNaN(roomId)) {
+      return res.status(400).json({
+        error: "id must be a number",
+        errorCode: 2022,
+      });
+    } else {
+      const sqlQueryAdmin = `
   SELECT u.user_id, u.pseudo, u.email
   FROM User AS u 
   JOIN Room AS r ON u.user_id = r.admin_id 
   WHERE r.room_id = ?`;
-  const sqlQueryUsers = `
+      const sqlQueryUsers = `
   SELECT u.user_id, u.pseudo, u.email
   FROM User AS u 
   JOIN User_Room AS ur ON u.user_id = ur.user_id 
   WHERE ur.room_id = ? AND u.user_id != (SELECT admin_id FROM Room WHERE room_id = ?)`;
 
-  db.all(sqlQueryUsers, [roomId, roomId], (err, results) => {
-    if (results.length === 0) {
-      res.status(400).json({ error: "Invalid data", errorCode: 2020 });
-    } else {
-      const users = results;
-
-      db.all(sqlQueryAdmin, roomId, (err, results) => {
+      db.all(sqlQueryUsers, [roomId, roomId], (err, results) => {
         if (results.length === 0) {
-          res.status(400).json({ error: "Invalid data", errorCode: 2021 });
+          res.status(400).json({ error: "Invalid data", errorCode: 2020 });
         } else {
-          res.status(200).json({
-            users: users,
-            admin: results
+          const users = results;
+
+          db.all(sqlQueryAdmin, roomId, (err, results) => {
+            if (results.length === 0) {
+              res.status(400).json({ error: "Invalid data", errorCode: 2021 });
+            } else {
+              res.status(200).json({
+                users: users,
+                admin: results,
+              });
+            }
           });
         }
       });
     }
-  });
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 2023 });
+  }
 };
 
 exports.getMessages = (req, res) => {
   const db = req.db;
   const roomId = req.params.id;
 
-  const sqlQueryRoom = "SELECT * FROM Room WHERE room_id = ?";
-  db.get(sqlQueryRoom, roomId, (err, room) => {
-    if (err) {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ error: "Internal server error", errorCode: 2030 });
-    }
+  if (roomId) {
+    if (isNaN(roomId)) {
+      return res.status(400).json({
+        error: "id must be a number",
+        errorCode: 2032,
+      });
+    } else {
+      const sqlQueryRoom = "SELECT * FROM Room WHERE room_id = ?";
+      db.get(sqlQueryRoom, roomId, (err, room) => {
+        if (err) {
+          console.error(err);
+          return res
+            .status(500)
+            .json({ error: "Internal server error", errorCode: 2030 });
+        }
 
-    if (!room) {
-      return res.status(404).json({ error: "Room not found", errorCode: 2031 });
-    }
+        if (!room) {
+          return res
+            .status(404)
+            .json({ error: "Room not found", errorCode: 2031 });
+        }
 
-    const sqlQueryMessagesRoom = "SELECT * FROM Message WHERE room_id = ?";
-    db.all(sqlQueryMessagesRoom, roomId, (err, results) => {
-      if (results.length === 0) {
-        res.status(200).json({ msg: "No messages in this room" });
-      } else {
-        res.status(200).json({
-          messages: results,
+        const sqlQueryMessagesRoom = "SELECT * FROM Message WHERE room_id = ?";
+        db.all(sqlQueryMessagesRoom, roomId, (err, results) => {
+          if (results.length === 0) {
+            res.status(200).json({ msg: "No messages in this room" });
+          } else {
+            res.status(200).json({
+              messages: results,
+            });
+          }
         });
-      }
-    });
-  });
+      });
+    }
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 2033 });
+  }
 };
 
 exports.disable = (req, res) => {
   const db = req.db;
   const roomId = req.params.id;
 
-  const sqlQuery = "UPDATE Room SET status = 0 WHERE room_id = ?";
-  db.run(sqlQuery, roomId, function (err) {
-    if (err) {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ error: "Internal server error", errorCode: 2040 });
+  if (roomId) {
+    if (isNaN(roomId)) {
+      return res.status(400).json({
+        error: "id must be a number",
+        errorCode: 2041,
+      });
+    } else {
+      const sqlQuery = "UPDATE Room SET status = 0 WHERE room_id = ?";
+      db.run(sqlQuery, roomId, function (err) {
+        if (err) {
+          console.error(err);
+          return res
+            .status(500)
+            .json({ error: "Internal server error", errorCode: 2040 });
+        }
+        res.status(200).json({
+          message: "Room disabled successfully",
+          numberRowsUpdated: this.changes,
+        });
+      });
     }
-    res.status(200).json({
-      message: "Room disabled successfully",
-      numberRowsUpdated: this.changes,
-    });
-  });
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 2042 });
+  }
 };

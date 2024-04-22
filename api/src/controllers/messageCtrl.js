@@ -42,19 +42,29 @@ exports.create = (req, res) => {
 exports.delete = (req, res) => {
   const messageId = req.params.id;
   const db = req.db;
-  const sqlQuery = "DELETE FROM Message WHERE message_id = ?";
-  db.run(sqlQuery, messageId, function (err) {
-    if (err) {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ error: "Internal server error", errorCode: 4010 });
-    }
-    res
-      .status(200)
-      .json({
-        message: "Message deleted successfully",
-        numberRowsUpdated: this.changes,
+
+  if (messageId) {
+    if (isNaN(messageId)) {
+      return res.status(400).json({
+        error: "id must be a number",
+        errorCode: 4011,
       });
-  });
+    } else {
+      const sqlQuery = "DELETE FROM Message WHERE message_id = ?";
+      db.run(sqlQuery, messageId, function (err) {
+        if (err) {
+          console.error(err);
+          return res
+            .status(500)
+            .json({ error: "Internal server error", errorCode: 4010 });
+        }
+        res.status(200).json({
+          message: "Message deleted successfully",
+          numberRowsUpdated: this.changes,
+        });
+      });
+    }
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 4012 });
+  }
 };
