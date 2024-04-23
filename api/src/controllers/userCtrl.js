@@ -71,7 +71,7 @@ exports.signup = (req, res) => {
 
 exports.login = (req, res) => {
   const db = req.db;
-  const { email, password } = req.body;
+  const { email, password } = req.query;
 
   if (email && password) {
     if (typeof email !== "string" || typeof password !== "string") {
@@ -145,7 +145,7 @@ exports.modify = (req, res) => {
         db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
           if (err) {
             console.error("Error while editing article:", err);
-            res.status(400).json({ error: "Server error", errorCode: 1021 });
+            res.status(500).json({ error: "Server error", errorCode: 1021 });
             return;
           }
           if (this.changes === 0) {
