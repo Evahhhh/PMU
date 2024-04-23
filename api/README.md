@@ -37,7 +37,7 @@ Bravo ! Votre base de données sqlite3 est maintenant prête à être utilisée
 *Cette documentation est à venir*
 
 ### Base de données
-![UML_1](src/models/schema/UML_1.png)
-*[Disponible ici](src/models/schema/UML_1.png)*
-![UML_2](src/models/schema/UML_2.png)
-*[Disponible ici](src/models/schema/UML_2.png)*
+![UML_1](src/doc/database/UML_1.png)
+*[Disponible ici](src/doc/database/UML_1.png)*
+![UML_2](src/doc/database/UML_2.png)
+*[Disponible ici](src/doc/database/UML_2.png)*
