@@ -1,6 +1,6 @@
 class Bet {
-  constructor(sibsNumber, horseId, userId, roundId) {
-    this.sibsNumber = sibsNumber;
+  constructor(sipsNumber, horseId, userId, roundId) {
+    this.sipsNumber = sipsNumber;
     this.horseId = horseId;
     this.userId = userId;
     this.roundId = roundId;

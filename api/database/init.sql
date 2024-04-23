@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS User_Room (
     FOREIGN KEY(room_id) REFERENCES Room(room_id)
 );
 CREATE TABLE IF NOT EXISTS Bet (
-    sibs_number INTEGER,
+    sips_number INTEGER,
     horse_id INTEGER,
     user_id INTEGER,
     round_id INTEGER,
