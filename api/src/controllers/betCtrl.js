@@ -23,7 +23,6 @@ exports.create = (req, res) => {
         [newBet.sipsNumber, newBet.horseId, newBet.userId, newBet.roundId],
         function (err) {
           if (err) {
-            console.error(err);
             return res
               .status(500)
               .json({ error: "Internal server error", errorCode: 3001 });

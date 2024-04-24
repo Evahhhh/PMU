@@ -1,0 +1,89 @@
+paths:
+  /bet:
+    post:
+      tags:
+        - Bet
+      summary: Create a bet
+      description: Create a bet
+      operationId: bet.create
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The new bet to create
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sipsNumber:
+                  type: integer
+                  example: 3
+                horseId:
+                  type: integer
+                  example: 2
+                roundId:
+                  type: integer
+                  example: 1
+                userId:
+                  type: integer
+                  example: 1
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Bet created successfully
+                betId: 1
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                3000:
+                  summary: "3000"
+                  value:
+                    error: sipsNumber, horseId, userId and roundId must be numbers
+                    errorCode: 3000
+                3002:
+                  summary: "3002"
+                  value:
+                    error: Missing data
+                    errorCode: 3002
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                summary: 3001
+                value:
+                  error: Internal server error
+                  errorCode: 3001
+
+components:
+  schemas:
+    Bet:
+      type: object
+      required:
+        - bet_id
+        - sibsNumber
+        - horseId
+        - userId
+        - roundId
+      properties:
+        bet_id:
+          type: integer
+          description: "Bet id"
+        sipsNumber:
+          type: integer
+          description: "Number of sips bet"
+        horseId:
+          type: integer
+          description: "HorseId that was bet"
+        userId:
+          type: integer
+          description: "UserId of the player who made the bet"
+        roundId:
+          type: integer
+          description: "RoundId where the bet was made"
