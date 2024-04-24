@@ -45,7 +45,6 @@ exports.signup = (req, res) => {
           [newUser.pseudo, newUser.email, newUser.password],
           function (err) {
             if (err) {
-              console.error(err);
               if (err.code == "SQLITE_CONSTRAINT") {
                 return res
                   .status(409)
@@ -144,7 +143,6 @@ exports.modify = (req, res) => {
           "UPDATE user SET email = ?,password = ?, pseudo = ? WHERE user_id = ?";
         db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
           if (err) {
-            console.error("Error while editing article:", err);
             res.status(500).json({ error: "Server error", errorCode: 1021 });
             return;
           }
