@@ -22,7 +22,6 @@ exports.create = (req, res) => {
         [newMessage.content, newMessage.roomId, newMessage.userId],
         function (err) {
           if (err) {
-            console.error(err);
             return res
               .status(500)
               .json({ error: "Internal server error", errorCode: 4001 });
@@ -53,7 +52,6 @@ exports.delete = (req, res) => {
       const sqlQuery = "DELETE FROM Message WHERE message_id = ?";
       db.run(sqlQuery, messageId, function (err) {
         if (err) {
-          console.error(err);
           return res
             .status(500)
             .json({ error: "Internal server error", errorCode: 4010 });
