@@ -48,7 +48,7 @@ exports.signup = (req, res) => {
               if (err.code == "SQLITE_CONSTRAINT") {
                 return res
                   .status(409)
-                  .json({ error: "Email existing already", errorCode: 1002 });
+                  .json({ error: "Email already exists", errorCode: 1002 });
               } else {
                 return res
                   .status(500)
@@ -143,8 +143,16 @@ exports.modify = (req, res) => {
           "UPDATE user SET email = ?,password = ?, pseudo = ? WHERE user_id = ?";
         db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
           if (err) {
-            res.status(500).json({ error: "Server error", errorCode: 1021 });
-            return;
+            if (err.code == "SQLITE_CONSTRAINT") {
+              return res
+                .status(409)
+                .json({ error: "Email already exists", errorCode: 1025 });
+            } else {
+              res
+                .status(500)
+                .json({ error: "Internal server error", errorCode: 1021 });
+              return;
+            }
           }
           if (this.changes === 0) {
             res.status(400).json({ error: "User not found", errorCode: 1022 });
