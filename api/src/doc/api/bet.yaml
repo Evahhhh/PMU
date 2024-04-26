@@ -51,15 +51,48 @@ paths:
                   value:
                     error: Missing data
                     errorCode: 3002
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        404:
+          description: Round not found
+          content:
+            application/json:
+              example:
+                error: Round not found
+                errorCode: 3004
+        409:
+          description: This user has already made a bet on this round
+          content:
+            application/json:
+              example:
+                error: This user has already made a bet on this round
+                errorCode: 3005
         500:
           description: Internal server error
           content:
             application/json:
-              example:
-                summary: 3001
-                value:
-                  error: Internal server error
-                  errorCode: 3001
+              examples:
+                3001:
+                  summary: 3001
+                  value:
+                    error: Internal server error
+                    errorCode: 3001
+                3003:
+                  summary: 3003
+                  value:
+                    error: Internal server error
+                    errorCode: 3003
 
 components:
   schemas:
@@ -67,10 +100,10 @@ components:
       type: object
       required:
         - bet_id
-        - sibsNumber
-        - horseId
-        - userId
-        - roundId
+        - sipsNumber
+        - horse_id
+        - user_id
+        - round_id
       properties:
         bet_id:
           type: integer
@@ -78,12 +111,12 @@ components:
         sipsNumber:
           type: integer
           description: "Number of sips bet"
-        horseId:
+        horse_id:
           type: integer
           description: "HorseId that was bet"
-        userId:
+        user_id:
           type: integer
           description: "UserId of the player who made the bet"
-        roundId:
+        round_id:
           type: integer
           description: "RoundId where the bet was made"
