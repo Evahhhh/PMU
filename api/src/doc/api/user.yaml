@@ -57,11 +57,11 @@ paths:
                     error: missing data
                     errorCode: 1004
         409:
-          description: Email existing already
+          description: Email already exists
           content:
             application/json:
               example:
-                error: Email existing already
+                error: Email already exists
                 errorCode: 1002
         500:
           description: Internal server error
@@ -171,12 +171,32 @@ paths:
                   value:
                     error: Missing data
                     errorCode: 1024
-        500:
-          description: Server error
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        409:
+          description: Email already exists
           content:
             application/json:
               example:
-                error: Server error
+                error: Email already exists
+                errorCode: 1025
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                error: Internal server error
                 errorCode: 1021
 
 components:
