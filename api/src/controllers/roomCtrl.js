@@ -128,34 +128,54 @@ exports.getPlayers = (req, res) => {
         errorCode: 2022,
       });
     } else {
-      const sqlQueryAdmin = `
+      const sqlQueryRoom =
+        "SELECT * FROM Room WHERE room_id = ? AND status = 1";
+      db.get(sqlQueryRoom, roomId, (err, room) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Internal server error", errorCode: 2024 });
+        }
+
+        if (!room) {
+          return res
+            .status(404)
+            .json({ error: "Room not found", errorCode: 2025 });
+        }
+
+        const sqlQueryAdmin = `
   SELECT u.user_id, u.pseudo, u.email
   FROM User AS u 
   JOIN Room AS r ON u.user_id = r.admin_id 
   WHERE r.room_id = ?`;
-      const sqlQueryUsers = `
+        const sqlQueryUsers = `
   SELECT u.user_id, u.pseudo, u.email
   FROM User AS u 
   JOIN User_Room AS ur ON u.user_id = ur.user_id 
   WHERE ur.room_id = ? AND u.user_id != (SELECT admin_id FROM Room WHERE room_id = ?)`;
 
-      db.all(sqlQueryUsers, [roomId, roomId], (err, results) => {
-        if (results.length === 0) {
-          res.status(400).json({ error: "Invalid data", errorCode: 2020 });
-        } else {
-          const users = results;
+        db.all(sqlQueryUsers, [roomId, roomId], (err, results) => {
+          if (results.length === 0) {
+            return res
+              .status(400)
+              .json({ error: "Invalid data", errorCode: 2020 });
+          } else {
+            const users = results;
 
-          db.all(sqlQueryAdmin, roomId, (err, results) => {
-            if (results.length === 0) {
-              res.status(400).json({ error: "Invalid data", errorCode: 2021 });
-            } else {
-              res.status(200).json({
-                users: users,
-                admin: results[0],
-              });
-            }
-          });
-        }
+            db.all(sqlQueryAdmin, roomId, (err, results) => {
+              if (results.length === 0) {
+                return res
+                  .status(400)
+                  .json({ error: "Invalid data", errorCode: 2021 });
+              } else {
+                res.status(200).json({
+                  users: users,
+                  admin: results[0],
+                });
+              }
+            });
+          }
+        });
       });
     }
   } else {
@@ -174,7 +194,8 @@ exports.getMessages = (req, res) => {
         errorCode: 2032,
       });
     } else {
-      const sqlQueryRoom = "SELECT * FROM Room WHERE room_id = ?";
+      const sqlQueryRoom =
+        "SELECT * FROM Room WHERE room_id = ? AND status = 1";
       db.get(sqlQueryRoom, roomId, (err, room) => {
         if (err) {
           return res
