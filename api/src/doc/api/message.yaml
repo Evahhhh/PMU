@@ -48,6 +48,19 @@ paths:
                   value:
                     error: Missing data
                     errorCode: 4002
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
         500:
           description: Internal server error
           content:
@@ -97,6 +110,19 @@ paths:
                   value:
                     error: Missing data
                     errorCode: 4012
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
         500:
           description: Internal server error
           content:
@@ -114,8 +140,8 @@ components:
       required:
         - message_id
         - content
-        - roomId
-        - userId
+        - room_id
+        - user_id
       properties:
         message_id:
           type: integer
@@ -123,9 +149,12 @@ components:
         content:
           type: string
           description: "Message content"
-        roomId:
+        sending_date:
+          type: string
+          description: "Message's sending date & time"
+        room_id:
           type: integer
           description: "RoomId in which the message was sent"
-        userId:
+        user_id:
           type: integer
           description: "UserId of message sender"
