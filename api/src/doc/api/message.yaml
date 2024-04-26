@@ -123,6 +123,19 @@ paths:
                   value:
                     error: {}
                     errorCode: 9998
+        404:
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Message not found"
+                  errorCode:
+                    type: integer
+                    example: 4013
         500:
           description: Internal server error
           content:

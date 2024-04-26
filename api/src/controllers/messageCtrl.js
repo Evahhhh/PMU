@@ -56,6 +56,11 @@ exports.delete = (req, res) => {
             .status(500)
             .json({ error: "Internal server error", errorCode: 4010 });
         }
+        if (this.changes === 0) {
+          return res
+            .status(404)
+            .json({ error: "Message not found", errorCode: 4013 });
+        }
         res.status(200).json({
           message: "Message deleted successfully",
           numberRowsUpdated: this.changes,
