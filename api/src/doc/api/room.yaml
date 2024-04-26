@@ -92,6 +92,108 @@ paths:
                   value:
                     error: Internal server error
                     errorCode: 2003
+  /room/join:
+    post:
+      tags:
+        - Room
+      summary: Add a user to a given room
+      description: Add a user to a given room
+      operationId: room.join
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The room and user to join
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomId:
+                  type: integer
+                  example: 1
+                userId:
+                  type: integer
+                  example: 1
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User joined room successfully"
+                  numberRowsUpdated:
+                    type: integer
+                    example: 1
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                2060:
+                  summary: "2060"
+                  value:
+                    error: "roomId and userId must be numbers"
+                    errorCode: 2060
+                2063:
+                  summary: "2063"
+                  value:
+                    error: "Missing data"
+                    errorCode: 2063
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        404:
+          description: Round not found or status is 0
+          content:
+            application/json:
+              example:
+                error: Round not found or status is 0
+                errorCode: 2064
+        409:
+          description: User already in room
+          content:
+            application/json:
+              examples:
+                2061:
+                  summary: "2061"
+                  value:
+                    error: "User already in room"
+                    errorCode: 2061
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              examples:
+                2062:
+                  summary: "2062"
+                  value:
+                    error: "Internal server error"
+                    errorCode: 2062
+                2065:
+                  summary: "2065"
+                  value:
+                    error: "Internal server error"
+                    errorCode: 2065
+                2066:
+                  summary: "2066"
+                  value:
+                    error: "Internal server error"
+                    errorCode: 2066
   /room/{code}:
     get:
       tags:

@@ -8,7 +8,10 @@ exports.create = (req, res) => {
         error: "userIds must be an array of numbers only",
         errorCode: 2000,
       });
-    } else if (typeof adminId !== "number" || typeof maxNbPlayers !== "number") {
+    } else if (
+      typeof adminId !== "number" ||
+      typeof maxNbPlayers !== "number"
+    ) {
       return res.status(400).json({
         error: "adminId & maxNbPlayers must be numbers",
         errorCode: 2001,
@@ -269,7 +272,8 @@ exports.deleteUser = (req, res) => {
         errorCode: 2050,
       });
     } else {
-      const sqlQuery = "DELETE FROM User_Room WHERE room_id = ? AND user_id = ?";
+      const sqlQuery =
+        "DELETE FROM User_Room WHERE room_id = ? AND user_id = ?";
       db.run(sqlQuery, [roomId, userId], function (err) {
         if (err) {
           return res
@@ -289,5 +293,62 @@ exports.deleteUser = (req, res) => {
     }
   } else {
     res.status(400).json({ error: "Missing data", errorCode: 2053 });
+  }
+};
+
+exports.join = (req, res) => {
+  const { roomId, userId } = req.body;
+  const db = req.db;
+
+  if (roomId && userId) {
+    if (typeof roomId !== "number" || typeof userId !== "number") {
+      return res.status(400).json({
+        error: "roomId and userId must be numbers",
+        errorCode: 2060,
+      });
+    } else {
+      const sqlQueryRoom = "SELECT * FROM Room WHERE room_id = ? AND status = 1";
+      db.get(sqlQueryRoom, [roomId], (err, room) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Internal server error", errorCode: 2065 });
+        }
+        if (!room) {
+          return res
+            .status(404)
+            .json({ error: "Room not found or status is 0", errorCode: 2064 });
+        }
+
+        const sqlQueryUserRoom = "SELECT * FROM User_Room WHERE room_id = ? AND user_id = ?";
+        db.get(sqlQueryUserRoom, [roomId, userId], (err, userRoom) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Internal server error", errorCode: 2066 });
+          }
+          if (userRoom) {
+            return res
+              .status(409)
+              .json({ error: "User already in room", errorCode: 2061 });
+          }
+
+          const sqlQuery = "INSERT INTO User_Room (room_id, user_id) VALUES (?, ?)";
+          db.run(sqlQuery, [roomId, userId], function (err) {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Internal server error", errorCode: 2062 });
+            }
+            res.status(200).json({
+              message: "User joined room successfully",
+              numberRowsUpdated: this.changes,
+            });
+          });
+        });
+      });
+    }
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 2063 });
   }
 };
