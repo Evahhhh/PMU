@@ -396,6 +396,98 @@ paths:
               example:
                 error: Internal server error
                 errorCode: 2040
+  /room/user:
+    delete:
+      tags:
+        - Room
+      summary: Delete a given user from a given room
+      description: Delete a given user from a given room
+      operationId: room.deleteUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: roomId
+          required: true
+          description: Room id
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: userId
+          required: true
+          description: User id
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: User removed from room successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User removed from room successfully"
+                  numberRowsUpdated:
+                    type: integer
+                    example: 1
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                2053:
+                  summary: "2053"
+                  value:
+                    error: Missing data
+                    errorCode: 2053
+                2050:
+                  summary: "2050"
+                  value:
+                    error: roomId and userId must be numbers
+                    errorCode: 2050
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        404:
+          description: User not found in room
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found in room"
+                  errorCode:
+                    type: integer
+                    example: 2052
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+                  errorCode:
+                    type: integer
+                    example: 2051
 
 components:
   schemas:

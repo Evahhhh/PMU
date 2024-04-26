@@ -256,3 +256,38 @@ exports.disable = (req, res) => {
     res.status(400).json({ error: "Missing data", errorCode: 2042 });
   }
 };
+
+exports.deleteUser = (req, res) => {
+  const roomId = req.query.roomId;
+  const userId = req.query.userId;
+  const db = req.db;
+
+  if (roomId && userId) {
+    if (isNaN(roomId) || isNaN(userId)) {
+      return res.status(400).json({
+        error: "roomId and userId must be numbers",
+        errorCode: 2050,
+      });
+    } else {
+      const sqlQuery = "DELETE FROM User_Room WHERE room_id = ? AND user_id = ?";
+      db.run(sqlQuery, [roomId, userId], function (err) {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Internal server error", errorCode: 2051 });
+        }
+        if (this.changes === 0) {
+          return res
+            .status(404)
+            .json({ error: "User not found in room", errorCode: 2052 });
+        }
+        res.status(200).json({
+          message: "User removed from room successfully",
+          numberRowsUpdated: this.changes,
+        });
+      });
+    }
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 2053 });
+  }
+};
