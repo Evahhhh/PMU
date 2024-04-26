@@ -3,10 +3,11 @@
 @import 'base/fonts';
 @import 'base/page';
 
+//Component for all pages
 @import 'composants/header';
 @import 'composants/footer';
 @import 'composants/rules';
-@import 'composants/card';
 
+//Component pages
 @import 'pages/joinParty';
 @import 'pages/party';

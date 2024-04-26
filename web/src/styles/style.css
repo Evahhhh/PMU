@@ -255,55 +255,6 @@ footer {
   font-family: "raleway";
 }
 
-.card {
-  width: 100px;
-  height: 150px;
-  border: 1px solid black;
-  border-radius: 10px;
-  margin: 5px;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  background-color: #F5FFFC; /* Fond blanc */
-}
-
-.drawCard, .discardCard {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-}
-
-.drawCard {
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  width: 70px; /* Taille du logo */
-  height: 70px;
-}
-
-.type {
-  margin-top: 15px; /* Espace au-dessus du type de carte */
-  color: #1C3635;
-}
-
-.img-bottom {
-  position: absolute;
-  bottom: 0; /* Espacement au bas de la carte */
-  left: 50%; /* Centré horizontalement */
-  transform: translateX(-50%);
-  width: 90px; /* Taille de l'image en bas de la carte */
-  height: 90px;
-}
-
 .join {
   display: flex;
   flex-direction: column;
@@ -377,6 +328,55 @@ footer {
   padding-bottom: 4em;
 }
 
+.card {
+  width: 100px;
+  height: 150px;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  background-color: #F5FFFC; /* Fond blanc */
+}
+
+.drawCard, .discardCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.drawCard {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  width: 70px; /* Taille du logo */
+  height: 70px;
+}
+
+.type {
+  margin-top: 15px; /* Espace au-dessus du type de carte */
+  color: #1C3635;
+}
+
+.img-bottom {
+  position: absolute;
+  bottom: 0; /* Espacement au bas de la carte */
+  left: 50%; /* Centré horizontalement */
+  transform: translateX(-50%);
+  width: 90px; /* Taille de l'image en bas de la carte */
+  height: 90px;
+}
+
 .popup {
   position: fixed;
   top: 0;
@@ -414,16 +414,12 @@ footer {
   align-self: stretch;
 }
 
-.cardInconvenient {
-  align-self: stretch;
-  width: 90px;
-}
-
 .track {
-  width: 542px;
+  width: 650px;
   height: 640px;
-  border-radius: 16px 0 0 16px;
   overflow-y: scroll;
+  position: relative;
+  z-index: 1;
 }
 .track::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -440,13 +436,15 @@ footer {
 }
 
 .stage {
+  position: relative;
   background-color: #F8CC46;
-  width: 100%;
+  width: 542px;
   height: 120px;
   border-bottom: 2px solid #1C3635;
   display: flex;
   justify-content: space-around;
   align-items: end;
+  float: right;
 }
 .stage img {
   width: 90px;
@@ -458,6 +456,15 @@ footer {
   height: 20px;
   width: 100%;
   border: 2px solid #1C3635;
+}
+.stage .cardInconvenient {
+  width: 85px;
+  height: 110px;
+  background-color: #F5FFFC;
+  position: absolute;
+  left: -95px;
+  bottom: 5px;
+  border-radius: 5px;
 }
 
 #position0 {

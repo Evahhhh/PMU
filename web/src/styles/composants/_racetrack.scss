@@ -1,0 +1,66 @@
+.racetrack, .playerChat {
+    display: flex;
+    align-self: stretch;
+}
+
+.track {
+    width:650px;
+    height: 640px;
+    overflow-y: scroll;
+    position: relative;
+    z-index: 1;
+        &::-webkit-scrollbar-track
+        {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            background-color: #00000000;
+        }
+
+        &::-webkit-scrollbar
+        {
+            width: 6px;
+            background-color: $footer;
+            border-radius:5px;
+        }
+
+        &::-webkit-scrollbar-thumb
+        {
+            background-color: $text;
+            border-radius: 5px;
+
+        }
+}
+.stage {
+    position: relative;
+    background-color: $color-tertiary;
+    width: 542px;
+    height: 120px;
+    border-bottom: 2px solid $footer;
+    display: flex;
+    justify-content: space-around;
+    align-items: end;
+    float: right;
+    img {
+        width: 90px;
+        height:90px;
+    }
+    .finish-line {
+        background-size: cover; // pour ajuster l'image à la div
+        background-repeat: no-repeat;
+        height: 20px;
+        width: 100%; // pour prendre toute la largeur de la div parente
+        border: 2px solid $footer;
+
+    }
+    .cardInconvenient {
+        width: 85px;
+        height: 110px;
+        background-color: $text;
+        position: absolute;
+        left: -95px; // Décalage vers la gauche pour sortir de la div
+        bottom: 5px; // Alignement au bas de la div parente
+        border-radius: 5px;
+    }
+}
+#position0 {
+    border-bottom: 0;
+}

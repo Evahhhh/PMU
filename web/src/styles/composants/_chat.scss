@@ -1,0 +1,69 @@
+.pari {
+    background-color: $color-primary;
+    width: 100%;
+    border-radius: 20px;
+    height:180px;
+    overflow-y: scroll;
+    &::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #00000000;
+    }
+
+    &::-webkit-scrollbar
+    {
+        width: 6px;
+        background-color: $footer;
+        border-radius:5px;
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+        background-color: $text;
+        border-radius: 5px;
+
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        caption {
+            height:36px;
+            line-height: 30px;
+        }
+        th, td{
+            height: 35px;
+            font-size: 16px;
+            text-align: center;
+            font-weight: 100;
+            border-right: 1px solid $text;
+        }
+        .tdHorse {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            border:none;
+        }
+        .pHorse {
+            height: 25px;
+            line-height: 25px;
+            font-size: 14px;
+            text-align: center;
+            border-radius: 4px;
+        }        
+    }
+}
+.playerChat {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    h2 {
+        position:absolute;
+        font-size:20px;
+        font-family: 'raleway';
+    }
+    .titleBet {
+        top: 164px;
+        right: 120px;
+      
+    }
+}
