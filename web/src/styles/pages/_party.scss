@@ -1,0 +1,172 @@
+.party {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    width: 96%;
+    margin: auto;
+    margin-bottom: 0;
+    padding-bottom: 4em;
+}
+
+
+.popup {
+    position: fixed; // Positionne le popup par rapport à la fenêtre du navigateur
+    top: 0; // Aligne le popup en haut de la fenêtre
+    left: 0; // Aligne le popup à gauche de la fenêtre
+    width: 100%; // Prend toute la largeur de la fenêtre
+    height: 100%; // Prend toute la hauteur de la fenêtre
+    background-color: rgba(0, 0, 0, 0.603); // Fond semi-transparent pour l'effet de superposition
+    display: flex; // Utilise flexbox pour centrer le contenu verticalement et horizontalement
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 2; // Assure que le popup est au-dessus du header
+    p {
+        height: 70px;
+        line-height: 70px;
+        font-family: 'raleway';
+        font-size: 18px;
+    }
+}
+.closeCard {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+}
+
+.racetrack, .playerChat {
+    display: flex;
+    align-self: stretch;
+}
+
+.cardInconvenient {
+    align-self: stretch;
+    width: 90px;
+}
+.track {
+    width:542px;
+    height: 640px;
+    border-radius: 16px 0 0 16px;
+    overflow-y: scroll;
+        &::-webkit-scrollbar-track
+        {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            background-color: #00000000;
+        }
+
+        &::-webkit-scrollbar
+        {
+            width: 6px;
+            background-color: $footer;
+            border-radius:5px;
+        }
+
+        &::-webkit-scrollbar-thumb
+        {
+            background-color: $text;
+            border-radius: 5px;
+
+        }
+}
+.stage {
+    background-color: $color-tertiary;
+    width: 100%;
+    height: 120px;
+    border-bottom: 2px solid $footer;
+    display: flex;
+    justify-content: space-around;
+    align-items: end;
+    img {
+        width: 90px;
+        height:90px;
+    }
+    .finish-line {
+        background-size: cover; // pour ajuster l'image à la div
+        background-repeat: no-repeat;
+        height: 20px;
+        width: 100%; // pour prendre toute la largeur de la div parente
+        border: 2px solid $footer;
+
+    }
+}
+#position0 {
+    border-bottom: 0;
+}
+
+.pari {
+    background-color: $color-primary;
+    width: 100%;
+    border-radius: 20px;
+    height:180px;
+    overflow-y: scroll;
+    &::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #00000000;
+    }
+
+    &::-webkit-scrollbar
+    {
+        width: 6px;
+        background-color: $footer;
+        border-radius:5px;
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+        background-color: $text;
+        border-radius: 5px;
+
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        caption {
+            height:36px;
+            line-height: 30px;
+        }
+        th, td{
+            height: 35px;
+            font-size: 16px;
+            text-align: center;
+            font-weight: 100;
+            border-right: 1px solid $text;
+        }
+        .tdHorse {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            border:none;
+        }
+        .pHorse {
+            height: 25px;
+            line-height: 25px;
+            font-size: 14px;
+            text-align: center;
+            border-radius: 4px;
+        }        
+    }
+}
+.playerChat {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    h2 {
+        position:absolute;
+        font-size:20px;
+        font-family: 'raleway';
+    }
+    .titleBet {
+        top: 164px;
+        right: 120px;
+      
+    }
+}

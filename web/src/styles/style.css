@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @font-face {
   font-family: "roboto";
   src: url("./fonts/Roboto-Regular.ttf") format("truetype");
@@ -44,6 +45,8 @@ button {
   min-height: 100%;
   margin: 0 auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
@@ -118,7 +121,7 @@ header .rules-popup {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.747);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -250,6 +253,279 @@ footer {
   height: 50px;
   text-align: center;
   font-family: "raleway";
+}
+
+.card {
+  width: 100px;
+  height: 150px;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  background-color: #F5FFFC; /* Fond blanc */
+}
+
+.drawCard, .discardCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.drawCard {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  width: 70px; /* Taille du logo */
+  height: 70px;
+}
+
+.type {
+  margin-top: 15px; /* Espace au-dessus du type de carte */
+  color: #1C3635;
+}
+
+.img-bottom {
+  position: absolute;
+  bottom: 0; /* Espacement au bas de la carte */
+  left: 50%; /* Centré horizontalement */
+  transform: translateX(-50%);
+  width: 90px; /* Taille de l'image en bas de la carte */
+  height: 90px;
+}
+
+.join {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  flex: 1;
+}
+.join .arrow {
+  position: absolute;
+  left: 20px;
+  font-size: 22px;
+  cursor: pointer;
+  background-color: unset;
+  border: none;
+}
+.join .formJoin {
+  text-align: center;
+  margin-top: 30px;
+}
+.join h2 {
+  font-family: "raleway";
+  height: 200px;
+  line-height: 150px;
+}
+.join form {
+  display: flex;
+  flex-direction: column;
+}
+.join form .codeRoom {
+  width: 354px;
+  height: 52px;
+  border-radius: 10px;
+  background: #F5FFFC;
+  color: #1C3635;
+  font-size: 16px;
+  padding: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.join form .codeRoom:focus-visible {
+  outline: none;
+}
+.join form .error {
+  border: 2px solid #B10E1D;
+}
+.join form button {
+  width: 354px;
+  height: 52px;
+  border-radius: 10px;
+  background: #00A870;
+  border: 0;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.errorForm {
+  color: #F5FFFC;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.party {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  width: 96%;
+  margin: auto;
+  margin-bottom: 0;
+  padding-bottom: 4em;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.603);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 2;
+}
+.popup p {
+  height: 70px;
+  line-height: 70px;
+  font-family: "raleway";
+  font-size: 18px;
+}
+
+.closeCard {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.racetrack, .playerChat {
+  display: flex;
+  align-self: stretch;
+}
+
+.cardInconvenient {
+  align-self: stretch;
+  width: 90px;
+}
+
+.track {
+  width: 542px;
+  height: 640px;
+  border-radius: 16px 0 0 16px;
+  overflow-y: scroll;
+}
+.track::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0);
+}
+.track::-webkit-scrollbar {
+  width: 6px;
+  background-color: #1C3635;
+  border-radius: 5px;
+}
+.track::-webkit-scrollbar-thumb {
+  background-color: #F5FFFC;
+  border-radius: 5px;
+}
+
+.stage {
+  background-color: #F8CC46;
+  width: 100%;
+  height: 120px;
+  border-bottom: 2px solid #1C3635;
+  display: flex;
+  justify-content: space-around;
+  align-items: end;
+}
+.stage img {
+  width: 90px;
+  height: 90px;
+}
+.stage .finish-line {
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 100%;
+  border: 2px solid #1C3635;
+}
+
+#position0 {
+  border-bottom: 0;
+}
+
+.pari {
+  background-color: #00A870;
+  width: 100%;
+  border-radius: 20px;
+  height: 180px;
+  overflow-y: scroll;
+}
+.pari::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0);
+}
+.pari::-webkit-scrollbar {
+  width: 6px;
+  background-color: #1C3635;
+  border-radius: 5px;
+}
+.pari::-webkit-scrollbar-thumb {
+  background-color: #F5FFFC;
+  border-radius: 5px;
+}
+.pari table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.pari table caption {
+  height: 36px;
+  line-height: 30px;
+}
+.pari table th, .pari table td {
+  height: 35px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 100;
+  border-right: 1px solid #F5FFFC;
+}
+.pari table .tdHorse {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+.pari table .pHorse {
+  height: 25px;
+  line-height: 25px;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.playerChat {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+}
+.playerChat h2 {
+  position: absolute;
+  font-size: 20px;
+  font-family: "raleway";
+}
+.playerChat .titleBet {
+  top: 164px;
+  right: 120px;
 }
 
 /*# sourceMappingURL=style.css.map */

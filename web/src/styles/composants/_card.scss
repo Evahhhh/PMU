@@ -1,0 +1,48 @@
+.card {
+    width: 100px;
+    height: 150px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    background-color: $text; /* Fond blanc */
+  }
+  
+  .drawCard, .discardCard {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+  }
+  
+  .drawCard {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .logo {
+    width: 70px; /* Taille du logo */
+    height: 70px;
+  }
+  
+  .type {
+    margin-top: 15px; /* Espace au-dessus du type de carte */
+    color:$footer;
+  }
+  
+  .img-bottom {
+    position: absolute;
+    bottom: 0; /* Espacement au bas de la carte */
+    left: 50%; /* Centré horizontalement */
+    transform: translateX(-50%);
+    width: 90px; /* Taille de l'image en bas de la carte */
+    height: 90px;
+  }
