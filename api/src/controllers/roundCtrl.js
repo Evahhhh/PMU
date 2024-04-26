@@ -18,7 +18,6 @@ exports.create = (req, res) => {
         [newRound.status, newRound.duration, newRound.roomId],
         function (err) {
           if (err) {
-            console.error(err);
             return res
               .status(500)
               .json({ error: "Internal server error", errorCode: 5001 });
@@ -40,19 +39,29 @@ exports.disable = (req, res) => {
   const db = req.db;
   const roundId = req.params.id;
 
-  const sqlQuery = "UPDATE Round SET status = 0 WHERE round_id = ?";
-  db.run(sqlQuery, roundId, function (err) {
-    if (err) {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ error: "Internal server error", errorCode: 5010 });
+  if (roundId) {
+    if (isNaN(roundId)) {
+      return res.status(400).json({
+        error: "id must be a number",
+        errorCode: 5011,
+      });
+    } else {
+      const sqlQuery = "UPDATE Round SET status = 0 WHERE round_id = ?";
+      db.run(sqlQuery, roundId, function (err) {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Internal server error", errorCode: 5010 });
+        }
+        res.status(200).json({
+          message: "Round disabled successfully",
+          numberRowsUpdated: this.changes,
+        });
+      });
     }
-    res.status(200).json({
-      message: "Round disabled successfully",
-      numberRowsUpdated: this.changes,
-    });
-  });
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 5012 });
+  }
 };
 
 exports.get = (req, res) => {
@@ -96,10 +105,10 @@ exports.getBets = (req, res) => {
         errorCode: 5032,
       });
     } else {
-      const sqlQueryRound = "SELECT * FROM Round WHERE round_id = ?";
+      const sqlQueryRound =
+        "SELECT * FROM Round WHERE round_id = ? AND status = 1";
       db.get(sqlQueryRound, roundId, (err, round) => {
         if (err) {
-          console.error(err);
           return res
             .status(500)
             .json({ error: "Internal server error", errorCode: 5030 });
@@ -111,7 +120,12 @@ exports.getBets = (req, res) => {
             .json({ error: "Round not found", errorCode: 5031 });
         }
 
-        const sqlQueryBetsRound = "SELECT * FROM Bet WHERE round_id = ?";
+        const sqlQueryBetsRound = `
+        SELECT Bet.*, User.pseudo 
+        FROM Bet 
+        JOIN User ON Bet.user_id = User.user_id 
+        WHERE Bet.round_id = ?`;
+
         db.all(sqlQueryBetsRound, roundId, (err, results) => {
           if (results.length === 0) {
             res.status(200).json({ msg: "No bets in this round" });
