@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS Room (
     room_id INTEGER PRIMARY KEY AUTOINCREMENT,
     status TINYINT,
     code INTEGER,
+    max_nb_players TINYINT,
     admin_id INTEGER,
     FOREIGN KEY(admin_id) REFERENCES User(user_id)
 );

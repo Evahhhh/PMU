@@ -15,6 +15,9 @@ paths:
             schema:
               type: object
               properties:
+                maxNbPlayers:
+                  type: integer
+                  example: 3
                 userIds:
                   type: array
                   items:
@@ -31,9 +34,10 @@ paths:
             application/json:
               example:
                 message: Room created successfully
-                roomdId: 1
+                roomId: 1
                 status: 1
                 code: 123456
+                maxNbPlayers: 3
                 adminId: 2
         400:
           description: Bad request
@@ -48,7 +52,7 @@ paths:
                 2001:
                   summary: "2001"
                   value:
-                    error: adminId must be a number
+                    error: adminId & maxNbPlayers must be numbers
                     errorCode: 2001
                 2004:
                   summary: "2004"
@@ -114,6 +118,7 @@ paths:
                 id: 1
                 status: 1
                 code: 123456
+                maxNbPlayers: 3
                 adminId: 2
         400:
           description: Bad request

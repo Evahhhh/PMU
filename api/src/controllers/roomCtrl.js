@@ -1,32 +1,32 @@
 const modelRoom = require("../models/roomModel");
 
 exports.create = (req, res) => {
-  const { userIds, adminId } = req.body;
-  if (userIds && adminId) {
+  const { maxNbPlayers, userIds, adminId } = req.body;
+  if (maxNbPlayers && userIds && adminId) {
     if (!Array.isArray(userIds) || !userIds.every(Number.isFinite)) {
       return res.status(400).json({
         error: "userIds must be an array of numbers only",
         errorCode: 2000,
       });
-    } else if (typeof adminId !== "number") {
+    } else if (typeof adminId !== "number" || typeof maxNbPlayers !== "number") {
       return res.status(400).json({
-        error: "adminId must be a number",
+        error: "adminId & maxNbPlayers must be numbers",
         errorCode: 2001,
       });
     } else {
-      createRoom(req, res, userIds, adminId);
+      createRoom(req, res, maxNbPlayers, userIds, adminId);
     }
   } else {
     res.status(400).json({ error: "missing data", errorCode: 2004 });
   }
 };
 
-function createRoom(req, res, userIds, adminId) {
+function createRoom(req, res, maxNbPlayers, userIds, adminId) {
   const db = req.db;
   const code = Math.floor(100000 + Math.random() * 900000);
-  const newRoom = new modelRoom(1, code, adminId, userIds);
+  const newRoom = new modelRoom(1, code, maxNbPlayers, adminId, userIds);
   const sqlQueryRoom =
-    "INSERT INTO Room (status, code, admin_id) VALUES (?, ?, ?)";
+    "INSERT INTO Room (status, code, max_nb_players, admin_id) VALUES (?, ?, ?, ?)";
   const sqlQueryUserRoom =
     "INSERT INTO User_Room (user_id, room_id) VALUES (?, ?)";
   const sqlQueryCodeRoom = "SELECT * FROM Room WHERE room_id = ?";
@@ -36,7 +36,7 @@ function createRoom(req, res, userIds, adminId) {
     if (results.length === 0) {
       db.run(
         sqlQueryRoom,
-        [newRoom.status, newRoom.code, newRoom.adminId],
+        [newRoom.status, newRoom.code, newRoom.maxNbPlayers, newRoom.adminId],
         function (err) {
           if (err) {
             return res
@@ -74,9 +74,10 @@ function createRoom(req, res, userIds, adminId) {
                 } else {
                   res.status(200).json({
                     message: "Room created successfully",
-                    roomdId: roomId,
+                    roomId: roomId,
                     status: results[0].status,
                     code: results[0].code,
+                    maxNbPlayers: results[0].max_nb_players,
                     adminId: results[0].admin_id,
                   });
                 }
@@ -89,7 +90,7 @@ function createRoom(req, res, userIds, adminId) {
       );
     } else {
       //Retry with a new code
-      createRoom(req, res, userIds, adminId);
+      createRoom(req, res, maxNbPlayers, userIds, adminId);
     }
   });
 }
@@ -108,6 +109,7 @@ exports.get = (req, res) => {
           id: results[0].room_id,
           status: results[0].status,
           code: results[0].code,
+          maxNbPlayers: results[0].max_nb_players,
           adminId: results[0].admin_id,
         });
       }
