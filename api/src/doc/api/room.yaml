@@ -275,7 +275,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  userIds:
+                  admin:
+                    type: object
+                    properties:
+                      user_id:
+                        type: integer
+                      pseudo:
+                        type: string
+                      email:
+                        type: string
+                  users:
                     type: array
                     items:
                       type: object
@@ -286,17 +295,15 @@ paths:
                           type: string
                         email:
                           type: string
-                  adminId:
-                    type: integer
               example:
-                adminId: 2
-                userIds: 
+                users: 
                   - user_id: 1
                     pseudo: "john"
                     email: "test@domain.com"
-                  - id: 4
-                    pseudo: "john"
-                    email: "test@seconddomain.com"
+                admin:
+                  user_id: 2
+                  pseudo: "john"
+                  email: "test@domain.com"
         400:
           description: Bad request
           content:
