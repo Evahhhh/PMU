@@ -1,0 +1,337 @@
+paths:
+  /currentGames/{roundId}:
+    post:
+      tags:
+        - CurrentGames
+      summary: Create a current game
+      description: Create a current game
+      operationId: currentGames.create
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roundId
+          in: path
+          description: Round id
+          required: true
+          example: 1
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Game added successfully with all horses locations at 0
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                6000:
+                  summary: "6000"
+                  value:
+                    error: roundId must be a number
+                    errorCode: 6000
+                6004:
+                  summary: "6004"
+                  value:
+                    error: A current game with the same roundId already exists
+                    errorCode: 6004
+                6006:
+                  summary: "6006"
+                  value:
+                    error: Missing data
+                    errorCode: 6006
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        404:
+          description: Round not found or status is 0
+          content:
+            application/json:
+              example:
+                error: Round not found or status is 0
+                errorCode: 6002
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              examples:
+                6001:
+                  summary: "6001"
+                  value:
+                    error: Internal server error
+                    errorCode: 6001
+                6003:
+                  summary: "6003"
+                  value:
+                    error: Internal server error
+                    errorCode: 6003
+                6005:
+                  summary: "6005"
+                  value:
+                    error: Internal server error
+                    errorCode: 6005
+    get:
+      tags:
+        - CurrentGames
+      summary: Get a current game by a round id
+      description: Get a current game by a round id
+      operationId: currentGames.get
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roundId
+          in: path
+          description: Round id
+          required: true
+          example: 1
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              example:
+                roundId: 1
+                horse1Loc: 0
+                horse2Loc: 0
+                horse3Loc: 0
+                horse4Loc: 0
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                6030:
+                  summary: "6030"
+                  value:
+                    error: roundId must be a number
+                    errorCode: 6030
+                6033:
+                  summary: "6033"
+                  value:
+                    error: Missing data
+                    errorCode: 6033
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        404:
+          description: No current game with the given roundId exists
+          content:
+            application/json:
+              example:
+                error: No current game with the given roundId exists
+                errorCode: 6032
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                error: Internal server error
+                errorCode: 6031
+    delete:
+      tags:
+        - CurrentGames
+      summary: Delete a current game
+      description: Delete a current game
+      operationId: currentGames.delete
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roundId
+          in: path
+          description: Round id
+          required: true
+          example: 1
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Game deleted successfully
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                6020:
+                  summary: "6020"
+                  value:
+                    error: roundId must be a number
+                    errorCode: 6020
+                6024:
+                  summary: "6024"
+                  value:
+                    error: Missing data
+                    errorCode: 6024
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        404:
+          description: No current game with the given roundId exists
+          content:
+            application/json:
+              example:
+                error: No current game with the given roundId exists
+                errorCode: 6022
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              examples:
+                6021:
+                  summary: "6021"
+                  value:
+                    error: Internal server error
+                    errorCode: 6021
+                6023:
+                  summary: "6023"
+                  value:
+                    error: Internal server error
+                    errorCode: 6023
+  /currentGames:
+    put:
+      tags:
+        - CurrentGames
+      summary: Update a current game
+      description: Update a current game
+      operationId: currentGames.update
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The new current game state
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roundId:
+                  type: integer
+                  example: 1
+                horse1Loc:
+                  type: integer
+                  example: 0
+                horse2Loc:
+                  type: integer
+                  example: 1
+                horse3Loc:
+                  type: integer
+                  example: 2
+                horse4Loc:
+                  type: integer
+                  example: 0
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Game updated successfully
+                newCurrentGame:
+                  roundId: 1
+                  horse1Loc: 0
+                  horse2Loc: 1
+                  horse3Loc: 2
+                  horse4Loc: 0
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                6010:
+                  summary: "6010"
+                  value:
+                    error: roundId, horse1Loc, horse2Loc, horse3Loc and horse4Loc must be numbers
+                    errorCode: 6010
+                6013:
+                  summary: "6013"
+                  value:
+                    error: The position of one or more horses is greater than the size of the game board
+                    errorCode: 6013
+                6015:
+                  summary: "6015"
+                  value:
+                    error: No game with the specified roundId exists
+                    errorCode: 6015
+                6017:
+                  summary: "6017"
+                  value:
+                    error: Missing data
+                    errorCode: 6017
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+        404:
+          description: Round not found or status is 0
+          content:
+            application/json:
+              example:
+                error: Round not found or status is 0
+                errorCode: 6012
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              examples:
+                6011:
+                  summary: "6011"
+                  value:
+                    error: Internal server error
+                    errorCode: 6011
+                6014:
+                  summary: "6014"
+                  value:
+                    error: Internal server error
+                    errorCode: 6014
+                6016:
+                  summary: "6016"
+                  value:
+                    error: Internal server error
+                    errorCode: 6016
