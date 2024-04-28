@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 //Components
 import Header from './Header';
+import LightHeader from './LightHeader';
 import Footer from './Footer';
 
 //Pages
@@ -19,7 +20,7 @@ function App() {
     <Router>
       <div className='app'>
         <Routes>
-          <Route path="/" element={<Welcome/>}/>
+          <Route path="/" element={<><LightHeader/><Welcome/></>}/>
           <Route path="/menu" element={<><Header/><Menu/></>}/>
           <Route path="/creation" element={<><Header/><CreationParty/></>}/>
           <Route path="/join" element={<><Header/><JoinParty/></>}/>

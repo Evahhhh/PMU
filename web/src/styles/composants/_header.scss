@@ -38,6 +38,15 @@ header {
             height: 100px;
         }
     }
+    .light_logo {
+        width: 106px;
+        height: 106px;
+        margin-top:30px;
+        @media screen and (max-width: 700px) {
+            width: 70px;
+            height: 70px;
+        }
+    }
     .rulesButton {
         background: none;
         border: none;

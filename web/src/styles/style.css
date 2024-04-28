@@ -93,6 +93,17 @@ header .logo {
     height: 100px;
   }
 }
+header .light_logo {
+  width: 106px;
+  height: 106px;
+  margin-top: 30px;
+}
+@media screen and (max-width: 700px) {
+  header .light_logo {
+    width: 70px;
+    height: 70px;
+  }
+}
 header .rulesButton {
   background: none;
   border: none;
