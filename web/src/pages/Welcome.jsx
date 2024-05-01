@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Login from "../components/welcome/Login";
 import Signup from "../components/welcome/Signup";
 import ForgotPassword from "../components/welcome/ForgotPassword";
 
 function Welcome() {
+  const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(true);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+
+  useEffect(() => {
+    const id = sessionStorage.getItem("id");
+    const token = sessionStorage.getItem("token");
+
+    if (id && token) {
+      navigate("/menu");
+    }
+  }, [navigate]);
 
   const toggleForgotPasswordModal = () => {
     setShowForgotPasswordModal(!showForgotPasswordModal);
