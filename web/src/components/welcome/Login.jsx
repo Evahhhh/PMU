@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
-function Login() {
+function Login({ onLogin }) {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -53,8 +53,7 @@ function Login() {
       }
       return;
     } else {
-      sessionStorage.setItem("id", data.id);
-      sessionStorage.setItem("token", data.token);
+      onLogin(data.id, data.token);
       enqueueSnackbar("Connecté avec succès", {
         variant: "success",
       });

@@ -4,7 +4,7 @@ import Login from "../components/welcome/Login";
 import Signup from "../components/welcome/Signup";
 import ForgotPassword from "../components/welcome/ForgotPassword";
 
-function Welcome() {
+function Welcome({ onLogin }) {
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(true);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
@@ -24,7 +24,7 @@ function Welcome() {
 
   return (
     <div className="welcome">
-      {showLogin ? <Login /> : <Signup />}
+      {showLogin ? <Login onLogin={onLogin} /> : <Signup />}
       <div className="btnContainer">
         <button
           className="secondaryButton"

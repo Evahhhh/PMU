@@ -1,4 +1,7 @@
 .welcome {
+  margin-bottom: 0; 
+  padding-bottom: 4em;
+
   h2 {
     font-size: 22px;
     font-family: "raleway";
@@ -94,8 +97,7 @@
       color: white;
       cursor: pointer;
     }
-    // Ajoutez d'autres styles pour personnaliser l'apparence du popup
-
+    
     .hidden {
       display: none;
     }

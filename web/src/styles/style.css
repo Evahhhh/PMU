@@ -162,7 +162,7 @@ footer {
   line-height: 60px;
   font-size: 16px;
 }
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 870px) {
   footer {
     height: auto;
     line-height: 20px;
@@ -173,8 +173,9 @@ footer {
   display: flex;
   justify-content: space-between;
   margin: 0 15px;
+  align-items: center;
 }
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 870px) {
   .divFooter {
     font-size: 12px;
     flex-direction: column;
@@ -182,6 +183,17 @@ footer {
     justify-content: center;
     align-items: center;
   }
+}
+.divFooter .negativeButton {
+  width: 180px;
+  height: 35px;
+  border-radius: 10px;
+  background: #B10E1D;
+  border: 0;
+  font-size: 16px;
+  color: #F5FFFC;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .carousel {
@@ -266,6 +278,10 @@ footer {
   font-family: "raleway";
 }
 
+.welcome {
+  margin-bottom: 0;
+  padding-bottom: 4em;
+}
 .welcome h2 {
   font-size: 22px;
   font-family: "raleway";
