@@ -1,23 +1,22 @@
 const express = require("express");
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
 const app = express();
 require("dotenv").config();
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Game - PMU',
-      version: '1.0.0',
-      description: 'The PMU game uses this API to manage the game and rounds between you and your friends.',
+      title: "Game - PMU",
+      version: "1.0.0",
+      description:
+        "The PMU game uses this API to manage the game and rounds between you and your friends.",
     },
-    servers:[
-      {url:'http://localhost:3000/api'}, 
-    ],
+    servers: [{ url: "http://localhost:3000/api" }],
   },
 
-  apis: ['./src/doc/api/*.yaml'], 
+  apis: ["./src/doc/api/*.yaml"],
 };
 const specs = swaggerJsdoc(options);
 
@@ -31,6 +30,7 @@ const roundRoutes = require("./src/routes/round.js");
 const betRoutes = require("./src/routes/bet.js");
 const messageRoutes = require("./src/routes/message.js");
 const currentGamesRoutes = require("./src/routes/currentGames.js");
+const mailSenderRoutes = require("./src/routes/mailSender.js");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -47,13 +47,14 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/user", userRoutes);
 app.use("/api/room", roomRoutes);
 app.use("/api/round", roundRoutes);
 app.use("/api/bet", betRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/currentGames", currentGamesRoutes);
+app.use("/api/mailSender", mailSenderRoutes);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
