@@ -8,6 +8,7 @@ import Footer from './Footer';
 
 //Pages
 import Welcome from '../pages/Welcome';
+import ResetPassword from '../pages/ResetPassword';
 import Menu from '../pages/Menu';
 import CreationParty from '../pages/CreationParty';
 import JoinParty from '../pages/JoinParty';
@@ -44,6 +45,7 @@ function App() {
       <div className='app'>
         <Routes>
           <Route path="/" element={<><LightHeader/><Welcome onLogin={handleLogin}/></>}/>
+          <Route path="/reset-password" element={<><LightHeader/><ResetPassword/></>}/>
           <Route path="/menu" element={<><Header/><Menu/></>}/>
           <Route path="/creation" element={<><Header/><CreationParty/></>}/>
           <Route path="/join" element={<><Header/><JoinParty/></>}/>

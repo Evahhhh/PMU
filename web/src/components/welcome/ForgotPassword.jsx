@@ -1,6 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 function ForgotPassword({ showPopup, closePopup }) {
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const response = await fetch("http://localhost:3000/api/mailSender", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ to: email }),
+    });
+    const data = await response.json();
+
+    if (data.errorCode) {
+      switch (data.errorCode) {
+        case 7000:
+          enqueueSnackbar(
+            "Une erreur est survenue lors de l'envoi de l'email",
+            {
+              variant: "error",
+            }
+          );
+          break;
+        default:
+          enqueueSnackbar("Une erreur inconnue est survenue", {
+            variant: "error",
+          });
+      }
+      return;
+    } else {
+      enqueueSnackbar(
+        "Un email pour réinitialiser votre mot de passe a été envoyé",
+        {
+          variant: "success",
+        }
+      );
+      navigate("/");
+    }
+  };
+
   return (
     <div className={`modal${showPopup ? "" : " hidden"}`}>
       {showPopup && (
@@ -10,10 +55,16 @@ function ForgotPassword({ showPopup, closePopup }) {
               X
             </button>
             <h2>REINITIALISER LE MOT DE PASSE</h2>
-            <form>
+            <form onSubmit={handleSubmit}>
               <label className="textField">
                 <p className="label">Adresse mail:</p>
-                <input type="email" name="email" className="inputText" />
+                <input
+                  type="email"
+                  name="email"
+                  className="inputText"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </label>
               <input
                 type="submit"
