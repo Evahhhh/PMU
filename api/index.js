@@ -13,7 +13,7 @@ const options = {
       description:
         "The PMU game uses this API to manage the game and rounds between you and your friends.",
     },
-    servers: [{ url: "http://localhost:3000/api" }],
+    servers: [{ url: process.env.PMU_API }],
   },
 
   apis: ["./src/doc/api/*.yaml"],
