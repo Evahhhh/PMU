@@ -34,7 +34,7 @@ Bravo ! Votre base de données sqlite3 est maintenant prête à être utilisée
 
 ## Documentation
 ### Notre API
-*Cette documentation est à venir*
+L'API est documenté grâce à Swagger sur la route /api/docs. Il est possible de directement tester l'API grâce à celle-ci. Toutes les erreurs possibles sont répertoriées.
 
 ### Base de données
 ![UML_1](src/doc/database/UML_1.png)
