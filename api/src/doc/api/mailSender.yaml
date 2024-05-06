@@ -24,8 +24,22 @@ paths:
             application/json:
               example:
                 message: "Email sent successfully"
+        400:
+          description: Invalid email address
+          content:
+            application/json:
+              example:
+                error: "Invalid email address"
+                errorCode: 7001
+        404:
+          description: User not found
+          content:
+            application/json:
+              example:
+                error: "User not found"
+                errorCode: 7002
         500:
-          description: Successful response
+          description: Error while sending the email
           content:
             application/json:
               example:
