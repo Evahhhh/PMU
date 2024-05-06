@@ -131,8 +131,6 @@ paths:
       summary: Edit a user
       description: Edit a user
       operationId: user.modify
-      security:
-        - bearerAuth: []
       requestBody:
         description: The new data for the user to edit
         content:
@@ -171,19 +169,6 @@ paths:
                   value:
                     error: Missing data
                     errorCode: 1024
-        401:
-          description: Middleware error
-          content:
-            application/json:
-              examples:
-                9999:
-                  value:
-                    error: Invalid user ID
-                    errorCode: 9999
-                9998:
-                  value:
-                    error: {}
-                    errorCode: 9998
         409:
           description: Email already exists
           content:
