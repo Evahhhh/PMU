@@ -12,7 +12,7 @@ function Login({ onLogin }) {
     event.preventDefault();
 
     const response = await fetch(
-      `http://localhost:3000/api/user?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      `${process.env.REACT_APP_PMU_API_URL}/api/user?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
     );
     const data = await response.json();
 

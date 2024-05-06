@@ -36,7 +36,7 @@ function ResetPassword() {
       });
       return;
     }
-    const response = await fetch("http://localhost:3000/api/user", {
+    const response = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/user`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

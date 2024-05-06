@@ -10,7 +10,7 @@ function ForgotPassword({ showPopup, closePopup }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/mailSender", {
+    const response = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/mailSender`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
