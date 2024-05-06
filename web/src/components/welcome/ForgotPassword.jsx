@@ -29,6 +29,16 @@ function ForgotPassword({ showPopup, closePopup }) {
             }
           );
           break;
+        case 7001:
+          enqueueSnackbar("Adresse mail invalide", {
+            variant: "error",
+          });
+          break;
+        case 7002:
+          enqueueSnackbar("Aucun compte n'existe avec cet email", {
+            variant: "error",
+          });
+          break;
         default:
           enqueueSnackbar("Une erreur inconnue est survenue", {
             variant: "error",
