@@ -12,13 +12,17 @@ exports.sendEmail = async (req, res) => {
       .send({ error: "Invalid email address", errorCode: 7001 });
   }
 
-  const doesUserExist = await userExists(req, emailDestination);
-  if (!doesUserExist) {
+  const user = await searchUser(req, emailDestination);
+  if (!user) {
     return res.status(404).send({ error: "User not found", errorCode: 7002 });
   }
 
   const token = jwt.sign(
-    { email: emailDestination },
+    { 
+      email: emailDestination,
+      user_id: user.user_id,
+      pseudo: user.pseudo
+    },
     process.env.JWT_SECRET_KEY,
     { expiresIn: "1h" }
   );
@@ -64,7 +68,7 @@ exports.sendEmail = async (req, res) => {
   });
 };
 
-function userExists(req, email) {
+function searchUser(req, email) {
   return new Promise((resolve, reject) => {
     const db = req.db;
     const sqlQuery = "SELECT * FROM User WHERE email = ?";
@@ -72,7 +76,7 @@ function userExists(req, email) {
       if (err) {
         reject(err);
       } else {
-        resolve(results.length > 0);
+        resolve(results.length > 0 ? results[0] : null);
       }
     });
   });
