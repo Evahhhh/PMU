@@ -10,10 +10,12 @@ function Login({ onLogin }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(email, password);
 
     const response = await fetch(
-      `http://localhost:3000/api/user?email=${email}&password=${password}`
+      `http://localhost:3000/api/user?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
     );
+    console.log(response)
     const data = await response.json();
 
     if (data.errorCode) {
