@@ -52,10 +52,18 @@ function ResetPassword() {
 
     if (data.errorCode) {
       switch (data.errorCode) {
-        case (1020, 1026):
+        case 1026:
           enqueueSnackbar("Une erreur est survenue", {
             variant: "error",
           });
+          break;
+        case 1020:
+          enqueueSnackbar(
+            "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et doit être d'au moins 8 caractères",
+            {
+              variant: "error",
+            }
+          );
           break;
         case 1022:
           enqueueSnackbar("Utilisateur introuvable", {
