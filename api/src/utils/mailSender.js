@@ -1,13 +1,20 @@
 var nodeoutlook = require("nodejs-nodemailer-outlook");
 var jwt = require("jsonwebtoken");
 
-exports.sendEmail = (req, res) => {
+exports.sendEmail = async (req, res) => {
   const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
   const emailDestination = req.body.to;
 
   if (!emailDestination || !emailRegex.test(emailDestination)) {
-    return res.status(400).send("Invalid email address");
+    return res
+      .status(400)
+      .send({ error: "Invalid email address", errorCode: 7001 });
+  }
+
+  const doesUserExist = await userExists(req, emailDestination);
+  if (!doesUserExist) {
+    return res.status(404).send({ error: "User not found", errorCode: 7002 });
   }
 
   const token = jwt.sign(
@@ -47,10 +54,26 @@ exports.sendEmail = (req, res) => {
 
     onError: (e) => {
       console.log(e);
-      res.status(500).send({ error: "Error while sending the email", errorCode: 7000});
+      res
+        .status(500)
+        .send({ error: "Error while sending the email", errorCode: 7000 });
     },
     onSuccess: (i) => {
       res.status(200).send({ message: "Email sent successfully" });
     },
   });
 };
+
+function userExists(req, email) {
+  return new Promise((resolve, reject) => {
+    const db = req.db;
+    const sqlQuery = "SELECT * FROM User WHERE email = ?";
+    db.all(sqlQuery, email, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results.length > 0);
+      }
+    });
+  });
+}
