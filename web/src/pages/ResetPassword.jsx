@@ -10,10 +10,10 @@ function ResetPassword() {
   const [decodedToken, setDecodedToken] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const urlParams = new URLSearchParams(location.search);
-  const token = urlParams.get("token");
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const token = urlParams.get("token");
     if (!token) {
       navigate("/");
       return;
@@ -36,8 +36,59 @@ function ResetPassword() {
       });
       return;
     }
+    const response = await fetch("http://localhost:3000/api/user", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: decodedToken.user_id,
+        pseudo: decodedToken.pseudo,
+        email: decodedToken.email,
+        password: password,
+      }),
+    });
+    const data = await response.json();
 
-    console.log(decodedToken);
+    if (data.errorCode) {
+      switch (data.errorCode) {
+        case (1020, 1026):
+          enqueueSnackbar("Une erreur est survenue", {
+            variant: "error",
+          });
+          break;
+        case 1022:
+          enqueueSnackbar("Utilisateur introuvable", {
+            variant: "error",
+          });
+          break;
+        case 1023:
+          enqueueSnackbar("Données invalides", {
+            variant: "error",
+          });
+          break;
+        case 1024:
+          enqueueSnackbar("Données manquantes", {
+            variant: "error",
+          });
+          break;
+        case 1025:
+          enqueueSnackbar("Email déjà existant", {
+            variant: "error",
+          });
+          break;
+        default:
+          enqueueSnackbar("Une erreur inconnue est survenue", {
+            variant: "error",
+          });
+      }
+      return;
+    } else {
+      enqueueSnackbar("Mot de passe réinitialisé avec succès", {
+        variant: "success",
+      });
+      navigate("/");
+    }
   };
 
   return (
