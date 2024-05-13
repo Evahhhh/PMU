@@ -194,13 +194,13 @@ paths:
                   value:
                     error: "Internal server error"
                     errorCode: 2066
-  /room/{code}:
+  /room/code/{code}:
     get:
       tags:
         - Room
       summary: Get a room by its code
       description: Get a room by its code
-      operationId: room.get
+      operationId: room.getByCode
       security:
         - bearerAuth: []
       parameters:
@@ -237,6 +237,62 @@ paths:
                   value:
                     error: Missing data
                     errorCode: 2011
+        401:
+          description: Middleware error
+          content:
+            application/json:
+              examples:
+                9999:
+                  value:
+                    error: Invalid user ID
+                    errorCode: 9999
+                9998:
+                  value:
+                    error: {}
+                    errorCode: 9998
+  /room/{id}:
+    get:
+      tags:
+        - Room
+      summary: Get a room by its id
+      description: Get a room by its id
+      operationId: room.get
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: RoomId
+          required: true
+          example: 1
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              example:
+                id: 1
+                status: 1
+                code: 123456
+                maxNbPlayers: 3
+                adminId: 2
+        400:
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                2010:
+                  summary: "2070"
+                  value:
+                    error: Invalid data
+                    errorCode: 2070
+                2011:
+                  summary: "2071"
+                  value:
+                    error: Missing data
+                    errorCode: 2071
         401:
           description: Middleware error
           content:
