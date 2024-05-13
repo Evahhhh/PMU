@@ -1,18 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Mon application Socket.IO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Admin</title>
 </head>
 
 <body>
-    <h1>Bienvenue dans mon application Socket.IO</h1>
-    <button id="boutonLancerParis">Lancer les paris</button>
-    <div id="messages"></div>
-    <div id="popup"></div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/src/client.js"></script>
+    <!--Pour parier-->
+    <h1>Interface Admin</h1>
+    <p>Nombre de joueurs ayant parié : <span id="nombrePari">0</span></p>
+
+    <script src="https://cdn.socket.io/4.3.1/socket.io.min.js"></script>
+    <script>
+        const socket = io(); // Assuming your socket.io connection is properly established
+
+        // Écoute l'événement 'miseAJourNombrePari' envoyé depuis le serveur
+        socket.on('miseAJourNombrePari', (nombreDePari) => {
+            document.getElementById('nombrePari').innerText = nombreDePari; // Met à jour le nombre de joueurs ayant parié sur l'interface
+        });
+    </script>
+
+    <!--Pour lancer la partie-->
+    <button id="bouton-start">Cliquer pour lancer la partie</button>
+
+    <script>
+        const socket = io(); // Assuming your socket.io connection is properly established
+
+        document.getElementById('bouton-start').addEventListener('click', () => {
+            socket.emit('lancerPartie'); // Envoyer un événement 'lancerPartie' lorsque le bouton est cliqué
+        });
+    </script>
+
+    <!--Pour retourner une carte-->
+    <button id="carte"><img src="" /></button>
+    <script>
+        const socket = io();
+
+        document.getElementById('btnRetournerCarte').addEventListener('click', () => {
+            const carte = obtenirCarteARetourner(); // Supposons que vous avez une fonction pour obtenir la carte à retourner
+            socket.emit('carteRetournee', carte); // Émettre l'événement carteRetournee avec la carte à retourner
+        });
+    </script>
 </body>
 
 </html>
