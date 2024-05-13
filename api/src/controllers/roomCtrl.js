@@ -98,7 +98,7 @@ function createRoom(req, res, maxNbPlayers, userIds, adminId) {
   });
 }
 
-exports.get = (req, res) => {
+exports.getByCode = (req, res) => {
   const db = req.db;
   const code = req.params.code;
 
@@ -119,6 +119,30 @@ exports.get = (req, res) => {
     });
   } else {
     res.status(400).json({ error: "Missing data", errorCode: 2011 });
+  }
+};
+
+exports.get = (req, res) => {
+  const db = req.db;
+  const roomId = req.params.id;
+
+  if (roomId) {
+    const sqlQuery = "SELECT * FROM Room WHERE room_id = ? AND status = 1";
+    db.all(sqlQuery, roomId, (err, results) => {
+      if (results.length === 0) {
+        res.status(400).json({ error: "Invalid data", errorCode: 2070 });
+      } else {
+        res.status(200).json({
+          id: results[0].room_id,
+          status: results[0].status,
+          code: results[0].code,
+          maxNbPlayers: results[0].max_nb_players,
+          adminId: results[0].admin_id,
+        });
+      }
+    });
+  } else {
+    res.status(400).json({ error: "Missing data", errorCode: 2071 });
   }
 };
 
