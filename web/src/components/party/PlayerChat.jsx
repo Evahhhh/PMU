@@ -1,12 +1,12 @@
 import Chat from "./Chat";
 import ListPlayer from "./ListPlayer";
 
-export default function playerChat ({numberPlayer, numberPlayerParam, bets, cardsData}) {
+export default function playerChat ({numberPlayer, effectifPlayer, bets, cardsData}) {
     return (
         <div className='playerChat'>
             <ListPlayer
+                effectifPlayer={effectifPlayer}
                 numberPlayer={numberPlayer}
-                numberPlayerParam={numberPlayerParam}
                 bets={bets}
                 cardsData={cardsData}
             />

@@ -49,7 +49,7 @@ function App() {
           <Route path="/menu" element={<><Header/><Menu/></>}/>
           <Route path="/creation" element={<><Header/><CreationParty/></>}/>
           <Route path="/join" element={<><Header/><JoinParty/></>}/>
-          <Route path="/room" element={<><Header/><Room/></>}/>
+          <Route path="/room/:roomId" element={<><Header/><Room/></>}/>
           <Route path="/party" element={<><Header/><Party/></>}/>
           <Route path="/results" element={<><Header/><Results/></>}/>
         </Routes>

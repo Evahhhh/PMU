@@ -13,24 +13,70 @@ const cardsData = [
   { id: 3, type: 'Jean-Jacques', img: '/media/jean-jacques.png', logo: '/media/logo.png', color:'green' },
   { id: 4, type: 'Marcel', img: '/media/marcel.png', logo: '/media/logo.png', color:'#9747FF'}
 ];
-const lengthRun = 7;
-const numberPlayer = "8";
-const numberPlayerParam ="10";
-const bets = [
-  {pseudo: 'Geraldine', bet: 3, horse: 'Marcel'},
-  {pseudo: 'Manu', bet: 2, horse: 'Jean-Jacques'},
-  {pseudo: 'Dede', bet: 6, horse: 'Gerard'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'},
-  {pseudo: 'Pascalou', bet: 4, horse: 'Roger'}
-]
+
+const idRound = sessionStorage.getItem("idRound");
+const token = sessionStorage.getItem('token');
+
+const numberPlayer ="10";
 
 function Party() {
+  const [lengthRun, setLengthRun] = useState(7);
+  const [numberPlayer, setNumberPlayer] = useState(0);
+  const [effectifPlayer, setEffectifPlayer] = useState(0);
+  const [bets, setBets] = useState([]);
+  
+  const fetchData = async () => {
+    //Durée de la partie
+    const lengthParty = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/round/${idRound}`,{
+    headers: {
+        'Authorization': `Bearer ${token}`
+        }
+    }
+    );
+    const length = await lengthParty.json();
+    setLengthRun(length.duration);
+
+    const idRoom = length.roomId;
+
+    //Nombre de joueurs max
+    const numberPlayer = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/room/${idRoom}`,{
+      headers: {
+          'Authorization': `Bearer ${token}`
+          }
+      }
+      );
+      const players = await numberPlayer.json();
+      setNumberPlayer(players.maxNbPlayers);
+    
+    //Nombre de joueur dans la partie
+    const effectifPlayer = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/room/players/${idRoom}`,{
+      headers: {
+          'Authorization': `Bearer ${token}`
+          }
+      }
+    );
+    const playerEffectif = await effectifPlayer.json();
+    setEffectifPlayer(playerEffectif.users.length + 1);
+    
+    //Paris de la manche
+    const betsArray = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/round/bet/${idRound}`,{
+      headers: {
+          'Authorization': `Bearer ${token}`
+          }
+      }
+    );
+    const betsResponse = await betsArray.json();
+    const arrayBet = [];
+    betsResponse.bets.map((bet) => {
+      arrayBet.push({
+        pseudo: bet.pseudo,
+        bet: bet.sips_number,
+        horse: cardsData.find(horse => horse.id === bet.horse_id).type
+      })
+    })
+    setBets(arrayBet);
+  }
+
   // Création du paquet de 52 cartes
   const createDeck = () => {
     let deck = [];
@@ -58,7 +104,8 @@ function Party() {
   
   const [areHorsesPresent, setAreHorsesPresent] = useState(false);
 
-  useEffect(() => {  
+  useEffect(() => { 
+    fetchData();
     // Cet effet s'exécute une seule fois après le premier rendu
     // Il met à jour le paquet de cartes dans le composant parent
     const initialDeck = shuffleDeck(createDeck());
@@ -122,8 +169,8 @@ function Party() {
       />
       <div className='playerChat'>
         <PlayerChat
+          effectifPlayer={effectifPlayer}
           numberPlayer={numberPlayer}
-          numberPlayerParam={numberPlayerParam}
           bets={bets}
           cardsData={cardsData}
         />

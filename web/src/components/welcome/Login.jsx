@@ -10,7 +10,7 @@ function Login({ onLogin }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    console.log(process.env.REACT_APP_PMU_API_URL);
     const response = await fetch(
       `${process.env.REACT_APP_PMU_API_URL}/api/user?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
     );

@@ -1,10 +1,10 @@
-export default function ListPlayer ({numberPlayer, numberPlayerParam, bets, cardsData}) {
+export default function ListPlayer ({effectifPlayer, numberPlayer, bets, cardsData}) {
     return (
         <div className='listBet'>
           <h2 className='titleBet'>LISTE DES PARIS</h2>
           <div className='pari'>
             <table>
-              <caption>Nombre des joueurs: {numberPlayer}/{numberPlayerParam}</caption>
+              <caption>Nombre des joueurs: {effectifPlayer}/{numberPlayer}</caption>
               <tbody>
               {bets.map((bet, index) => {
                 // Recherche de l'objet correspondant à l'horse dans cardsData

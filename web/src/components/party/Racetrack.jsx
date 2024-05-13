@@ -9,7 +9,7 @@ export default function Racetrack ({lengthRun, cardsData, inconvenientCard, posi
 
   const [showPopupInconvenient, setShowPopupInconvenient] = useState(false); // affichage de la popup
   const [selectedHorse, setSelectedHorse] = useState(null); // cheval sélectionné
-  console.log(activateInconvenient);
+
   const areHorsesAtPosition = (stageIndex) => {
     let arePresent = true;
     for (let i = 0; i < positionHorse.length; i++) {

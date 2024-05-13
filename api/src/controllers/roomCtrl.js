@@ -149,15 +149,15 @@ exports.getPlayers = (req, res) => {
         }
 
         const sqlQueryAdmin = `
-  SELECT u.user_id, u.pseudo, u.email
-  FROM User AS u 
-  JOIN Room AS r ON u.user_id = r.admin_id 
-  WHERE r.room_id = ?`;
-        const sqlQueryUsers = `
-  SELECT u.user_id, u.pseudo, u.email
-  FROM User AS u 
-  JOIN User_Room AS ur ON u.user_id = ur.user_id 
-  WHERE ur.room_id = ? AND u.user_id != (SELECT admin_id FROM Room WHERE room_id = ?)`;
+        SELECT u.user_id, u.pseudo, u.email
+        FROM User AS u 
+        JOIN Room AS r ON u.user_id = r.admin_id 
+        WHERE r.room_id = ?`;
+              const sqlQueryUsers = `
+        SELECT u.user_id, u.pseudo, u.email
+        FROM User AS u 
+        JOIN User_Room AS ur ON u.user_id = ur.user_id 
+        WHERE ur.room_id = ? AND u.user_id != (SELECT admin_id FROM Room WHERE room_id = ?)`;
 
         db.all(sqlQueryUsers, [roomId, roomId], (err, results) => {
           if (results.length === 0) {
@@ -299,7 +299,6 @@ exports.deleteUser = (req, res) => {
 exports.join = (req, res) => {
   const { roomId, userId } = req.body;
   const db = req.db;
-
   if (roomId && userId) {
     if (typeof roomId !== "number" || typeof userId !== "number") {
       return res.status(400).json({
