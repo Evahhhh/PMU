@@ -1,5 +1,5 @@
 
-export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useState, deck, setDeck, positionHorse, setPositionHorse, lengthRun, finishParty, setFinishParty}) {
+export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useState, deck, setDeck, positionHorse, setPositionHorse, modifyCurrentGame, lengthRun, finishParty, setFinishParty}) {
   const [discard, setDiscard] = useState([]);
   const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la popup
 
@@ -11,6 +11,7 @@ export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useSt
           const updatedPositionHorse = [...positionHorse];
           updatedPositionHorse[horseIndex].position += 1;
           setPositionHorse(updatedPositionHorse);
+          modifyCurrentGame();
         }
         const newDiscard = [deck[0], ...discard];
         setDiscard(newDiscard);

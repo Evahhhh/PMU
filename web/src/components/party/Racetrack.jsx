@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-export default function Racetrack ({lengthRun, cardsData, inconvenientCard, positionHorse, setPositionHorse, finishParty, FontAwesomeIcon, faFlagCheckered, setAreHorsesPresent}) {
+export default function Racetrack ({lengthRun, cardsData, inconvenientCard, positionHorse, setPositionHorse, modifyCurrentGame, finishParty, FontAwesomeIcon, faFlagCheckered, setAreHorsesPresent}) {
   const stages = Array.from({ length: lengthRun }, (_, index) => index).reverse();
   const trackRef = useRef(null);
   const cardInconvenientRefs = useRef(Array.from({ length: lengthRun -2}).map(() => React.createRef()));
@@ -34,6 +34,7 @@ export default function Racetrack ({lengthRun, cardsData, inconvenientCard, posi
         const updatedPositionHorse = [...positionHorse];
         updatedPositionHorse[horseIndex].position -= 1;
         setPositionHorse(updatedPositionHorse);
+        modifyCurrentGame();
         setSelectedHorse(cardsData.find(e => e.type === positionHorse[horseIndex].type));
       }
       setShowPopupInconvenient(true, stageIndex); // Afficher la popup lors du clic sur une carte

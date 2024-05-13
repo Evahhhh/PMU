@@ -17,14 +17,19 @@ const cardsData = [
 const idRound = sessionStorage.getItem("idRound");
 const token = sessionStorage.getItem('token');
 
-const numberPlayer ="10";
-
 function Party() {
   const [lengthRun, setLengthRun] = useState(7);
   const [numberPlayer, setNumberPlayer] = useState(0);
   const [effectifPlayer, setEffectifPlayer] = useState(0);
   const [bets, setBets] = useState([]);
   
+  const [positionHorse, setPositionHorse] = useState([]);
+
+  const [deck, setDeck] = useState([]);
+  const [inconvenientCard, setInconvenientCard] = useState([]);
+  const [finishParty, setFinishParty] = useState(false);
+  const [showFadeIn, setShowFadeIn] = useState(false);
+
   const fetchData = async () => {
     //Durée de la partie
     const lengthParty = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/round/${idRound}`,{
@@ -44,9 +49,9 @@ function Party() {
           'Authorization': `Bearer ${token}`
           }
       }
-      );
-      const players = await numberPlayer.json();
-      setNumberPlayer(players.maxNbPlayers);
+    );
+    const players = await numberPlayer.json();
+    setNumberPlayer(players.maxNbPlayers);
     
     //Nombre de joueur dans la partie
     const effectifPlayer = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/room/players/${idRoom}`,{
@@ -107,6 +112,31 @@ function Party() {
   useEffect(() => { 
     fetchData();
     // Cet effet s'exécute une seule fois après le premier rendu
+    const fetchCurrentGame = async () => {
+      const currentGame = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/${idRound}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const response = await currentGame.json();
+      console.log(response);
+      if(response) {
+        const getCurrentGame = async () => {
+          const currentGame = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/${idRound}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const responseCurrent = await currentGame.json();
+          setPositionHorse(responseCurrent.positionHorse);
+        }
+        getCurrentGame();
+      }
+    };
+    fetchCurrentGame();
+
     // Il met à jour le paquet de cartes dans le composant parent
     const initialDeck = shuffleDeck(createDeck());
     const initialInconvenient = initialDeck.slice(0,lengthRun -2);
@@ -115,18 +145,21 @@ function Party() {
 
   }, []);
   
-  const [deck, setDeck] = useState([]);
-  const [inconvenientCard, setInconvenientCard] = useState([]);
-
-  const [positionHorse, setPositionHorse] = useState([
-    { type: "Roger", position: 0},
-    { type: "Marcel", position: 0},
-    { type: "Jean-Jacques", position: 0},
-    { type: "Gerard", position: 0}
-  ])
-
-  const [finishParty, setFinishParty] = useState(false);
-  const [showFadeIn, setShowFadeIn] = useState(false);
+  const modifyCurrentGame = async (deck, discard) => {
+      const modifyCurrent = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          roundId: parseInt(idRound),
+          positionHorse: positionHorse
+        })
+      });
+      const responseCurrent = await modifyCurrent.json();
+      // Faites quelque chose avec les données récupérées si nécessaire
+  };
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -135,10 +168,15 @@ function Party() {
     return () => clearTimeout(timeout);
   }, [finishParty]);
 
-  const highestPositionHorse = positionHorse.reduce((acc, curr) => {
-    return acc.position > curr.position ? acc : curr;
-  });
-  const winnerHorse = cardsData.find(card => card.type === highestPositionHorse.type);
+  const [winnerHorse, setWinnerHorse] = useState("");
+  useEffect(() => {
+    if(positionHorse.length !== 0) {
+      const highestPositionHorse = positionHorse.reduce((acc, curr) => {
+        return acc.position > curr.position ? acc : curr;
+      });
+      setWinnerHorse(cardsData.find(card => card.type === highestPositionHorse.type));
+    }
+  }, [positionHorse]);
 
   return (
     <div className='party'>
@@ -152,6 +190,7 @@ function Party() {
         setDeck = {setDeck}
         positionHorse={positionHorse}
         setPositionHorse={setPositionHorse}
+        modifyCurrentGame={modifyCurrentGame}
         lengthRun={lengthRun}
         finishParty={finishParty}
         setFinishParty={setFinishParty}
@@ -162,6 +201,7 @@ function Party() {
         inconvenientCard={inconvenientCard}
         positionHorse={positionHorse}
         setPositionHorse={setPositionHorse}
+        modifyCurrentGame={modifyCurrentGame}
         finishParty={finishParty}
         FontAwesomeIcon={FontAwesomeIcon}
         faFlagCheckered={faFlagCheckered}

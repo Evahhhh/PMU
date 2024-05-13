@@ -1,4 +1,25 @@
 {
   "games": [
+    {
+      "roundId": 2,
+      "positionHorse": [
+        {
+          "type": "Roger",
+          "position": 1
+        },
+        {
+          "type": "Marcel",
+          "position": 2
+        },
+        {
+          "type": "Jean-Jacques",
+          "position": 3
+        },
+        {
+          "type": "Gerard",
+          "position": 0
+        }
+      ]
+    }
   ]
 }

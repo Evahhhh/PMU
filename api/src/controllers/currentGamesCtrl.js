@@ -30,17 +30,14 @@ exports.create = (req, res) => {
             .json({ error: "Round not found or status is 0", errorCode: 6002 });
         }
 
-        const horse1Loc = 0;
-        const horse2Loc = 0;
-        const horse3Loc = 0;
-        const horse4Loc = 0;
-
         const newGame = {
           roundId,
-          horse1Loc,
-          horse2Loc,
-          horse3Loc,
-          horse4Loc,
+          positionHorse: [
+            { type: "Roger", position: 0},
+            { type: "Marcel", position: 0},
+            { type: "Jean-Jacques", position: 0},
+            { type: "Gerard", position: 0}
+          ]
         };
 
         // Read the current games
@@ -94,29 +91,19 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const { roundId, horse1Loc, horse2Loc, horse3Loc, horse4Loc } = req.body;
+  const { roundId, positionHorse } = req.body;
   // Different validation because horseLoc can be 0
   if (
     roundId &&
-    horse1Loc !== undefined &&
-    horse1Loc !== null &&
-    horse2Loc !== undefined &&
-    horse2Loc !== null &&
-    horse3Loc !== undefined &&
-    horse3Loc !== null &&
-    horse4Loc !== undefined &&
-    horse4Loc !== null
+    positionHorse !== undefined &&
+    positionHorse !== null
   ) {
     if (
-      typeof roundId !== "number" ||
-      typeof horse1Loc !== "number" ||
-      typeof horse2Loc !== "number" ||
-      typeof horse3Loc !== "number" ||
-      typeof horse4Loc !== "number"
+      typeof roundId !== "number"
     ) {
       return res.status(400).json({
         error:
-          "roundId, horse1Loc, horse2Loc, horse3Loc and horse4Loc must be numbers",
+          "roundId must be numbers",
         errorCode: 6010,
       });
     } else {
@@ -137,27 +124,21 @@ exports.update = (req, res) => {
             .json({ error: "Round not found or status is 0", errorCode: 6012 });
         }
 
-        const duration = round.duration;
+        /* const duration = round.duration; */
 
-        if (
-          horse1Loc > duration - 1 ||
-          horse2Loc > duration - 1 ||
-          horse3Loc > duration - 1 ||
-          horse4Loc > duration - 1
+/*         if (
+          positionHorse.position > duration - 1
         ) {
           return res.status(400).json({
             error:
               "The position of one or more horses is greater than the size of the game board",
             errorCode: 6013,
           });
-        }
+        } */
 
         const newGame = {
           roundId,
-          horse1Loc,
-          horse2Loc,
-          horse3Loc,
-          horse4Loc,
+          positionHorse
         };
 
         // Read the current games
