@@ -143,6 +143,24 @@ module.exports = function (server) {
                 console.error('Erreur lors de la vérification des chevaux gagnants:', error);
             }
         });
+        socket.on('chat message', (msg) => {
+            console.log('message: ' + msg);
+            io.emit('chat message', msg);
+        });
+
+        //coté client admin
+        socket.broadcast.emit('retourAccueil');
+        socket.broadcast.emit('retourRoom');
+
+        //coté client user
+        socket.on('retourAccueil', () => {
+            // Rediriger les joueurs vers la page d'accueil
+            window.location.href = '/';
+        });
+        socket.on('retourRoom', () => {
+            // Rediriger les joueurs vers la page d'accueil
+            window.location.href = '/room';
+        });
 
     });
 };
