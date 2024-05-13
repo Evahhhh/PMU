@@ -7,20 +7,26 @@ footer {
     height: 60px;
     line-height: 60px;
     font-size: 16px;
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 870px) {
         height: auto;
         line-height: 20px;
     }
 }
-.divFooter {
+.divFooter {    
     display: flex;
     justify-content: space-between;
     margin: 0 15px;
-    @media screen and (max-width: 700px) {
+    align-items: center;
+
+    @media screen and (max-width: 870px) {
         font-size:12px;
         flex-direction: column;
         margin: 0;
         justify-content: center;
         align-items: center;
+    }
+
+    .negativeButton {
+        @include button($color-secondary, 0);
     }
 }

@@ -40,7 +40,7 @@
         }
 
         button {
-            @include button($color-primary, 0);
+            @include bigButton($color-primary, 0);
         }
     }
 }

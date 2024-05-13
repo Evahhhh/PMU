@@ -19,7 +19,6 @@ Dans le dossier styles, les fichiers sont réparties en dossier en fonction de l
 - base: CSS regroupant le style global des éléments 
 - composants: Elements qui compose les pages
 - fonts: typo
-- media: media utile (logo...)
 - pages: les pages du site web
 - utils: On y retrouvera les variables et les mixins
 
