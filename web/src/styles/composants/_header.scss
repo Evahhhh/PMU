@@ -5,7 +5,7 @@ header {
     justify-content: space-between;
     padding: 0 15px;
     position: relative; // Assure que les enfants positionnés seront positionnés par rapport à ce parent
-    z-index: 1; // Assure que le header est en premier plan
+    z-index: 0; // Assure que le header est en premier plan
 
     .elementUser {
         display:flex;
