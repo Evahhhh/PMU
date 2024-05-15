@@ -8,7 +8,7 @@
     margin: auto;
     margin-bottom: 0;
     padding-bottom: 4em;
-    z-index: 0;
+    z-index: -1;
 }
 
 .finish-overlay {
@@ -17,7 +17,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 999; // Assure que l'overlay s'affiche par-dessus le reste du contenu
+    z-index: 600; // Assure que l'overlay s'affiche par-dessus le reste du contenu
   
     transition: bottom 3.5s ease-in-out; // Animation de transition pour le mouvement vertical
   
@@ -46,7 +46,7 @@
   
   .fade-in.show {
     opacity: 1;
-    z-index: 1000; 
+    z-index: 700; 
     text-align: center;
     color:black;
     font-size:24px;

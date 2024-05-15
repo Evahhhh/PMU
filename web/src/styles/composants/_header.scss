@@ -77,7 +77,7 @@ header {
         display: flex; // Utilise flexbox pour centrer le contenu verticalement et horizontalement
         justify-content: center;
         align-items: center;
-        z-index: 2; // Assure que le popup est au-dessus du header
+        z-index: 1001; // Assure que le popup est au-dessus du header
 
         .close-btn {
             position: absolute;

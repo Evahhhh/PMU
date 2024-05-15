@@ -11,7 +11,7 @@ export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useSt
           const updatedPositionHorse = [...positionHorse];
           updatedPositionHorse[horseIndex].position += 1;
           setPositionHorse(updatedPositionHorse);
-          modifyCurrentGame();
+          modifyCurrentGame(deck);
         }
         const newDiscard = [deck[0], ...discard];
         setDiscard(newDiscard);

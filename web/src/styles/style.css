@@ -47,6 +47,7 @@ button {
   position: relative;
   display: flex;
   flex-direction: column;
+  z-index: 0;
 }
 
 header {
@@ -136,7 +137,7 @@ header .rules-popup {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2;
+  z-index: 1001;
 }
 header .rules-popup .close-btn {
   position: absolute;
@@ -466,7 +467,7 @@ footer {
   margin: auto;
   margin-bottom: 0;
   padding-bottom: 4em;
-  z-index: 0;
+  z-index: -1;
 }
 
 .finish-overlay {
@@ -475,7 +476,7 @@ footer {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 999;
+  z-index: 600;
   transition: bottom 3.5s ease-in-out;
   display: flex;
   justify-content: center;
@@ -501,7 +502,7 @@ footer {
 
 .fade-in.show {
   opacity: 1;
-  z-index: 1000;
+  z-index: 700;
   text-align: center;
   color: black;
   font-size: 24px;

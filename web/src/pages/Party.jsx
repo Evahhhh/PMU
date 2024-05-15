@@ -145,7 +145,7 @@ function Party() {
 
   }, []);
   
-  const modifyCurrentGame = async (deck, discard) => {
+  const modifyCurrentGame = async (deck) => {
       const modifyCurrent = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/`, {
         method: 'PUT',
         headers: {
@@ -154,6 +154,7 @@ function Party() {
         },
         body: JSON.stringify({
           roundId: parseInt(idRound),
+          deck: deck,
           positionHorse: positionHorse
         })
       });
@@ -190,7 +191,7 @@ function Party() {
         setDeck = {setDeck}
         positionHorse={positionHorse}
         setPositionHorse={setPositionHorse}
-        modifyCurrentGame={modifyCurrentGame}
+        modifyCurrentGame={(deck) => modifyCurrentGame(deck)}
         lengthRun={lengthRun}
         finishParty={finishParty}
         setFinishParty={setFinishParty}

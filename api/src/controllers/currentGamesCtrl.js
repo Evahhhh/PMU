@@ -32,6 +32,7 @@ exports.create = (req, res) => {
 
         const newGame = {
           roundId,
+          deck: [],
           positionHorse: [
             { type: "Roger", position: 0},
             { type: "Marcel", position: 0},
@@ -91,7 +92,7 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const { roundId, positionHorse } = req.body;
+  const { roundId, deck, positionHorse } = req.body;
   // Different validation because horseLoc can be 0
   if (
     roundId &&
@@ -138,6 +139,7 @@ exports.update = (req, res) => {
 
         const newGame = {
           roundId,
+          deck,
           positionHorse
         };
 
