@@ -6,11 +6,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //Components
 import Header from "./src/components/Header";
 import LightHeader from "./src/components/LightHeader";
-import Footer from "./src/components/Footer";
 
 //Pages
 import Welcome from "./src/pages/Welcome";
-import ResetPassword from "./src/pages/ResetPassword";
 import Menu from "./src/pages/Menu";
 import CreationParty from "./src/pages/CreationParty";
 import JoinParty from "./src/pages/JoinParty";
@@ -57,14 +55,9 @@ function App() {
           options={{ header: () => <LightHeader />, headerShown: true }}
         />
         <Stack.Screen
-          name="ResetPassword"
-          component={ResetPassword}
-          options={{ header: () => <LightHeader />, headerShown: true }}
-        />
-        <Stack.Screen
           name="Menu"
           component={Menu}
-          options={{ header: () => <Header />, headerShown: true }}
+          options={{ header: () => <LightHeader />, headerShown: true }}
         />
         <Stack.Screen
           name="CreationParty"
@@ -92,12 +85,6 @@ function App() {
           options={{ header: () => <Header />, headerShown: true }}
         />
       </Stack.Navigator>
-      <Footer
-        name="Footer"
-        isLoggedIn={isLoggedIn}
-        onLogout={handleLogout}
-        options={{ headerShown: false }}
-      />
     </NavigationContainer>
   );
 }
