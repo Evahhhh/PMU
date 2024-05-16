@@ -14,7 +14,7 @@ export default StyleSheet.create({
   lightLogo: {
     width: 135,
     height: 135,
-    marginTop: 30,
+    marginTop: 60,
     alignSelf: "center",
   },
   rulesButton: {

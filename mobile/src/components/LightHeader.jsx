@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SafeAreaView, TouchableOpacity, Image } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 import Rules from "./Rules";
 import styles from "../styles/lightHeader";
 
@@ -9,7 +10,12 @@ function LightHeader() {
     setShowRulesPopup(!showRulesPopup);
   };
   return (
-    <SafeAreaView style={styles.header}>
+    <LinearGradient
+      colors={['#0E1C25', '#0E1C25']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={styles.header}
+    >
       <Image
         source={require("../../media/logo.png")}
         style={styles.lightLogo}
@@ -26,7 +32,7 @@ function LightHeader() {
           closePopup={() => setShowRulesPopup(false)}
         />
       )}
-    </SafeAreaView>
+    </LinearGradient>
   );
 }
 
