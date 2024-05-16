@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, TouchableOpacity, Image } from "react-native";
+import { TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import Rules from "./Rules";
 import styles from "../styles/lightHeader";
