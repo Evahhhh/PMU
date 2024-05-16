@@ -12,6 +12,7 @@ export default StyleSheet.create({
     fontStyle: "normal",
     lineHeight: "normal",
     textAlign: "center",
+    color: "#F5FFFC",
   },
   textField: {
     display: "flex",
@@ -22,6 +23,7 @@ export default StyleSheet.create({
   },
   label: {
     paddingRight: 27,
+    color: "#F5FFFC",
     alignItems: "center",
   },
   inputText: {
@@ -89,9 +91,6 @@ export default StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#00A870",
     borderColor: 0,
-    fontSize: 16,
-    color: "#F5FFFC",
-    fontWeight: "700",
   },
   secondaryButton: {
     width: 180,
@@ -116,5 +115,17 @@ export default StyleSheet.create({
     color: "#F5FFFC",
     fontSize: 16,
     fontWeight: "400",
+  },
+  btnPwd: {
+    position: "absolute",
+    top: "50%",
+    right: "0%",
+    borderColor: "transparent",
+    color: "#000",
+  },
+  icon: {
+    fontSize: 30,
+    marginRight: 10,
+    color: "#000",
   },
 });

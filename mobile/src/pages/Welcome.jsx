@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
   Text,
   View,
-  Button,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,9 +11,11 @@ import { useNavigation } from "@react-navigation/native";
 import Footer from "../components/Footer";
 import Login from "../components/welcome/Login";
 import Signup from "../components/welcome/Signup";
+import { AuthContext } from "../../AuthContext";
 import styles from "../styles/pages/welcome";
 
-function Welcome({ onLogin }) {
+function Welcome() {
+  const { handleLogin } = useContext(AuthContext);
   const navigation = useNavigation();
   const [showLogin, setShowLogin] = useState(true);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
@@ -46,7 +47,7 @@ function Welcome({ onLogin }) {
       <SafeAreaView style={styles.welcome}>
         <View>
           {showLogin ? (
-            <Login onLogin={onLogin} />
+            <Login onLogin={handleLogin} />
           ) : (
             <Signup setShowLogin={setShowLogin} />
           )}

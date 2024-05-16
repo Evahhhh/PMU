@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FlashMessage from "react-native-flash-message";
+import { AuthContext } from "./AuthContext";
 
 //Components
 import Header from "./src/components/Header";
@@ -47,45 +49,48 @@ function App() {
   };
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
-        <Stack.Screen
-          name="Welcome"
-          component={Welcome}
-          options={{ header: () => <LightHeader />, headerShown: true }}
-        />
-        <Stack.Screen
-          name="Menu"
-          component={Menu}
-          options={{ header: () => <LightHeader />, headerShown: true }}
-        />
-        <Stack.Screen
-          name="CreationParty"
-          component={CreationParty}
-          options={{ header: () => <Header />, headerShown: true }}
-        />
-        <Stack.Screen
-          name="JoinParty"
-          component={JoinParty}
-          options={{ header: () => <Header />, headerShown: true }}
-        />
-        <Stack.Screen
-          name="Room"
-          component={Room}
-          options={{ header: () => <Header />, headerShown: true }}
-        />
-        <Stack.Screen
-          name="Party"
-          component={Party}
-          options={{ header: () => <Header />, headerShown: true }}
-        />
-        <Stack.Screen
-          name="Results"
-          component={Results}
-          options={{ header: () => <Header />, headerShown: true }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={{ handleLogin, handleLogout }}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Welcome">
+          <Stack.Screen
+            name="Welcome"
+            component={Welcome}
+            options={{ header: () => <LightHeader />, headerShown: true }}
+          />
+          <Stack.Screen
+            name="Menu"
+            component={Menu}
+            options={{ header: () => <LightHeader />, headerShown: true }}
+          />
+          <Stack.Screen
+            name="CreationParty"
+            component={CreationParty}
+            options={{ header: () => <Header />, headerShown: true }}
+          />
+          <Stack.Screen
+            name="JoinParty"
+            component={JoinParty}
+            options={{ header: () => <Header />, headerShown: true }}
+          />
+          <Stack.Screen
+            name="Room"
+            component={Room}
+            options={{ header: () => <Header />, headerShown: true }}
+          />
+          <Stack.Screen
+            name="Party"
+            component={Party}
+            options={{ header: () => <Header />, headerShown: true }}
+          />
+          <Stack.Screen
+            name="Results"
+            component={Results}
+            options={{ header: () => <Header />, headerShown: true }}
+          />
+        </Stack.Navigator>
+        <FlashMessage position="top" />
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
 
