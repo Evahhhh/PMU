@@ -1,5 +1,5 @@
 .welcome {
-  margin-bottom: 0; 
+  margin-bottom: 0;
   padding-bottom: 4em;
 
   h2 {
@@ -37,6 +37,7 @@
     width: 363px;
     height: 35px;
     flex-shrink: 0;
+    padding-left: 10px;
   }
 
   .btnContainer {
@@ -56,6 +57,44 @@
       gap: 30px;
       align-items: center;
       justify-content: center;
+
+      .textField {
+        position: relative;
+
+        .btn-pwd {
+          position: absolute;
+          top: 50%;
+          right: 0%;
+          transform: translate(-50%, 20%);
+          border: none;
+          color: #000;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+  .signup {
+    form {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      align-items: center;
+      justify-content: center;
+
+      .textField {
+        position: relative;
+
+        .btn-pwd {
+          position: absolute;
+          top: 50%;
+          right: 0%;
+          transform: translate(-50%, 20%);
+          border: none;
+          color: #000;
+          font-size: 20px;
+        }
+      }
     }
   }
 
@@ -97,7 +136,7 @@
       color: white;
       cursor: pointer;
     }
-    
+
     .hidden {
       display: none;
     }

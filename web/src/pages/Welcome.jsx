@@ -24,7 +24,11 @@ function Welcome({ onLogin }) {
 
   return (
     <div className="welcome">
-      {showLogin ? <Login onLogin={onLogin} /> : <Signup />}
+      {showLogin ? (
+        <Login onLogin={onLogin} />
+      ) : (
+        <Signup setShowLogin={setShowLogin} />
+      )}
       <div className="btnContainer">
         <button
           className="secondaryButton"

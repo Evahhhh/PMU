@@ -314,6 +314,7 @@ footer {
   width: 363px;
   height: 35px;
   flex-shrink: 0;
+  padding-left: 10px;
 }
 .welcome .btnContainer {
   margin-top: 20px;
@@ -330,6 +331,38 @@ footer {
   gap: 30px;
   align-items: center;
   justify-content: center;
+}
+.welcome .login form .textField {
+  position: relative;
+}
+.welcome .login form .textField .btn-pwd {
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  transform: translate(-50%, 20%);
+  border: none;
+  color: #000;
+  font-size: 20px;
+}
+.welcome .signup form {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+}
+.welcome .signup form .textField {
+  position: relative;
+}
+.welcome .signup form .textField .btn-pwd {
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  transform: translate(-50%, 20%);
+  border: none;
+  color: #000;
+  font-size: 20px;
 }
 .welcome .forgotpassword form {
   margin-top: 30px;
