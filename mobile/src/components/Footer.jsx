@@ -5,10 +5,9 @@ import {
   TouchableOpacity,
   Image,
   View,
-  StyleSheet,
-  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import styles from "../styles/footer";
 
 function Footer({ isLoggedIn, onLogout }) {
   const navigation = useNavigation();
@@ -36,32 +35,5 @@ function Footer({ isLoggedIn, onLogout }) {
     </SafeAreaView>
   );
 }
-const { width } = Dimensions.get("window");
-const styles = StyleSheet.create({
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: "100%",
-    backgroundColor: "#1C3635",
-    height: 60,
-    justifyContent: "center",
-    fontSize: 16,
-  },
-  autors: {
-    color: "#F5FFFC",
-    marginLeft: 15,
-  },
-  divFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: 15,
-    alignItems: "center",
-  },
-  logoutIcon: {
-    borderRadius: 0,
-    marginRight: 15,
-  },
-});
 
 export default Footer;
