@@ -1,6 +1,5 @@
 
-export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useState, deck, setDeck, positionHorse, setPositionHorse, modifyCurrentGame, lengthRun, finishParty, setFinishParty}) {
-  const [discard, setDiscard] = useState([]);
+export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useState, deck, setDeck, discard, setDiscard, positionHorse, setPositionHorse, modifyCurrentGame, lengthRun, finishParty, setFinishParty, inconvenientCard}) {
   const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la popup
 
   const handleCardClick = () => {
@@ -11,11 +10,12 @@ export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useSt
           const updatedPositionHorse = [...positionHorse];
           updatedPositionHorse[horseIndex].position += 1;
           setPositionHorse(updatedPositionHorse);
-          modifyCurrentGame(deck);
         }
+        const newDeck = deck.slice(1); // Créer une copie de `deck` sans le premier élément
         const newDiscard = [deck[0], ...discard];
         setDiscard(newDiscard);
-        setDeck(deck.slice(1));
+        setDeck(newDeck); // Mettre à jour `deck` avec la nouvelle valeur
+        modifyCurrentGame(newDeck, newDiscard, inconvenientCard); // Passer la nouvelle valeur de `deck` à `modifyCurrentGame`
       }
       setShowPopup(true); // Afficher la popup lors du clic sur une carte
       for (let i = 0; i < positionHorse.length; i++) {

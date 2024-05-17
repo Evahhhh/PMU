@@ -5,6 +5,7 @@ import { faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
 import Card from '../components/party/Card';
 import Racetrack from '../components/party/Racetrack';
 import PlayerChat from '../components/party/PlayerChat';
+import Chat from '../components/party/Chat';
 
 // Données des cartes
 const cardsData = [
@@ -22,10 +23,9 @@ function Party() {
   const [numberPlayer, setNumberPlayer] = useState(0);
   const [effectifPlayer, setEffectifPlayer] = useState(0);
   const [bets, setBets] = useState([]);
-  
-  const [positionHorse, setPositionHorse] = useState([]);
-
+  const [positionHorse, setPositionHorse] = useState([])
   const [deck, setDeck] = useState([]);
+  const [discard, setDiscard] = useState([]);
   const [inconvenientCard, setInconvenientCard] = useState([]);
   const [finishParty, setFinishParty] = useState(false);
   const [showFadeIn, setShowFadeIn] = useState(false);
@@ -106,21 +106,37 @@ function Party() {
     }
     return deck;
   };
-  
-  const [areHorsesPresent, setAreHorsesPresent] = useState(false);
 
   useEffect(() => { 
     fetchData();
+    // Il met à jour le paquet de cartes dans le composant parent
+    const initialDeck = shuffleDeck(createDeck()).slice(lengthRun -2);
+    const initialInconvenient = initialDeck.slice(0,lengthRun -2).map(card => ({
+      ...card,
+      use: false
+    }));
     // Cet effet s'exécute une seule fois après le premier rendu
     const fetchCurrentGame = async () => {
       const currentGame = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/${idRound}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          roundId: parseInt(idRound),
+          deck: initialDeck,
+          discard: [],
+          inconvenientCard: initialInconvenient,
+          positionHorse: [
+            { type: "Roger", position: 0},
+            { type: "Marcel", position: 0},
+            { type: "Jean-Jacques", position: 0},
+            { type: "Gerard", position: 0}
+          ]
+        })
       });
       const response = await currentGame.json();
-      console.log(response);
       if(response) {
         const getCurrentGame = async () => {
           const currentGame = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/${idRound}`, {
@@ -131,21 +147,18 @@ function Party() {
           });
           const responseCurrent = await currentGame.json();
           setPositionHorse(responseCurrent.positionHorse);
+          setDeck(responseCurrent.deck);
+          setDiscard(responseCurrent.discard);
+          setInconvenientCard(responseCurrent.inconvenientCard);
         }
         getCurrentGame();
       }
     };
     fetchCurrentGame();
 
-    // Il met à jour le paquet de cartes dans le composant parent
-    const initialDeck = shuffleDeck(createDeck());
-    const initialInconvenient = initialDeck.slice(0,lengthRun -2);
-    setDeck(initialDeck.slice(lengthRun -2));
-    setInconvenientCard(initialInconvenient);
-
   }, []);
   
-  const modifyCurrentGame = async (deck) => {
+  const modifyCurrentGame = async (newDeck, newDiscard, updatedInconvenientCard) => {
       const modifyCurrent = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/`, {
         method: 'PUT',
         headers: {
@@ -154,7 +167,9 @@ function Party() {
         },
         body: JSON.stringify({
           roundId: parseInt(idRound),
-          deck: deck,
+          deck: newDeck,
+          discard: newDiscard,
+          inconvenientCard:updatedInconvenientCard,
           positionHorse: positionHorse
         })
       });
@@ -170,6 +185,7 @@ function Party() {
   }, [finishParty]);
 
   const [winnerHorse, setWinnerHorse] = useState("");
+
   useEffect(() => {
     if(positionHorse.length !== 0) {
       const highestPositionHorse = positionHorse.reduce((acc, curr) => {
@@ -189,9 +205,12 @@ function Party() {
         useEffect={useEffect}
         deck={deck}
         setDeck = {setDeck}
+        discard={discard}
+        setDiscard={setDiscard}
         positionHorse={positionHorse}
         setPositionHorse={setPositionHorse}
-        modifyCurrentGame={(deck) => modifyCurrentGame(deck)}
+        inconvenientCard={inconvenientCard}
+        modifyCurrentGame={(newDeck, newDiscard, updatedInconvenientCard) => modifyCurrentGame(newDeck, newDiscard, updatedInconvenientCard)}
         lengthRun={lengthRun}
         finishParty={finishParty}
         setFinishParty={setFinishParty}
@@ -200,13 +219,15 @@ function Party() {
         lengthRun={lengthRun}
         cardsData={cardsData}
         inconvenientCard={inconvenientCard}
+        setInconvenientCard={setInconvenientCard}
+        deck={deck}
+        discard={discard}
         positionHorse={positionHorse}
         setPositionHorse={setPositionHorse}
-        modifyCurrentGame={modifyCurrentGame}
+        modifyCurrentGame={(newDeck, newDiscard, updatedInconvenientCard) => modifyCurrentGame(newDeck, newDiscard, updatedInconvenientCard)}
         finishParty={finishParty}
         FontAwesomeIcon={FontAwesomeIcon}
         faFlagCheckered={faFlagCheckered}
-        setAreHorsesPresent={setAreHorsesPresent}
       />
       <div className='playerChat'>
         <PlayerChat
@@ -215,6 +236,7 @@ function Party() {
           bets={bets}
           cardsData={cardsData}
         />
+        {/* <Chat/> */}
       </div>
       <div className={`finish-overlay ${finishParty ? 'show' : ''}`}>
           <img src="/media/beer.png" alt="Finish" />
