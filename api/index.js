@@ -3,6 +3,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const app = express();
 require("dotenv").config();
+const { createServer } = require('http');
 
 const options = {
   definition: {
@@ -32,6 +33,11 @@ const messageRoutes = require("./src/routes/message.js");
 const currentGamesRoutes = require("./src/routes/currentGames.js");
 const mailSenderRoutes = require("./src/routes/mailSender.js");
 
+const socket = require('./src/socket.js');
+const server = createServer(app);
+
+socket(server)
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -56,6 +62,10 @@ app.use("/api/message", messageRoutes);
 app.use("/api/currentGames", currentGamesRoutes);
 app.use("/api/mailSender", mailSenderRoutes);
 
-app.listen(3000, () => {
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
+server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
