@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  SafeAreaView,
-  TouchableOpacity,
-  Text,
-  View,
-} from "react-native";
+import { SafeAreaView, TouchableOpacity, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import Footer from "../components/Footer";
 import Login from "../components/welcome/Login";
+import ForgotPassword from "../components/welcome/ForgotPassword";
 import Signup from "../components/welcome/Signup";
 import { AuthContext } from "../../AuthContext";
 import styles from "../styles/pages/welcome";

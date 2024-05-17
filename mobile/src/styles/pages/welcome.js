@@ -75,12 +75,8 @@ export default StyleSheet.create({
   },
   closeBtn: {
     position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-    fontSize: 20,
-    color: "white",
+    top: 50,
+    right: 20,
   },
   hidden: {
     display: "none",
@@ -109,6 +105,10 @@ export default StyleSheet.create({
     color: "#F5FFFC",
     fontWeight: "700",
   },
+  closeButtonText: {
+    fontSize: 30,
+    color: "white",
+  },
   linkButton: {
     backgroundColor: "transparent",
     borderColor: "transparent",
@@ -127,5 +127,23 @@ export default StyleSheet.create({
     fontSize: 30,
     marginRight: 10,
     color: "#000",
+  },
+  modal: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.850)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    gap: 30,
+    marginTop: 30,
+  },
+  modalContent2: {
+    gap: 10,
+  },
+  btnCenter: {
+    marginTop: 20,
+    marginLeft: "25%",
   },
 });
