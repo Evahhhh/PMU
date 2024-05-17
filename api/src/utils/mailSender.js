@@ -5,21 +5,22 @@ exports.sendEmail = async (req, res) => {
   const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
   const emailDestination = req.body.to;
+  const lowerCaseEmail = emailDestination.toLowerCase();
 
-  if (!emailDestination || !emailRegex.test(emailDestination)) {
+  if (!lowerCaseEmail || !emailRegex.test(lowerCaseEmail)) {
     return res
       .status(400)
       .send({ error: "Invalid email address", errorCode: 7001 });
   }
 
-  const user = await searchUser(req, emailDestination);
+  const user = await searchUser(req, lowerCaseEmail);
   if (!user) {
     return res.status(404).send({ error: "User not found", errorCode: 7002 });
   }
 
   const token = jwt.sign(
     { 
-      email: emailDestination,
+      email: lowerCaseEmail,
       user_id: user.user_id,
       pseudo: user.pseudo
     },
