@@ -94,6 +94,7 @@ exports.login = (req, res) => {
                   .json({ error: "wrong password", errorCode: 1011 });
               }
               res.status(200).json({
+                pseudo: results[0].pseudo,
                 id: results[0].user_id,
                 token: jwt.sign(
                   { id: results[0].user_id },
