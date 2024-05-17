@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function Login({ onLogin }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -10,9 +13,11 @@ function Login({ onLogin }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(process.env.REACT_APP_PMU_API_URL);
+
     const response = await fetch(
-      `${process.env.REACT_APP_PMU_API_URL}/api/user?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      `${process.env.REACT_APP_PMU_API_URL}/api/user?email=${encodeURIComponent(
+        email
+      )}&password=${encodeURIComponent(password)}`
     );
     const data = await response.json();
 
@@ -60,6 +65,11 @@ function Login({ onLogin }) {
       navigate("/menu");
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="login">
@@ -80,7 +90,7 @@ function Login({ onLogin }) {
         <label className="textField">
           <p className="label">Mot de passe:</p>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             className="inputText"
             value={password}
@@ -88,6 +98,17 @@ function Login({ onLogin }) {
             autoComplete="off"
             required
           />
+          <button
+            type="button"
+            onClick={toggleShowPassword}
+            className="btn-pwd"
+          >
+            {showPassword ? (
+              <FontAwesomeIcon icon={faEyeSlash} className="eye-icon" />
+            ) : (
+              <FontAwesomeIcon icon={faEye} className="eye-icon" />
+            )}
+          </button>
         </label>
         <input type="submit" value="Se connecter" className="primaryButton" />
       </form>
