@@ -49,7 +49,7 @@ function App() {
   };
 
   return (
-    <AuthContext.Provider value={{ handleLogin, handleLogout }}>
+    <AuthContext.Provider value={{ isLoggedIn, handleLogin, handleLogout }}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Welcome">
           <Stack.Screen

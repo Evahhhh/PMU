@@ -1,8 +1,20 @@
-import React from "react";
-import { SafeAreaView, Text } from "react-native";
+import React, { useContext } from "react";
+import { Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { AuthContext } from "../../AuthContext";
+import styles from "../styles/components/logout";
 
 function Menu() {
+  const navigation = useNavigation();
+  const { isLoggedIn, handleLogout } = useContext(AuthContext);
+
+  const logout = () => {
+    handleLogout();
+    navigation.navigate("Welcome");
+  };
+
   return (
     <LinearGradient
       colors={["#0E1C25", "#2E5958"]}
@@ -10,9 +22,13 @@ function Menu() {
       end={{ x: 0, y: 1 }}
       style={{ flex: 1 }}
     >
-      <SafeAreaView>
-        <Text>Menu</Text>
-      </SafeAreaView>
+      <Text>Menu</Text>
+
+      {isLoggedIn && (
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Icon name="sign-out" style={styles.logoutButtonCtnt} />
+        </TouchableOpacity>
+      )}
     </LinearGradient>
   );
 }

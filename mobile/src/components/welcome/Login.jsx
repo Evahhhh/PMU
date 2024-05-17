@@ -41,6 +41,8 @@ function Login({ onLogin }) {
         message: "Connecté avec succès",
         type: "success",
       });
+      setEmail('');
+      setPassword('');
       navigation.navigate("Menu");
     } catch (error) {
       if (error.response.data.errorCode) {
