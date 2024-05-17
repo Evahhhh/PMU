@@ -9,9 +9,10 @@ const modelUser = require("../models/userModel");
 exports.signup = (req, res) => {
   const { pseudo, email, password } = req.body;
   if (pseudo && email && password) {
+    const lowerCaseEmail = email.toLowerCase();
     if (
       typeof pseudo !== "string" ||
-      typeof email !== "string" ||
+      typeof lowerCaseEmail !== "string" ||
       typeof password !== "string"
     ) {
       return res.status(400).json({
@@ -19,7 +20,7 @@ exports.signup = (req, res) => {
         errorCode: 1005,
       });
     } else {
-      if (!regexEmail.test(email)) {
+      if (!regexEmail.test(lowerCaseEmail)) {
         return res.status(400).json({
           error: "Please fill in the form fields correctly",
           errorCode: 1000,
@@ -35,7 +36,7 @@ exports.signup = (req, res) => {
         const sel = bcrypt.genSaltSync(10);
         const hachage = bcrypt.hashSync(password, sel);
         // Création d'une instance d'utilisateur avec les données reçues
-        const newUser = new modelUser(pseudo, email, hachage);
+        const newUser = new modelUser(pseudo, lowerCaseEmail, hachage);
         //requête SQL
         const sqlQuery =
           "INSERT INTO User (pseudo, email, password) VALUES (?, ?, ?)";
@@ -73,14 +74,15 @@ exports.login = (req, res) => {
   const { email, password } = req.query;
 
   if (email && password) {
-    if (typeof email !== "string" || typeof password !== "string") {
+    const lowerCaseEmail = email.toLowerCase();
+    if (typeof lowerCaseEmail !== "string" || typeof password !== "string") {
       return res.status(400).json({
         error: "email & password must be strings",
         errorCode: 1014,
       });
     } else {
       const sqlQuery = "SELECT * FROM user WHERE email = ?";
-      db.all(sqlQuery, [email], (err, results) => {
+      db.all(sqlQuery, [lowerCaseEmail], (err, results) => {
         if (results.length === 0) {
           res.status(400).json({ error: "Invalid data", errorCode: 1010 });
           return;
@@ -94,6 +96,7 @@ exports.login = (req, res) => {
                   .json({ error: "wrong password", errorCode: 1011 });
               }
               res.status(200).json({
+                pseudo: results[0].pseudo,
                 id: results[0].user_id,
                 token: jwt.sign(
                   { id: results[0].user_id },
@@ -118,9 +121,10 @@ exports.modify = (req, res) => {
   const { user_id, email, password, pseudo } = req.body;
 
   if (user_id && email && password && pseudo) {
+    const lowerCaseEmail = email.toLowerCase();
     if (
       typeof user_id !== "number" ||
-      typeof email !== "string" ||
+      typeof lowerCaseEmail !== "string" ||
       typeof password !== "string" ||
       typeof pseudo !== "string"
     ) {
@@ -131,7 +135,7 @@ exports.modify = (req, res) => {
       });
     } else {
       if (
-        !regexEmail.test(email.trim()) ||
+        !regexEmail.test(lowerCaseEmail.trim()) ||
         !regexPassword.test(password.trim())
       ) {
         res.status(400).json({ error: "Invalid data", errorCode: 1020 });
@@ -141,7 +145,7 @@ exports.modify = (req, res) => {
         // Requête SQL pour mettre à jour l'utilisateur avec les nouvelles valeurs
         const sqlUpdate =
           "UPDATE user SET email = ?,password = ?, pseudo = ? WHERE user_id = ?";
-        db.run(sqlUpdate, [email, hachage, pseudo, user_id], (err, result) => {
+        db.run(sqlUpdate, [lowerCaseEmail, hachage, pseudo, user_id], (err, result) => {
           if (err) {
             if (err.code == "SQLITE_CONSTRAINT") {
               return res

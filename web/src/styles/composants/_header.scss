@@ -1,0 +1,88 @@
+header {
+    margin-top: 0;
+    height:200px;
+    display:flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    position: relative; // Assure que les enfants positionnés seront positionnés par rapport à ce parent
+    z-index: 1; // Assure que le header est en premier plan
+
+    .elementUser {
+        display:flex;
+        height:100px;
+        align-items: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            border: 1px solid #000;
+            margin-right: 15px;
+        }
+        p {
+            height: 20px;
+            font-size: 16px;
+            @media screen and (max-width: 700px) {
+                display: none;
+            }
+        }
+    }
+    .logo {
+        width:150px;
+        height: 150px;
+        margin-top:30px;
+        @media screen and (max-width: 700px) {
+            width: 100px;
+            height: 100px;
+        }
+    }
+    .rulesButton {
+        background: none;
+        border: none;
+        height: 100px;
+        font-size:16px;
+        cursor: pointer;
+        .txtButton {
+            @media screen and (max-width: 700px) {
+                display: none;
+            }
+        }
+    }
+    .iconRules {
+        color: $color-primary;
+        font-size: 18px;
+        margin-right: 10px;
+        @media screen and (max-width: 700px) {
+            font-size: 24px;
+        }
+    }
+    .rules-popup {
+        position: fixed; // Positionne le popup par rapport à la fenêtre du navigateur
+        top: 0; // Aligne le popup en haut de la fenêtre
+        left: 0; // Aligne le popup à gauche de la fenêtre
+        width: 100%; // Prend toute la largeur de la fenêtre
+        height: 100%; // Prend toute la hauteur de la fenêtre
+        background-color: rgba(0, 0, 0, 0.5); // Fond semi-transparent pour l'effet de superposition
+        display: flex; // Utilise flexbox pour centrer le contenu verticalement et horizontalement
+        justify-content: center;
+        align-items: center;
+        z-index: 2; // Assure que le popup est au-dessus du header
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+        }
+        // Ajoutez d'autres styles pour personnaliser l'apparence du popup
+    }
+    .hidden {
+        display: none;
+    }
+}
