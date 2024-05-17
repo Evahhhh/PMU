@@ -1,12 +1,8 @@
-import React from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import React from "react";
+import { Text } from "react-native";
 
 function Party() {
-    return (
-        <SafeAreaView>
-            <Text>Partie</Text>
-        </SafeAreaView>
-    );
+  return <Text>Partie</Text>;
 }
 
 export default Party;

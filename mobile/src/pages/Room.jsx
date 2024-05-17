@@ -1,12 +1,8 @@
-import React from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import React from "react";
+import { Text } from "react-native";
 
 function Room() {
-    return (
-        <SafeAreaView>
-            <Text>Room</Text>
-        </SafeAreaView>
-    );
+  return <Text>Room</Text>;
 }
 
 export default Room;
