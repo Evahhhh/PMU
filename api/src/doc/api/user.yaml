@@ -93,6 +93,7 @@ paths:
           content:
             application/json:
               example:
+                pseudo: john
                 id: 1
                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzOTAzMjE0LCJleHAiOjE3MTM5ODk2MTR9.n0R_eUbO50KLIGWu4Im6RL2oeYC1j9CVOUYwR2X_Rng
         400:
