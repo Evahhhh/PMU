@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Round (
 );
 CREATE TABLE IF NOT EXISTS Message (
     message_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    content INTEGER,
+    content TEXT,
     sending_date DATETIME,
     room_id INTEGER,
     user_id INTEGER,
