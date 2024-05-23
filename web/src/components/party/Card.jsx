@@ -1,7 +1,5 @@
-
-export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useState, deck, setDeck, discard, setDiscard, positionHorse, setPositionHorse, modifyCurrentGame, lengthRun, finishParty, setFinishParty, inconvenientCard}) {
+export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, stateInconvenient, useState, deck, setDeck, discard, setDiscard, positionHorse, setPositionHorse, modifyCurrentGame, lengthRun, finishParty, setFinishParty, inconvenientCard}) {
   const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la popup
-
   const handleCardClick = () => {
     if(finishParty === false) {
       if (deck.length > 0) {
@@ -30,7 +28,7 @@ export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useSt
     <>
       <div className='cards'>
         {deck.length > 0 && (
-            <div className="card" onClick={handleCardClick}>
+            <div className="card" onClick={stateInconvenient ? null : handleCardClick} style={stateInconvenient ? {cursor:"auto"} : {cursor:"pointer"}}>
               <div className="drawCard">
                 <img src={deck[0].logo} alt="Logo" className="logo" />
               </div>
@@ -38,7 +36,7 @@ export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, useSt
         )}
         <div className='discard'>
           {discard.length > 0 && (
-            <div className="card">
+            <div className="card" style={{cursor:"auto"}}>
               <div className="discardCard">
                 <img src={discard[0].img} alt="Card" className="img-bottom" />
                 <p className="type">{discard[0].type}</p>

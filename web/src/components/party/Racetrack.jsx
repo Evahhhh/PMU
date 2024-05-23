@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-export default function Racetrack ({lengthRun, cardsData, deck, discard, inconvenientCard, setInconvenientCard, positionHorse, setPositionHorse, modifyCurrentGame, finishParty, FontAwesomeIcon, faFlagCheckered}) {
+export default function Racetrack ({lengthRun, cardsData, deck, discard, inconvenientCard, setInconvenientCard, setStateInconvenient, positionHorse, setPositionHorse, modifyCurrentGame, finishParty, FontAwesomeIcon, faFlagCheckered}) {
   const stages = Array.from({ length: lengthRun }, (_, index) => index).reverse();
   const trackRef = useRef(null);
   const cardInconvenientRefs = useRef(Array.from({ length: lengthRun -2}).map(() => React.createRef()));
@@ -21,13 +21,30 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
     return arePresent;
   };
 
+  useEffect(() => {
+    
+    if (stages.some((index, stageIndex) => {
+      let positionValide = areHorsesAtPosition(index);
+      if(positionValide ) {
+        if (index !== 0 && (inconvenientCard[stageIndex - 1] && !inconvenientCard[stageIndex -1].use)) {
+          return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  })) {
+      setStateInconvenient(true);
+    }
+  }, [stages, areHorsesAtPosition]);
+
   const handleInconvenientClick = (index, stageIndex) => {
     if (areHorsesAtPosition(index) && !clickedInconvenient[stageIndex] && finishParty===false) {
       const correctIndex = lengthRun - 2 - stageIndex;
       const updatedClickedInconvenient = [...clickedInconvenient];
       updatedClickedInconvenient[index] = true;
       setClickedInconvenient(updatedClickedInconvenient);
-      console.log(clickedInconvenient);
       const invertedInconvenientCard = inconvenientCard.slice().reverse();
       const horseIndex = positionHorse.findIndex((el) => el.type === invertedInconvenientCard[correctIndex].type);
       if (horseIndex !== -1 && positionHorse[horseIndex].position > 0) {
@@ -37,15 +54,14 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
         setSelectedHorse(cardsData.find(e => e.type === positionHorse[horseIndex].type));
 
         const updatedInconvenientCard = inconvenientCard.map((card, i) => {
-          console.log(stageIndex);
           if (i == stageIndex-1) {
             return { ...card, use: true };
           }
           return card;
         });
         setInconvenientCard(updatedInconvenientCard);
-        console.log(inconvenientCard[stageIndex - 1].use);
         modifyCurrentGame(deck, discard, updatedInconvenientCard);
+        setStateInconvenient(false);
       }
       setShowPopupInconvenient(true, stageIndex); // Afficher la popup lors du clic sur une carte
     }
@@ -91,7 +107,7 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
           >
             {(index !== stages.length - 1 && index !== 0) && (
               <div 
-              className={`cardInconvenient ${inconvenientCard[stageIndex - 1] && inconvenientCard[stageIndex - 1].use ? '' : 'logoVisible'} ${areHorsesAtPosition(index) && !clickedInconvenient[index] && !showPopupInconvenient ? 'borderRed' : ''}`} 
+              className={`cardInconvenient ${inconvenientCard[stageIndex - 1] && inconvenientCard[stageIndex - 1].use ? '' : 'logoVisible'} ${areHorsesAtPosition(index) && !clickedInconvenient[index] && !showPopupInconvenient && inconvenientCard[stageIndex - 1] && !inconvenientCard[stageIndex - 1].use? 'borderRed' : ''}`} 
                 onClick={() => handleInconvenientClick(index, stageIndex)} 
                 ref={cardInconvenientRefs.current[stageIndex]}
               >

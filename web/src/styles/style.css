@@ -57,7 +57,7 @@ header {
   justify-content: space-between;
   padding: 0 15px;
   position: relative;
-  z-index: 0;
+  z-index: -1;
 }
 header .elementUser {
   display: flex;
@@ -543,6 +543,13 @@ footer {
   font-weight: bold;
 }
 
+.cards {
+  flex: 0.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .card {
   width: 100px;
   height: 150px;
@@ -627,6 +634,8 @@ footer {
 .racetrack, .playerChat {
   display: flex;
   align-self: stretch;
+  flex: 1;
+  align-items: center;
 }
 
 .track {
@@ -740,7 +749,7 @@ footer {
   background-color: #00A870;
   width: 100%;
   border-radius: 20px;
-  height: 180px;
+  height: 152px;
   overflow-y: scroll;
 }
 .pari::-webkit-scrollbar-track {
@@ -785,19 +794,163 @@ footer {
   border-radius: 4px;
 }
 
+.listBet {
+  width: 320px;
+}
+
 .playerChat {
   display: flex;
   flex-direction: column;
   width: 350px;
+  flex: 1;
+  align-items: center;
 }
 .playerChat h2 {
-  position: absolute;
   font-size: 20px;
   font-family: "raleway";
 }
 .playerChat .titleBet {
-  top: 164px;
-  right: 120px;
+  margin-top: -35px;
+  position: relative;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.pageResults {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  margin: auto;
+  flex: 1;
+  margin-bottom: 0;
+  padding-bottom: 4em;
+  max-width: 2500px;
+}
+
+.resultsBlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.resultsBlock .result {
+  background-color: rgba(0, 168, 112, 0.3647058824);
+  flex: 1;
+  width: 90%;
+  margin: auto;
+  border-radius: 20px;
+  text-align: center;
+  padding: 60px;
+  overflow-y: scroll;
+}
+.resultsBlock .result::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0);
+}
+.resultsBlock .result::-webkit-scrollbar {
+  width: 6px;
+  background-color: #1C3635;
+  border-radius: 5px;
+}
+.resultsBlock .result::-webkit-scrollbar-thumb {
+  background-color: #F5FFFC;
+  border-radius: 5px;
+}
+.resultsBlock .result h1 {
+  height: 65px;
+  font-weight: normal;
+  font-family: "raleway";
+  font-size: 28px;
+}
+.resultsBlock .result .listResults {
+  line-height: 54px;
+  font-size: 20px;
+}
+.resultsBlock .buttonResults {
+  flex: 0.3;
+  display: flex;
+  justify-content: end;
+  width: 90%;
+  margin: auto;
+  align-items: center;
+  position: relative;
+}
+.resultsBlock .buttonResults .buttonRelance {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 354px;
+  height: 52px;
+  border-radius: 10px;
+  background: #00A870;
+  border: 0;
+  font-size: 18px;
+  cursor: pointer;
+}
+.resultsBlock .buttonResults .buttonExit {
+  margin-left: auto;
+  width: 180px;
+  height: 35px;
+  border-radius: 10px;
+  background: #B10E1D;
+  border: 0;
+  font-size: 16px;
+  color: #F5FFFC;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.resultChatPlayer {
+  flex: 0.5;
+}
+.resultChatPlayer .listPlayer {
+  text-align: center;
+}
+.resultChatPlayer .listPlayer h2 {
+  margin-top: -35px;
+  position: relative;
+  text-align: center;
+  padding-bottom: 10px;
+  font-family: "raleway";
+  color: #F5FFFC;
+  font-size: 20px;
+}
+.resultChatPlayer .listPlayer .listUlPlayers {
+  background-color: #00A870;
+  width: 100%;
+  border-radius: 20px;
+  padding: 10px 30px;
+  height: 170px;
+  overflow-y: scroll;
+}
+.resultChatPlayer .listPlayer .listUlPlayers::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0);
+}
+.resultChatPlayer .listPlayer .listUlPlayers::-webkit-scrollbar {
+  width: 6px;
+  background-color: #1C3635;
+  border-radius: 5px;
+}
+.resultChatPlayer .listPlayer .listUlPlayers::-webkit-scrollbar-thumb {
+  background-color: #F5FFFC;
+  border-radius: 5px;
+}
+.resultChatPlayer .listPlayer li {
+  display: flex;
+  line-height: 30px;
+  margin: 10px;
+  font-weight: bold;
+}
+.resultChatPlayer .listPlayer .imgPseudo {
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 1px solid black;
+  margin-right: 12px;
 }
 
 /*# sourceMappingURL=style.css.map */

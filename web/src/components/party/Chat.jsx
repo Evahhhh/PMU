@@ -6,10 +6,10 @@ export default function Chat() {
     const [chat, setChat] = useState([]);
     const socketRef = useRef();
   
-    useEffect(() => {
+/*     useEffect(() => {
       socketRef.current = io.connect('http://localhost:3000');
   
-      socketRef.current.on('message', ({ message }) => {
+      socketRef.current.on('chat message', ({ message }) => {
         setChat([...chat, message]);
       });
   
@@ -25,9 +25,9 @@ export default function Chat() {
     const onMessageSubmit = (e) => {
       e.preventDefault();
       const msg = message;
-      socketRef.current.emit('message', { message: msg });
+      socketRef.current.emit('chat message', { message: msg });
       setMessage('');
-    };
+    }; */
   
     return (
       <div className='chat'>
@@ -36,7 +36,7 @@ export default function Chat() {
           {chat.map((message, index) => (
             <div key={index}>{message}</div>
           ))}
-          <form onSubmit={onMessageSubmit}>
+{/*           <form onSubmit={onMessageSubmit}>
             <input
               name='message'
               onChange={(e) => onTextChange(e)}
@@ -45,7 +45,7 @@ export default function Chat() {
               placeholder='Type your message here...'
             />
             <button>Send</button>
-          </form>
+          </form> */}
         </div>
       </div>
     );

@@ -25,7 +25,7 @@ module.exports = function (server) {
 
             try {
                 // Faire un appel à la route /api/room/:id pour récupérer l'ID de la salle
-                const response = await fetch(`http://localhost:3000/api/room/${room}`);
+                const response = await fetch(`${process.env.PMU_API}./room/${room}`);
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération de l\'ID de la salle');
                 }
@@ -81,8 +81,8 @@ module.exports = function (server) {
             const room = joueurs[socket.id].roomId;
             try {
                 // Vérifiez si tous les joueurs de la salle ont validé leur pari
-                const response1 = await fetch(`http://localhost:3000/api/round/${room}/bet`);
-                const response2 = await fetch(`http://localhost:3000/api/room/${room}`);
+                const response1 = await fetch(`${process.env.PMU_API}./round/${room}/bet`);
+                const response2 = await fetch(`${process.env.PMU_API}./room/${room}`);
                 const data1 = await response1.json();
                 const data2 = await response2.json();
 
@@ -121,8 +121,8 @@ module.exports = function (server) {
             // Vérifier s'il y a un cheval gagnant
             socket.round = round;
             try {
-                const idPartie = await fetch(`http://localhost:3001/api/round/${round}`); // Supposons que vous avez une fonction pour obtenir l'ID de la partie à partir du tableau de la partie
-                const taillTableau = await fetch(`http://localhost:3001/api/round/${idPartie}/duration`);
+                const idPartie = await fetch(`${process.env.PMU_API}./round/${round}`); // Supposons que vous avez une fonction pour obtenir l'ID de la partie à partir du tableau de la partie
+                const taillTableau = await fetch(`${process.env.PMU_API}./round/${idPartie}/duration`);
                 if (!taillTableau.ok) {
                     throw new Error('Erreur lors de la récupération de la taille du plateau');
                 }
@@ -130,7 +130,7 @@ module.exports = function (server) {
                 // Vérifier s'il y a un cheval gagnant en fonction de la taille du plateau
                 if (positionCheval == taillTableau) {
                     // S'il y a un cheval gagnant, récupérer les joueurs gagnants
-                    const responseJoueurs = await fetch(`http://localhost:3001/api/round/bet/${idPartie}`);
+                    const responseJoueurs = await fetch(`${process.env.PMU_API}./round/bet/${idPartie}`);
                     if (!responseJoueurs.ok) {
                         throw new Error('Erreur lors de la récupération des joueurs gagnants');
                     }

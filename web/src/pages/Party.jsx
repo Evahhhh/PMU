@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
-
+import { useNavigate } from "react-router-dom";
 import Card from '../components/party/Card';
 import Racetrack from '../components/party/Racetrack';
 import PlayerChat from '../components/party/PlayerChat';
-import Chat from '../components/party/Chat';
 
 // Données des cartes
 const cardsData = [
@@ -29,6 +28,17 @@ function Party() {
   const [inconvenientCard, setInconvenientCard] = useState([]);
   const [finishParty, setFinishParty] = useState(false);
   const [showFadeIn, setShowFadeIn] = useState(false);
+  const [stateInconvenient, setStateInconvenient] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const id = sessionStorage.getItem("id");
+    const token = sessionStorage.getItem("token");
+    if (!token || !id) {
+      navigate("/");
+      return;
+    }
+}, [navigate]);
 
   const fetchData = async () => {
     //Durée de la partie
@@ -177,6 +187,20 @@ function Party() {
       // Faites quelque chose avec les données récupérées si nécessaire
   };
 
+  const deleteCurrentGame = async () => {
+    const deleteCurrent = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/${idRound}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const responseCurrent = await deleteCurrent.json();
+  };
+
+  const handleResultClick = () => {
+    deleteCurrentGame();
+    navigate("/results");
+  }
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShowFadeIn(finishParty);
@@ -191,7 +215,10 @@ function Party() {
       const highestPositionHorse = positionHorse.reduce((acc, curr) => {
         return acc.position > curr.position ? acc : curr;
       });
-      setWinnerHorse(cardsData.find(card => card.type === highestPositionHorse.type));
+      if(highestPositionHorse.position === lengthRun - 1) {
+        setWinnerHorse(cardsData.find(card => card.type === highestPositionHorse.type));
+        sessionStorage.setItem("winner", highestPositionHorse.type);
+      }
     }
   }, [positionHorse]);
 
@@ -206,6 +233,7 @@ function Party() {
         deck={deck}
         setDeck = {setDeck}
         discard={discard}
+        stateInconvenient={stateInconvenient}
         setDiscard={setDiscard}
         positionHorse={positionHorse}
         setPositionHorse={setPositionHorse}
@@ -222,6 +250,7 @@ function Party() {
         setInconvenientCard={setInconvenientCard}
         deck={deck}
         discard={discard}
+        setStateInconvenient={setStateInconvenient}
         positionHorse={positionHorse}
         setPositionHorse={setPositionHorse}
         modifyCurrentGame={(newDeck, newDiscard, updatedInconvenientCard) => modifyCurrentGame(newDeck, newDiscard, updatedInconvenientCard)}
@@ -229,19 +258,16 @@ function Party() {
         FontAwesomeIcon={FontAwesomeIcon}
         faFlagCheckered={faFlagCheckered}
       />
-      <div className='playerChat'>
         <PlayerChat
           effectifPlayer={effectifPlayer}
           numberPlayer={numberPlayer}
           bets={bets}
           cardsData={cardsData}
         />
-        {/* <Chat/> */}
-      </div>
-      <div className={`finish-overlay ${finishParty ? 'show' : ''}`}>
+      <div className={`finish-overlay ${finishParty ? 'show' : ''}`} onClick={finishParty ? handleResultClick : null} style={finishParty ? {cursor:"pointer"} : null}>
           <img src="/media/beer.png" alt="Finish" />
       </div>
-      <div className={`fade-in ${showFadeIn ? 'show' : ''}`}>
+      <div className={`fade-in ${showFadeIn ? 'show' : ''}`} onClick={finishParty ? handleResultClick : null} style={finishParty ? {cursor:"pointer"} : null}>
       <img src={winnerHorse.img} alt="winner" />
         <p>Le grand gagnant est {winnerHorse.type} !!</p>
       </div>
