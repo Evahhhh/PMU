@@ -93,7 +93,7 @@ function Results() {
             navigate(`/room/${idRoom}`);
         }
     };
-
+    console.log(bets);
     const handleExit = () => {
         sessionStorage.removeItem('idRound');
         navigate(`/menu`);

@@ -92,6 +92,7 @@
             padding: 10px 30px;
             height:170px;
             overflow-y: scroll;
+            font-size: 18px;
             &::-webkit-scrollbar-track
             {
                 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -117,6 +118,8 @@
             line-height: 30px;
             margin: 10px;
             font-weight: bold;
+            font-size: 18px;
+            justify-content: center;
         }
         .imgPseudo {
             width: 30px;
