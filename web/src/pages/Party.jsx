@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import Card from '../components/party/Card';
 import Racetrack from '../components/party/Racetrack';
 import PlayerChat from '../components/party/PlayerChat';
+import { SocketIOContext } from '../components/App';
 
 // Données des cartes
 const cardsData = [
@@ -16,9 +17,9 @@ const cardsData = [
 
 const idRound = sessionStorage.getItem("idRound");
 const token = sessionStorage.getItem('token');
+const lengthRun = Number(sessionStorage.getItem("duration"));
 
 function Party() {
-  const [lengthRun, setLengthRun] = useState(7);
   const [numberPlayer, setNumberPlayer] = useState(0);
   const [effectifPlayer, setEffectifPlayer] = useState(0);
   const [bets, setBets] = useState([]);
@@ -29,6 +30,7 @@ function Party() {
   const [finishParty, setFinishParty] = useState(false);
   const [showFadeIn, setShowFadeIn] = useState(false);
   const [stateInconvenient, setStateInconvenient] = useState(false);
+  const socket = useContext(SocketIOContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,8 +51,6 @@ function Party() {
     }
     );
     const length = await lengthParty.json();
-    setLengthRun(length.duration);
-
     const idRoom = length.roomId;
 
     //Nombre de joueurs max
@@ -165,9 +165,8 @@ function Party() {
       }
     };
     fetchCurrentGame();
-
   }, []);
-  
+
   const modifyCurrentGame = async (newDeck, newDiscard, updatedInconvenientCard) => {
       const modifyCurrent = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/currentGames/`, {
         method: 'PUT',
@@ -242,6 +241,7 @@ function Party() {
         lengthRun={lengthRun}
         finishParty={finishParty}
         setFinishParty={setFinishParty}
+        socket={socket}
       />
       <Racetrack
         lengthRun={lengthRun}
@@ -257,12 +257,14 @@ function Party() {
         finishParty={finishParty}
         FontAwesomeIcon={FontAwesomeIcon}
         faFlagCheckered={faFlagCheckered}
+        socket={socket}
       />
         <PlayerChat
           effectifPlayer={effectifPlayer}
           numberPlayer={numberPlayer}
           bets={bets}
           cardsData={cardsData}
+          socket={socket}
         />
       <div className={`finish-overlay ${finishParty ? 'show' : ''}`} onClick={finishParty ? handleResultClick : null} style={finishParty ? {cursor:"pointer"} : null}>
           <img src="/media/beer.png" alt="Finish" />

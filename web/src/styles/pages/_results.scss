@@ -74,8 +74,13 @@
 }
 .resultChatPlayer {
     flex: 0.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     .listPlayer {
         text-align: center;
+        width: 90%;
+        margin: auto;
         h2 {
             margin-top: -35px;
             position:relative;

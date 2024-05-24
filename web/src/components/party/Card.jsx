@@ -1,5 +1,8 @@
-export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, stateInconvenient, useState, deck, setDeck, discard, setDiscard, positionHorse, setPositionHorse, modifyCurrentGame, lengthRun, finishParty, setFinishParty, inconvenientCard}) {
+import React, { useEffect } from 'react';
+
+export default function Card({FontAwesomeIcon, socket, faFlagCheckered, stateInconvenient, useState, deck, setDeck, discard, setDiscard, positionHorse, setPositionHorse, modifyCurrentGame, lengthRun, finishParty, setFinishParty, inconvenientCard}) {
   const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la popup
+  
   const handleCardClick = () => {
     if(finishParty === false) {
       if (deck.length > 0) {
@@ -16,6 +19,7 @@ export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, state
         modifyCurrentGame(newDeck, newDiscard, inconvenientCard); // Passer la nouvelle valeur de `deck` à `modifyCurrentGame`
       }
       setShowPopup(true); // Afficher la popup lors du clic sur une carte
+      socket.emit('showPopup', true);
       for (let i = 0; i < positionHorse.length; i++) {
         if (positionHorse[i].position === lengthRun - 1) {
           setFinishParty(true);
@@ -23,6 +27,21 @@ export default function Card({cardsData, FontAwesomeIcon, faFlagCheckered, state
       }
     }
   };
+
+  useEffect(() => {
+    if (socket) {
+      // Écouter l'événement pour afficher la popup
+      const handleShowPopup = (showPopup) => {
+        setShowPopup(showPopup);
+      };
+
+      socket.on('showPopup', handleShowPopup);
+
+      return () => {
+        socket.off('showPopup', handleShowPopup);
+      };
+    }
+  }, [socket]);
 
   return (
     <>

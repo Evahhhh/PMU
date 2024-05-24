@@ -8,7 +8,12 @@ module.exports = function (server) {
     let nombreDePari = 0; // Variable pour suivre le nombre de joueurs ayant parié
     let joueurs = {};
 
-    const io = new Server(server)
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
+        }
+    });
 
     io.on('connection', (socket) => {
         // affiche un message lorsqu'un joueur arrive dans le salon
@@ -25,7 +30,7 @@ module.exports = function (server) {
 
             try {
                 // Faire un appel à la route /api/room/:id pour récupérer l'ID de la salle
-                const response = await fetch(`${process.env.PMU_API}./room/${room}`);
+                const response = await fetch(`${process.env.PMU_API}/room/${room}`);
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération de l\'ID de la salle');
                 }
@@ -108,11 +113,11 @@ module.exports = function (server) {
 
 
         // Lorsque le serveur reçoit un appel pour mettre à jour la position du pion
-        let positionCheval = 0;
+        let positionCheval = [];
         socket.on('mettreAJourPositionPion', (nouvellePosition) => {
             positionCheval = nouvellePosition;
-            io.broadcast.emit('mettreAJourPosition', (positionCheval));
-            io.emit('tableauPartie'(positionCheval));
+            socket.broadcast.emit('mettreAJourPosition', (positionCheval));
+            io.emit('tableauPartie', positionCheval);
         });
 
         //Verif si gagner
@@ -143,6 +148,7 @@ module.exports = function (server) {
                 console.error('Erreur lors de la vérification des chevaux gagnants:', error);
             }
         });
+        
         socket.on('chat message', (msg) => {
             console.log('message: ' + msg);
             io.emit('chat message', msg);

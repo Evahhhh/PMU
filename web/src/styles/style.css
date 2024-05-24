@@ -429,6 +429,123 @@ footer {
   font-weight: 400;
 }
 
+.componentChat {
+  flex: 1;
+  width: 90%;
+  margin: auto;
+  margin-top: 30px;
+}
+.componentChat .divChat h2 {
+  text-align: center;
+  font-family: "raleway";
+  font-size: 20px;
+  height: 40px;
+}
+.componentChat .divChat .allChat {
+  border: 1px solid #F5FFFC;
+  border-radius: 20px;
+  height: auto;
+}
+.componentChat .divChat .windowChat {
+  overflow-y: scroll;
+  height: 300px;
+  margin: 20px;
+  margin-bottom: 0;
+}
+.componentChat .divChat .windowChat::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0);
+}
+.componentChat .divChat .windowChat::-webkit-scrollbar {
+  width: 3px;
+  background-color: #1C3635;
+  border-radius: 5px;
+}
+.componentChat .divChat .windowChat::-webkit-scrollbar-thumb {
+  background-color: #F5FFFC;
+  border-radius: 5px;
+}
+.componentChat .divChat .windowChat .msgUser, .componentChat .divChat .windowChat .otherMsg {
+  display: flex;
+  margin: 15px 10px;
+  margin-left: 0;
+  align-items: center;
+}
+.componentChat .divChat .windowChat .msgUser .imgPseudoChat, .componentChat .divChat .windowChat .otherMsg .imgPseudoChat {
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 1px solid black;
+}
+.componentChat .divChat .windowChat .msgUser p, .componentChat .divChat .windowChat .otherMsg p {
+  width: auto;
+  padding: 10px;
+  max-width: 60%;
+}
+.componentChat .divChat .windowChat .msgUser {
+  text-align: right;
+  justify-content: end;
+  flex-direction: row-reverse;
+}
+.componentChat .divChat .windowChat .msgUser .imgPseudoChat {
+  margin-left: 10px;
+}
+.componentChat .divChat .windowChat .msgUser p {
+  background-color: #F8CC46;
+  color: #1C3635;
+  border-radius: 15px 15px 0 15px;
+}
+.componentChat .divChat .windowChat .otherMsg {
+  text-align: left;
+  justify-content: start;
+}
+.componentChat .divChat .windowChat .otherMsg .imgPseudoChat {
+  margin-right: 10px;
+}
+.componentChat .divChat .windowChat .otherMsg p {
+  background-color: #00A870;
+  border-radius: 15px 15px 15px 0;
+}
+.componentChat .sendMessage {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+  border-top: 1px solid #F5FFFC;
+}
+.componentChat .sendMessage .inputMessage {
+  height: 100%;
+  flex: 1;
+  border-bottom-left-radius: 20px;
+  padding-left: 14px;
+  font-family: "roboto";
+  font-size: 16px;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  caret-color: #F5FFFC;
+  color: #F5FFFC;
+}
+.componentChat .sendMessage .inputMessage::placeholder {
+  color: rgba(245, 255, 252, 0.4666666667) !important;
+}
+.componentChat .sendMessage .inputMessage:focus-visible {
+  outline: none;
+}
+.componentChat .sendMessage button {
+  height: 100%;
+  flex: 0.2;
+  border-bottom-right-radius: 20px;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  font-size: 18px;
+  color: #F5FFFC;
+  border-left: 1px solid #F5FFFC;
+  cursor: pointer;
+}
+
 .join {
   display: flex;
   flex-direction: column;
@@ -902,9 +1019,14 @@ footer {
 
 .resultChatPlayer {
   flex: 0.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 .resultChatPlayer .listPlayer {
   text-align: center;
+  width: 90%;
+  margin: auto;
 }
 .resultChatPlayer .listPlayer h2 {
   margin-top: -35px;

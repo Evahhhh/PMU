@@ -1,12 +1,26 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-export default function Racetrack ({lengthRun, cardsData, deck, discard, inconvenientCard, setInconvenientCard, setStateInconvenient, positionHorse, setPositionHorse, modifyCurrentGame, finishParty, FontAwesomeIcon, faFlagCheckered}) {
+export default function Racetrack({
+  lengthRun,
+  cardsData,
+  deck,
+  discard,
+  inconvenientCard,
+  setInconvenientCard,
+  setStateInconvenient,
+  positionHorse,
+  setPositionHorse,
+  modifyCurrentGame,
+  finishParty,
+  FontAwesomeIcon,
+  faFlagCheckered,
+  socket
+}) {
   const stages = Array.from({ length: lengthRun }, (_, index) => index).reverse();
   const trackRef = useRef(null);
-  const cardInconvenientRefs = useRef(Array.from({ length: lengthRun -2}).map(() => React.createRef()));
+  const cardInconvenientRefs = useRef(Array.from({ length: lengthRun - 2 }).map(() => React.createRef()));
   const [clickedInconvenient, setClickedInconvenient] = useState(Array.from({ length: lengthRun }).fill(false));
   const [activateInconvenient, setActivateInconvenient] = useState(Array.from({ length: lengthRun }).fill(false));
-
   const [showPopupInconvenient, setShowPopupInconvenient] = useState(false); // affichage de la popup
   const [selectedHorse, setSelectedHorse] = useState(null); // cheval sélectionné
 
@@ -22,25 +36,39 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
   };
 
   useEffect(() => {
-    
     if (stages.some((index, stageIndex) => {
       let positionValide = areHorsesAtPosition(index);
-      if(positionValide ) {
-        if (index !== 0 && (inconvenientCard[stageIndex - 1] && !inconvenientCard[stageIndex -1].use)) {
+      if (positionValide) {
+        if (index !== 0 && (inconvenientCard[stageIndex - 1] && !inconvenientCard[stageIndex - 1].use)) {
           return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
-    } else {
-      return false;
-    }
-  })) {
+    })) {
       setStateInconvenient(true);
     }
   }, [stages, areHorsesAtPosition]);
 
+ useEffect(() => {
+    let activate = false;
+    stages.map((index, stageIndex) => {
+      for (let i = 0; i < positionHorse.length; i++) {
+        if (positionHorse[i].position < index) {
+          return activate;
+        }
+      }
+        activate = true;
+        const updatedActivateInconvenient = [...activateInconvenient];
+        updatedActivateInconvenient[index] = activate;
+        setActivateInconvenient(updatedActivateInconvenient);
+    })
+  }, []);
+
   const handleInconvenientClick = (index, stageIndex) => {
-    if (areHorsesAtPosition(index) && !clickedInconvenient[stageIndex] && finishParty===false) {
+    if (areHorsesAtPosition(index) && !clickedInconvenient[stageIndex] && !finishParty) {
       const correctIndex = lengthRun - 2 - stageIndex;
       const updatedClickedInconvenient = [...clickedInconvenient];
       updatedClickedInconvenient[index] = true;
@@ -54,7 +82,7 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
         setSelectedHorse(cardsData.find(e => e.type === positionHorse[horseIndex].type));
 
         const updatedInconvenientCard = inconvenientCard.map((card, i) => {
-          if (i == stageIndex-1) {
+          if (i === stageIndex - 1) {
             return { ...card, use: true };
           }
           return card;
@@ -63,52 +91,55 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
         modifyCurrentGame(deck, discard, updatedInconvenientCard);
         setStateInconvenient(false);
       }
-      setShowPopupInconvenient(true, stageIndex); // Afficher la popup lors du clic sur une carte
+      setShowPopupInconvenient(true); // Afficher la popup lors du clic sur une carte
     }
   };
 
   useEffect(() => {
-    // Faire défiler automatiquement la barre de défilement vers le bas
-    if (trackRef.current) {
-      trackRef.current.scrollTop = trackRef.current.scrollHeight;
-    }
-  }, []);
-
-  useEffect(() => {
-    let activate = false;
-    stages.map((index, stageIndex) => {
-      for (let i = 0; i < positionHorse.length; i++) {
-        if (positionHorse[i].position < index) {
-          return activate;
-        }
+    if (socket) {
+      if (trackRef.current) {
+        trackRef.current.scrollTop = trackRef.current.scrollHeight;
       }
-        activate = true;
-        const updatedActivateInconvenient = [...activateInconvenient];
-        updatedActivateInconvenient[index] = activate;
-        setActivateInconvenient(updatedActivateInconvenient);
-    })
-  }, [positionHorse]);
   
+      const handleNewPosition = (newPosition) => {
+        setPositionHorse(newPosition);
+      };
+  
+      socket.on('mettreAJourPosition', handleNewPosition);
+  
+      return () => {
+        socket.off('mettreAJourPosition', handleNewPosition);
+      };
+    }
+  }, [setPositionHorse, socket]);
+  
+  useEffect(() => {
+    if (socket && positionHorse.length > 0) {
+      socket.emit('mettreAJourPositionPion', positionHorse);
+    }
+  }, [positionHorse, socket]);
+  
+
   return (
     <div className='racetrack'>
       <div className='track' ref={trackRef}>
         {stages.map((index, stageIndex) => (
-          <div 
-            key={index} 
-            className={`stage ${ index === stages.length - 1 ? 'lastStage' : ''}`} 
+          <div
+            key={index}
+            className={`stage ${index === stages.length - 1 ? 'lastStage' : ''}`}
             id={"position" + index}
             style={
-              index === stages.length - 1 
-              ? { backgroundColor: "#B79530", borderRadius: "16px 0 0 0" } 
-              : index === 0 
-                  ? { borderRadius: "0 0 0 16px" } 
+              index === stages.length - 1
+                ? { backgroundColor: "#B79530", borderRadius: "16px 0 0 0" }
+                : index === 0
+                  ? { borderRadius: "0 0 0 16px" }
                   : {}
-            } 
+            }
           >
             {(index !== stages.length - 1 && index !== 0) && (
-              <div 
-              className={`cardInconvenient ${inconvenientCard[stageIndex - 1] && inconvenientCard[stageIndex - 1].use ? '' : 'logoVisible'} ${areHorsesAtPosition(index) && !clickedInconvenient[index] && !showPopupInconvenient && inconvenientCard[stageIndex - 1] && !inconvenientCard[stageIndex - 1].use? 'borderRed' : ''}`} 
-                onClick={() => handleInconvenientClick(index, stageIndex)} 
+              <div
+                className={`cardInconvenient ${inconvenientCard[stageIndex - 1] && inconvenientCard[stageIndex - 1].use ? '' : 'logoVisible'} ${areHorsesAtPosition(index) && !clickedInconvenient[index] && !showPopupInconvenient && inconvenientCard[stageIndex - 1] && !inconvenientCard[stageIndex - 1].use ? 'borderRed' : ''}`}
+                onClick={() => handleInconvenientClick(index, stageIndex)}
                 ref={cardInconvenientRefs.current[stageIndex]}
               >
                 {inconvenientCard.length > 0 && (
@@ -120,7 +151,7 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
                   ) : (
                     <img src={inconvenientCard[stageIndex - 1].logo} alt="Logo" className="logoInconvenient" />
                   )
-                )}                  
+                )}
               </div>
             )}
             {positionHorse.map((position) => (
@@ -128,26 +159,26 @@ export default function Racetrack ({lengthRun, cardsData, deck, discard, inconve
                 <React.Fragment key={`${position.type}-${position.position}`}>
                   {cardsData.map((horse, horseIndex) => (
                     position.type === horse.type && (
-                      <img key={horseIndex} src={horse.img} alt={horse.type} id={"horse" + horse.id} className='horseRun'/>
+                      <img key={horseIndex} src={horse.img} alt={horse.type} id={"horse" + horse.id} className='horseRun' />
                     )
                   ))}
                 </React.Fragment>
               )
             ))}
             {index === stages.length - 1 && (
-              <div className="finish-line" style={{backgroundImage: "url('/media/finish-line.png')"}}></div>
+              <div className="finish-line" style={{ backgroundImage: "url('/media/finish-line.png')" }}></div>
             )}
           </div>
         ))}
       </div>
-      {showPopupInconvenient && ( // Affichage conditionnel de la popup
+      {showPopupInconvenient && (
         <div className="popup">
           <div className="popupContent" onClick={() => setShowPopupInconvenient(false)}>
             <button className="closeCard" onClick={() => setShowPopupInconvenient(false)}>X</button>
-            {selectedHorse && ( // Affichage du cheval sélectionné dans la popup
+            {selectedHorse && (
               <>
                 <img src={selectedHorse.img} alt={selectedHorse.type} />
-                <p style={{textAlign: "center"}}><FontAwesomeIcon icon={faFlagCheckered} style={{ fontSize: '20px' }}/>  {selectedHorse.type} a le vertige et recule d'un palier <FontAwesomeIcon icon={faFlagCheckered} style={{ fontSize: '20px' }}/></p>
+                <p style={{ textAlign: "center" }}><FontAwesomeIcon icon={faFlagCheckered} style={{ fontSize: '20px' }} />  {selectedHorse.type} a le vertige et recule d'un palier <FontAwesomeIcon icon={faFlagCheckered} style={{ fontSize: '20px' }} /></p>
               </>
             )}
           </div>

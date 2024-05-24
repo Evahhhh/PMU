@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import Chat from "../components/party/Chat";
+import React, { useState, useEffect, useContext } from 'react';
+import Chat from "../components/Chat";
 import { useNavigate } from "react-router-dom";
+import { SocketIOContext } from '../components/App';
 
 // Données des cartes
 const cardsData = [
@@ -20,6 +21,8 @@ function Results() {
     const [effectifPlayer, setEffectifPlayer] = useState(0);
     const [idRoom, setIdRoom] = useState(0);
     const [bets, setBets] = useState([]);
+    const [listPlayers, setListPlayers] = useState([]);
+    const socket = useContext(SocketIOContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -61,7 +64,13 @@ function Results() {
             }
         );
         const playerEffectif = await effectifPlayer.json();
-        setEffectifPlayer(playerEffectif.users.length + 1);
+        const arrayPlayers = [];
+        arrayPlayers.push(playerEffectif.admin.pseudo);
+        playerEffectif.users.map((user) => {
+            arrayPlayers.push(user.pseudo);
+        });
+        setListPlayers(arrayPlayers);
+        setEffectifPlayer(arrayPlayers.length);
         
         //Paris de la manche
         const betsArray = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/round/bet/${idRound}`,{
@@ -93,11 +102,12 @@ function Results() {
             navigate(`/room/${idRoom}`);
         }
     };
-    console.log(bets);
+
     const handleExit = () => {
         sessionStorage.removeItem('idRound');
         navigate(`/menu`);
     };
+
     return (
         <div className='pageResults'>
             <div className='resultsBlock'>
@@ -122,15 +132,15 @@ function Results() {
                     <div className='listUlPlayers'>
                         <p>Nombre de joueurs: {effectifPlayer}/{numberPlayer}</p>
                         <ul>
-                            {bets.map((bet, index) => {
+                            {listPlayers.map((player, index) => {
                                 return (
-                                <li key={index}><div className='imgPseudo' style={{backgroundImage: "url(/media/image2.png)"}}></div> {bet.pseudo}</li>
+                                <li key={index}><div className='imgPseudo' style={{backgroundImage: "url(/media/image2.png)"}}></div> {player}</li>
                                 );
                             })}
                         </ul>  
                     </div>                  
                 </div>
-                <Chat/>
+                <Chat socket={socket}/>
             </div>
         </div>
     );
