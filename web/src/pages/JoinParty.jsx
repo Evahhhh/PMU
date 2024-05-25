@@ -39,8 +39,9 @@ function JoinParty() {
             return;
         }
         const token = sessionStorage.getItem('token');
+        console.log(codeRoom);
         const fetchData = async () => {
-            const response = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/room/${codeRoom}`,{
+            const response = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/room/code/${codeRoom}`,{
             headers: {
                 'Authorization': `Bearer ${token}`
                 } 

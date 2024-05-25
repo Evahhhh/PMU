@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 import Header from './Header';
 import LightHeader from './LightHeader';
 import Footer from './Footer';
-
+import LightFooter from "./LightFooter";
 //Pages
 import Welcome from '../pages/Welcome';
 import ResetPassword from '../pages/ResetPassword';
@@ -31,19 +31,26 @@ function App() {
       setIsLoggedIn(true);
     }
 
-    const newSocket = io(process.env.REACT_APP_PMU_API_URL, {
-      reconnectionAttempts: 5,
-      transports: ['websocket']
-    });
-
-    newSocket.on('connect_error', (err) => {
-      console.error('Connection error:', err);
-    });
-
-    setSocket(newSocket);
+    if(!socket) {
+      const newSocket = io(process.env.REACT_APP_PMU_API_URL, {
+        // Envoyer l'ID de l'utilisateur et le token d'authentification lors de la connexion au socket
+        query: {
+          Authorization: `Bearer ${token}`,
+          userId: id
+        },
+        reconnectionAttempts: 3,
+        transports: ['websocket']
+      });
+  
+      newSocket.on('connect_error', (err) => {
+        console.error('Connection error:', err);
+      });
+  
+      setSocket(newSocket);
+    }    
     
     // Fermez la connexion lorsque le composant est démonté
-    return () => newSocket.close();
+    return () => socket.close();
   }, []);
   
   const handleLogin = (id, token) => {
@@ -63,16 +70,15 @@ function App() {
       <Router>
         <div className='app'>
           <Routes>
-            <Route path="/" element={<><LightHeader/><Welcome onLogin={handleLogin}/></>}/>
-            <Route path="/reset-password" element={<><LightHeader/><ResetPassword/></>}/>
-            <Route path="/menu" element={<><Header/><Menu/></>}/>
-            <Route path="/creation" element={<><Header/><CreationParty/></>}/>
-            <Route path="/join" element={<><Header/><JoinParty/></>}/>
-            <Route path="/room/:roomId" element={<><Header/><Room/></>}/>
-            <Route path="/party" element={<><Header/><Party/></>}/>
-            <Route path="/results" element={<><Header/><Results/></>}/>
+            <Route path="/" element={<><LightHeader/><Welcome onLogin={handleLogin}/><LightFooter/></>}/>
+            <Route path="/reset-password" element={<><LightHeader/><ResetPassword/><LightFooter/></>}/>
+            <Route path="/menu" element={<><Header/><Menu/><Footer isLoggedIn={isLoggedIn} onLogout={handleLogout} /></>}/>
+            <Route path="/creation" element={<><Header/><CreationParty/><Footer isLoggedIn={isLoggedIn} onLogout={handleLogout} /></>}/>
+            <Route path="/join" element={<><LightHeader/><JoinParty/><Footer isLoggedIn={isLoggedIn} onLogout={handleLogout} /></>}/>
+            <Route path="/room/:roomId" element={<><Header/><Room/><Footer isLoggedIn={isLoggedIn} onLogout={handleLogout} /></>}/>
+            <Route path="/party" element={<><Header/><Party/><Footer isLoggedIn={isLoggedIn} onLogout={handleLogout} /></>}/>
+            <Route path="/results" element={<><Header/><Results/><Footer isLoggedIn={isLoggedIn} onLogout={handleLogout} /></>}/>
           </Routes>
-          <Footer isLoggedIn={isLoggedIn} onLogout={handleLogout} />
         </div>
       </Router>
     </SocketIOContext.Provider>

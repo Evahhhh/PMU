@@ -8,7 +8,7 @@
     margin: auto;
     margin-bottom: 0;
     padding-bottom: 4em;
-    z-index: -1;
+    z-index: -2;
 }
 
 .finish-overlay {
@@ -53,7 +53,58 @@
     font-family: "raleway";
     font-weight: bold;
   }
-  
+@media all and (max-width: 1120px) {
+    .party {
+        flex-direction: column;
+        align-items: center;
+        justify-content: normal;
+        padding-bottom: 3em;
+    }
+    .fade-in.show {
+      img {
+        width: 250px;
+      }
+      p{
+        font-size:20px;
+      }
+    }
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-evenly;
+  width: 80%;
+  margin: auto;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 20px;
+  position: relative;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: -20px;
+  width: 160%;
+  height: 2px;
+  background-color: $text;
+  border-radius: 10px;
+}
+
+.tab-content {
+  padding: 20px;
+  height: 66vh;
+  width: 100%;
+}
+
 @import '../composants/card';
 @import '../composants/racetrack';
 @import '../composants/blockChat';

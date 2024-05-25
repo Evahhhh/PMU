@@ -7,15 +7,56 @@ module.exports = function (server) {
 
     let nombreDePari = 0; // Variable pour suivre le nombre de joueurs ayant parié
     let joueurs = {};
+    const connectedUsers = {};
 
     const io = new Server(server, {
         cors: {
             origin: "*",
             methods: ["GET", "POST"]
-        }
+        },
+        transports: ['websocket']
     });
 
+    // Fonction pour récupérer les joueurs d'une salle et renvoie un tableau de joueurs
+    async function getRoomPlayers(token, roomId) {
+        const response = await fetch(`${process.env.PMU_API}/room/players/${roomId}`, {
+            headers: {
+                'Authorization': token
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération de l\'ID de la salle');
+        }
+        const players = await response.json();
+        return [...players.users, players.admin];
+    }
+
+    async function emitToRoom(socket, roomId, eventName, data) {
+        console.log('roomId', roomId)
+        console.log('eventName', eventName)
+
+        // Récupération du bearer token envoyé depuis le front
+        const token = socket.handshake.query['Authorization']
+        // Récupération des joueurs de la salle
+        const players = await getRoomPlayers(token, roomId);
+
+        // Envoi de l'événement à tous les joueurs de la salle
+        for (const player of players) {
+            if (connectedUsers[player.user_id]) {
+                io.to(connectedUsers[player.user_id]).emit(eventName, data);
+            }
+        }
+    }
+
     io.on('connection', (socket) => {
+        // Récupération de l'ID de l'utilisateur envoyé depuis le front
+        const userId = socket.handshake.query['userId']
+
+        // Enregistrement de l'ID de l'utilisateur et de son socket ID
+        if (!connectedUsers[userId]) {
+            connectedUsers[userId] = socket.id;
+        }
+
         // affiche un message lorsqu'un joueur arrive dans le salon
         socket.on('joinRoom', async (room) => {
             socket.join(room);
@@ -45,6 +86,14 @@ module.exports = function (server) {
         socket.on('disconnect', async () => {
             // Supprimer le joueur de la liste des joueurs
             delete joueurs[socket.id];
+            
+            // Récupérer l'ID de l'utilisateur envoyé depuis le front
+            const userId = socket.handshake.query['userId']
+
+            // Supprimer l'utilisateur de la liste des utilisateurs connectés
+            if (connectedUsers[userId]) {
+                delete connectedUsers[userId];
+            }
 
             // Récupérer la salle à partir de laquelle le joueur se déconnecte
             const room = socket.room;
@@ -104,69 +153,22 @@ module.exports = function (server) {
             }
         });
 
-        socket.on('retour_carte', (carte) => {
-            // Émettre l'événement à tous les autres joueurs
-            socket.broadcast.emit('carte_retournee', carte);
-            // Appeler un autre WebSocket pour mettre à jour la position du pion en fonction de la couleur de la carte
-            io.emit('mettreAJourPositionPion');
-        });
-
-
         // Lorsque le serveur reçoit un appel pour mettre à jour la position du pion
-        let positionCheval = [];
-        socket.on('mettreAJourPositionPion', (nouvellePosition) => {
-            positionCheval = nouvellePosition;
-            socket.broadcast.emit('mettreAJourPosition', (positionCheval));
-            io.emit('tableauPartie', positionCheval);
-        });
-
-        //Verif si gagner
-        // Lorsque les joueurs reçoivent l'événement avec le tableau de la partie
-        socket.on('tableauPartie', async (positionCheval) => {
-            // Vérifier s'il y a un cheval gagnant
-            socket.round = round;
-            try {
-                const idPartie = await fetch(`${process.env.PMU_API}./round/${round}`); // Supposons que vous avez une fonction pour obtenir l'ID de la partie à partir du tableau de la partie
-                const taillTableau = await fetch(`${process.env.PMU_API}./round/${idPartie}/duration`);
-                if (!taillTableau.ok) {
-                    throw new Error('Erreur lors de la récupération de la taille du plateau');
-                }
-
-                // Vérifier s'il y a un cheval gagnant en fonction de la taille du plateau
-                if (positionCheval == taillTableau) {
-                    // S'il y a un cheval gagnant, récupérer les joueurs gagnants
-                    const responseJoueurs = await fetch(`${process.env.PMU_API}./round/bet/${idPartie}`);
-                    if (!responseJoueurs.ok) {
-                        throw new Error('Erreur lors de la récupération des joueurs gagnants');
-                    }
-                    const joueursGagnants = await responseJoueurs.json();
-
-                    // Transmettre les joueurs gagnants à tous les joueurs
-                    io.emit('joueursGagnants', joueursGagnants);
-                }
-            } catch (error) {
-                console.error('Erreur lors de la vérification des chevaux gagnants:', error);
-            }
-        });
-        
-        socket.on('chat message', (msg) => {
-            console.log('message: ' + msg);
-            io.emit('chat message', msg);
-        });
-
-        //coté client admin
-        socket.broadcast.emit('retourAccueil');
-        socket.broadcast.emit('retourRoom');
-
-        //coté client user
-        socket.on('retourAccueil', () => {
-            // Rediriger les joueurs vers la page d'accueil
-            window.location.href = '/';
-        });
-        socket.on('retourRoom', () => {
-            // Rediriger les joueurs vers la page d'accueil
-            window.location.href = '/room';
-        });
-
+        socket.on('mettreAJourPositionPion', ({roomId, data}) => emitToRoom(socket, roomId, 'mettreAJourPosition', data));
+        socket.on('deckChange', ({roomId, data}) => emitToRoom(socket, roomId, 'deckChange', data) );
+        socket.on('navigate', ({roomId, data}) => emitToRoom(socket, roomId, 'navigate', data) );
+        // Réception de l'événement pour mettre à jour le discard
+        socket.on('discardChange', ({roomId, data}) => emitToRoom(socket, roomId, 'discardChange', data) );
+        socket.on('showPopup', ({roomId, data}) => emitToRoom(socket, roomId, 'showPopup', data) );
+        socket.on('clickedInconvenientChange', ({roomId, data}) => emitToRoom(socket, roomId, 'clickedInconvenientChange', data) );
+        socket.on('SelectedHorseChange', ({roomId, data}) => emitToRoom(socket, roomId, 'SelectedHorseChange', data) );
+        socket.on('InconvenientCardChange', ({roomId, data}) => emitToRoom(socket, roomId, 'InconvenientCardChange', data) );
+        socket.on('StateInconvenientChange', ({roomId, data}) => emitToRoom(socket, roomId, 'StateInconvenientChange', data) );
+        socket.on('ShowPopupInconvenientChange', ({roomId, data}) => emitToRoom(socket, roomId, 'ShowPopupInconvenientChange', data) );
+        socket.on('finishParty', ({roomId, data}) => emitToRoom(socket, roomId, 'finishParty', data) );
+        socket.on('redirectToMenu', ({roomId}) => emitToRoom(socket, roomId, 'redirectToMenu', {}) );
+        socket.on('playerRelance', ({roomId}) => emitToRoom(socket, roomId, 'playerRelance', roomId) );
+        socket.on('playerExit', ({roomId, data}) =>  emitToRoom(socket, roomId, 'playerExit', data) );
+        socket.on('chat message', ({roomId, data}) => emitToRoom(socket, roomId, 'chat message', data) );
     });
 };

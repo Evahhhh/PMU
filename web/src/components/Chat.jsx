@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-
+import { useSnackbar } from "notistack";
 const idUser = sessionStorage.getItem('id');
 const token = sessionStorage.getItem('token');
 const idRound = sessionStorage.getItem("idRound");
@@ -10,7 +10,7 @@ const Chat = ({ socket }) => {
   const [message, setMessage] = useState('');
   const [room, setRoom] = useState(0);
   const [allMessages, setAllMessages] = useState([]);
-
+  const { enqueueSnackbar } = useSnackbar();
   const roomFetch = async () => {
     try {
       const roomParty = await fetch(`${process.env.REACT_APP_PMU_API_URL}/api/round/${idRound}`, {
@@ -77,6 +77,21 @@ const Chat = ({ socket }) => {
           })
         });
         const messageResponse = await messageFetch.json();
+        if(messageResponse.errorCode) {
+          switch (messageResponse.errorCode) {
+              case 4000:
+                console.log("probleme format message et/ou id");
+                  break;
+              case 4001:
+                console.log('Problème serveur...');
+                break;
+              default:
+                  enqueueSnackbar("Une erreur inconnue est survenue", {
+                  variant: "error",
+                  });
+              };
+          return;
+          };
 
         const now = new Date();
         const formattedDate = now.toISOString().replace('T', ' ').substring(0, 19);
@@ -88,7 +103,7 @@ const Chat = ({ socket }) => {
           user_id: Number(idUser),
         };
 
-        socket.emit('chat message', newMessage);
+        socket.emit('chat message', {roomId: room, data: newMessage});
         setAllMessages((prevMessages) => [...prevMessages, newMessage]);
         setMessage('');
       } catch (error) {

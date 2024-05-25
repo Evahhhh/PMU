@@ -61,14 +61,37 @@
     width: 350px;
     flex:1;
     align-items: center;
-    h2 {
-        font-size:20px;
-        font-family: 'raleway';
+    justify-content: center;
+}
+h2 {
+    font-size:20px;
+    font-family: 'raleway';
+}
+
+.titleBet {
+    margin-top: -35px;
+    position:relative;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+@media all and (max-width: 1120px) {
+    .listBet {
+        width: 100%;
+        max-width: 400px;
+        margin: auto;
+        height: 72vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
     }
     .titleBet {
-        margin-top: -35px;
-        position:relative;
         text-align: center;
-        padding-bottom: 10px;
+        font-size: 18px !important;
+        margin-top: -23px;
+    }
+    .pari {
+        height: 63vh;
+        overflow-y: hidden;
     }
 }

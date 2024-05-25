@@ -5,8 +5,9 @@
     margin: auto;
     flex:1;
     margin-bottom: 0;
-    padding-bottom: 4em;
+    padding-bottom: 6em;
     max-width: 2500px;
+    z-index: -2;
 }
 .resultsBlock {
     flex: 1;
@@ -45,7 +46,7 @@
             height: 65px;
             font-weight: normal;
             font-family: 'raleway';
-            font-size: 28px;
+            font-size: 24px;
         }
         .listResults {
             line-height: 54px;
@@ -76,11 +77,10 @@
     flex: 0.5;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    align-items: center;
     .listPlayer {
         text-align: center;
         width: 90%;
-        margin: auto;
         h2 {
             margin-top: -35px;
             position:relative;
@@ -95,9 +95,11 @@
             width: 100%;
             border-radius: 20px;
             padding: 10px 30px;
-            height:170px;
+            height:150px;
             overflow-y: scroll;
             font-size: 18px;
+            max-width: 600px;
+            margin: auto;
             &::-webkit-scrollbar-track
             {
                 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -136,5 +138,58 @@
             border: 1px solid black;
             margin-right: 12px;
         }
+    }
+}
+@media all and (max-width: 1120px) {
+    .listPlayer {
+        h2 {
+            font-size: 18px !important;
+            font-weight: 100 !important;
+        }
+        li {
+            font-weight: 100 !important;
+        }
+    }
+    .pageResults {
+        flex-direction: column-reverse;
+        padding-bottom: 3em;
+    }
+    .resultsBlock {
+        max-width: 670px;
+        margin: auto;
+        width: 100%;
+    }
+    .result {
+        padding: 30px !important;
+        h1 {
+            font-size: 18px !important;
+            height: 38px !important;
+        }
+    }
+    .buttonResults {
+        flex-direction: column;
+        flex: none !important;
+        justify-content: space-evenly !important;
+        align-items: center !important;
+        height: 15vh;
+    }
+    .resultChatPlayer {
+        justify-content: center;
+    }
+    .buttonRelance {
+        position: relative !important;
+        left: auto !important;
+        transform: none !important;
+        width: 180px !important;
+        height: 35px !important;
+        font-size: 16px !important;
+        cursor: pointer;
+    }
+    .buttonExit {
+        margin-left: 0 !important;
+    }
+    .listResults {
+        font-size: 16px !important;
+        line-height: 40px !important;
     }
 }
