@@ -2,10 +2,10 @@ import React from 'react';
 
 function Room() {
     /* ------ Données obligatoires ------- */
-    sessionStorage.setItem('idRound', 4);
-    sessionStorage.setItem("duration", 7);
+    sessionStorage.setItem('idRound', 5);
+    sessionStorage.setItem("duration", 10);
     sessionStorage.getItem("id");
-    if(sessionStorage.getItem("id") == 1) {
+    if(sessionStorage.getItem("id") == 8) {
         sessionStorage.setItem("isAdmin", true);
     } else {
         sessionStorage.setItem("isAdmin", false);

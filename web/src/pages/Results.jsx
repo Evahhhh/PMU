@@ -13,13 +13,6 @@ const cardsData = [
     { id: 4, type: 'Marcel', img: '/media/marcel.png', logo: '/media/logo.png', color:'#9747FF'}
 ];
 
-const idRound = sessionStorage.getItem("idRound");
-const token = sessionStorage.getItem('token');
-const winner = sessionStorage.getItem('winner');
-const idUser = sessionStorage.getItem('id');
-const isAdmin = sessionStorage.getItem("isAdmin");
-const isMulti = sessionStorage.getItem("isMulti");
-
 function Results() {
     const [numberPlayer, setNumberPlayer] = useState(0);
     const [effectifPlayer, setEffectifPlayer] = useState(0);
@@ -31,6 +24,12 @@ function Results() {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
 
+    const idRound = sessionStorage.getItem("idRound");
+    const token = sessionStorage.getItem('token');
+    const winner = sessionStorage.getItem('winner');
+    const idUser = sessionStorage.getItem('id');
+    const isAdmin = sessionStorage.getItem("isAdmin");
+    const isMulti = sessionStorage.getItem("isMulti");
     useEffect(() => {
         const id = sessionStorage.getItem("id");
         const token = sessionStorage.getItem("token");
