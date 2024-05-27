@@ -1,7 +1,7 @@
-import Chat from "./Chat";
+import Chat from "../Chat";
 import ListPlayer from "./ListPlayer";
 
-export default function playerChat ({numberPlayer, effectifPlayer, bets, cardsData}) {
+export default function playerChat ({numberPlayer, effectifPlayer, bets, cardsData, socket, isMulti}) {
     return (
         <div className='playerChat'>
             <ListPlayer
@@ -10,7 +10,7 @@ export default function playerChat ({numberPlayer, effectifPlayer, bets, cardsDa
                 bets={bets}
                 cardsData={cardsData}
             />
-            <Chat/>
+            {isMulti ? <Chat socket={socket}/> : null}
         </div>
     )
 }

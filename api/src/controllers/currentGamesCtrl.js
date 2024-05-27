@@ -30,15 +30,7 @@ exports.create = (req, res) => {
             .json({ error: "Round not found or status is 0", errorCode: 6002 });
         }
 
-        const newGame = {
-          roundId,
-          positionHorse: [
-            { type: "Roger", position: 0},
-            { type: "Marcel", position: 0},
-            { type: "Jean-Jacques", position: 0},
-            { type: "Gerard", position: 0}
-          ]
-        };
+        const newGame = req.body;
 
         // Read the current games
         fs.readFile(
@@ -54,14 +46,9 @@ exports.create = (req, res) => {
             const gamesData = JSON.parse(data);
             const games = gamesData.games;
 
-            if (games.some((game) => game.roundId === roundId)) {
-              return res.status(400).json({
-                error: "A current game with the same roundId already exists",
-                errorCode: 6004,
-              });
+            if (!games.some((game) => game.roundId === roundId)) {
+              games.push(newGame);
             }
-
-            games.push(newGame);
 
             // Write the updated games back to the file
             fs.writeFile(
@@ -91,7 +78,7 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const { roundId, positionHorse } = req.body;
+  const { roundId, deck, discard, inconvenientCard, positionHorse } = req.body;
   // Different validation because horseLoc can be 0
   if (
     roundId &&
@@ -124,20 +111,11 @@ exports.update = (req, res) => {
             .json({ error: "Round not found or status is 0", errorCode: 6012 });
         }
 
-        /* const duration = round.duration; */
-
-/*         if (
-          positionHorse.position > duration - 1
-        ) {
-          return res.status(400).json({
-            error:
-              "The position of one or more horses is greater than the size of the game board",
-            errorCode: 6013,
-          });
-        } */
-
         const newGame = {
           roundId,
+          deck,
+          discard,
+          inconvenientCard,
           positionHorse
         };
 
@@ -287,7 +265,7 @@ exports.get = (req, res) => {
           const games = gamesData.games;
 
           const game = games.find((game) => game.roundId === roundId);
-
+          console.log(game);
           if (!game) {
             return res.status(404).json({
               error: "No current game with the given roundId exists",

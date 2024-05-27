@@ -8,9 +8,12 @@
 @import "composants/footer";
 @import "composants/rules";
 @import "composants/welcome";
+@import "composants/chat";
+@import "composants/loader";
 
 //Component pages
 @import "pages/joinParty";
 @import "pages/party";
-@import "pages/menu";
+@import "pages/results";
+//@import 'pages/menu';
 @import "pages/createParty";

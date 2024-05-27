@@ -124,7 +124,7 @@ exports.getByCode = (req, res) => {
 
 exports.get = (req, res) => {
   const db = req.db;
-  const roomId = req.params.id;
+  const roomId = Number(req.params.id);
 
   if (roomId) {
     const sqlQuery = "SELECT * FROM Room WHERE room_id = ? AND status = 1";
