@@ -58,7 +58,6 @@ exports.sendEmail = async (req, res) => {
     replyTo: "",
 
     onError: (e) => {
-      console.log(e);
       res
         .status(500)
         .send({ error: "Error while sending the email", errorCode: 7000 });

@@ -35,5 +35,8 @@ button {
         min-height: 100%;
         margin:0 auto;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        z-index: 0;
     }
 }

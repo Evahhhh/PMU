@@ -19,7 +19,6 @@ Dans le dossier styles, les fichiers sont réparties en dossier en fonction de l
 - base: CSS regroupant le style global des éléments 
 - composants: Elements qui compose les pages
 - fonts: typo
-- media: media utile (logo...)
 - pages: les pages du site web
 - utils: On y retrouvera les variables et les mixins
 
@@ -32,6 +31,7 @@ Dans le dossier styles, les fichiers sont réparties en dossier en fonction de l
 Pour ajouter un fichier scss, il faut le mettre dans le bon dossier (définit plus haut), son nom doit commencer par "_" et il doit avoir pour format ".scss".
 Il faut ensuite l'ajouter au fichier main.scss en commencant par "@import" suivie du chemin du fichier. 
 Attention, il faut l'ajouter en dessous des autres. L'ordre d'importation est important.
+Attention, le dernier élément de votre page (hormis le footer) doit avoir obligatoirement ces instructions `margin-bottom: 0; padding-bottom: 4em;`.
 
 # Structure react
 
