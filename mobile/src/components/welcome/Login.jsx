@@ -45,7 +45,7 @@ function Login({ onLogin }) {
       setPassword('');
       navigation.navigate("Menu");
     } catch (error) {
-      if (error.response.data.errorCode) {
+      if (error.response && error.response.data && error.response.data.errorCode) {
         let message;
         switch (error.response.data.errorCode) {
           case 1010:
@@ -61,8 +61,7 @@ function Login({ onLogin }) {
             message = "Veuillez remplir tous les champs";
             break;
           case 1014:
-            message =
-              "Le mail et le mot de passe doivent être des chaînes de caractère";
+            message = "Le mail et le mot de passe doivent être des chaînes de caractère";
             break;
           default:
             message = "Une erreur inconnue est survenue";
@@ -77,6 +76,7 @@ function Login({ onLogin }) {
           type: "danger",
         });
       }
+      console.error(error);
     }
   };
 

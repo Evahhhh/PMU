@@ -7,10 +7,8 @@ export default StyleSheet.create({
   },
   h2: {
     fontSize: 22,
-    fontFamily: "raleway",
     fontWeight: "700",
     fontStyle: "normal",
-    lineHeight: "normal",
     textAlign: "center",
     color: "#F5FFFC",
   },

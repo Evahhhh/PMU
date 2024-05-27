@@ -9,7 +9,7 @@ export default StyleSheet.create({
     alignItems: "center",
     padding: 15,
     position: "relative",
-    zIndex: 0,
+    zIndex: -1,
   },
   lightLogo: {
     width: 135,
