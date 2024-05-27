@@ -842,20 +842,51 @@ footer {
   border-radius: 35px;
   margin-bottom: 1em;
   width: 720px;
-  height: 245px;
+  height: max-content;
+  padding: 1em 0;
 }
 .accordeon .form label {
   width: 333px;
+  margin-bottom: 1em;
 }
 .accordeon .form label p {
   margin-bottom: 1em;
 }
-.accordeon .form label select {
+.accordeon .form label select,
+.accordeon .form label input {
   width: 100%;
   height: 35px;
   border: none;
   border-radius: 10px;
-  padding-left: 5px;
+  padding-left: 10px;
+}
+.accordeon .form label .result {
+  overflow: scroll;
+  height: 125px;
+}
+.accordeon .form label .result .admin {
+  width: 75%;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background-color: #fff;
+  color: #000;
+  margin-bottom: 0.5em;
+  font-size: 13px;
+}
+.accordeon .form label .result input {
+  margin-bottom: 0.5em;
+}
+.accordeon .form label .result .param {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.accordeon .form label .result .param .pseudo {
+  width: 75%;
+}
+.accordeon .form label .result .param .parie {
+  width: 20%;
 }
 .accordeon .form label .range {
   display: flex;
@@ -866,6 +897,27 @@ footer {
 .accordeon .form label .range input {
   width: 90%;
   margin-left: 1em;
+}
+.accordeon .form label .btn-nb-joueur {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-bottom: 1em;
+}
+.accordeon .form label .add,
+.accordeon .form label .remove {
+  background-color: transparent;
+  width: 17px;
+  height: 17px;
+  color: #fff;
+  border: 1px solid #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.accordeon .form label .result {
+  margin-bottom: 0.5em;
 }
 .accordeon .form button {
   width: 180px;

@@ -59,6 +59,7 @@ function Login({ onLogin }) {
       return;
     } else {
       onLogin(data.id, data.token);
+      sessionStorage.setItem("pseudo", data.pseudo);
       enqueueSnackbar("Connecté avec succès", {
         variant: "success",
       });
