@@ -67,6 +67,11 @@ function JoinParty() {
                 };
             return;
             };
+            if(data.maxNbPlayers == 1) {
+                return enqueueSnackbar('Ce code n\'existe pas...', {
+                    variant: "error",
+                });
+            }
             const roomId = data.id;
             const userId = parseInt(sessionStorage.getItem("id"));
 
