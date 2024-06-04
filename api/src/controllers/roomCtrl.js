@@ -322,6 +322,8 @@ exports.deleteUser = (req, res) => {
 
 exports.join = (req, res) => {
   const { roomId, userId } = req.body;
+  console.log(roomId, userId);
+  console.log("coucou");
   const db = req.db;
   if (roomId && userId) {
     if (typeof roomId !== "number" || typeof userId !== "number") {
@@ -351,9 +353,10 @@ exports.join = (req, res) => {
               .json({ error: "Internal server error", errorCode: 2066 });
           }
           if (userRoom) {
-            return res
-              .status(409)
-              .json({ error: "User already in room", errorCode: 2061 });
+            return res.status(200).json({
+              message: "User joined room successfully",
+              numberRowsUpdated: this.changes,
+            });
           }
 
           const sqlQuery = "INSERT INTO User_Room (room_id, user_id) VALUES (?, ?)";
