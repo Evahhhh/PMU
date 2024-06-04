@@ -72,7 +72,6 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
   const db = req.db;
   const { email, password } = req.query;
-
   if (email && password) {
     const lowerCaseEmail = email.toLowerCase();
     if (typeof lowerCaseEmail !== "string" || typeof password !== "string") {
