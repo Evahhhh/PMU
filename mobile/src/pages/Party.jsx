@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import Card from '../components/party/Card';
 import Racetrack from '../components/party/Racetrack';
 import ListPlayer from '../components/party/ListPlayer';
-import { SocketIOContext } from '../../App';
+import { SocketIOContext } from "../../SocketContext";
+import { Audio } from 'expo-av';
 import { Snackbar } from 'react-native-paper';
 import axios from "axios";
-
+import styles from "../styles/pages/party";
 // Données des cartes
 const cardsData = [
   { id: 1, type: 'Roger', img: require('../../media/roger.png'), logo: require('../../media/logo.png'), color:'#B10E1D' },
@@ -50,6 +52,10 @@ function Party() {
         setLengthRun(lengthRunFromStorage);
         setIsAdmin(isAdminFromStorage);
         setIsMulti(isMultiFromStorage);
+        if (!tokenFromStorage || !idRoundFromStorage) {
+          navigation.navigate("Welcome");
+          return;
+        }
       } catch (error) {
         console.error('Error retrieving data:', error);
       }
@@ -70,20 +76,12 @@ function Party() {
   const socket = useContext(SocketIOContext);
   const [activeTab, setActiveTab] = useState('jeu');
   const [roomId, setRoomId] = useState(null);
-  const beerRef = useRef(null);
-  const winnerRef = useRef(null);
-
-  useEffect(() => {
-    const id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
-    if (!token || !id) {
-      navigation.navigate("Welcome");
-      return;
-    }
-}, [navigate]);
+  const [beerSound, setBeerSound] = useState(null);
+  const [winnerSound, setWinnerSound] = useState(null);
 
   const fetchData = async () => {
     if(isMulti) {
+      console.log(token);
       //RoomId
       const roomIdFetch = await axios.get(
           `${process.env.EXPO_PUBLIC_PMU_API_URL}/api/round/${idRound}`,
@@ -173,9 +171,16 @@ function Party() {
         })
         setBets(arrayBet);
     } else {
-      setNumberPlayer(Number(sessionStorage.getItem("numberPlayer")));
-      setEffectifPlayer(Number(sessionStorage.getItem("effectifPlayer") + 1));
-      setBets(JSON.parse(sessionStorage.getItem("bets")));
+      const getDataFromStorage = async () => {
+          const numberPlayerFromStorage = Number(await AsyncStorage.getItem("numberPlayer"));
+          const effectifPlayerFromStorage = Number(await AsyncStorage.getItem("effectifPlayer") + 1);
+          const betsFromStorage = JSON.parse(await AsyncStorage.getItem("bets"));
+          
+          setNumberPlayer(numberPlayerFromStorage);
+          setEffectifPlayer(effectifPlayerFromStorage);
+          setBets(betsFromStorage);
+      };
+      getDataFromStorage();
     }   
   }
 
@@ -284,7 +289,58 @@ function Party() {
       }
     };
     fetchCurrentGame();
+
+    const loadAudio = async () => {
+      const beerSoundObject = new Audio.Sound();
+      const winnerSoundObject = new Audio.Sound();
+
+      try {
+        await beerSoundObject.loadAsync(require('../../media/beer.mp3'));
+        await winnerSoundObject.loadAsync(require('../../media/horse.mp3'));
+
+        // Stocker les objets de son dans le state une fois qu'ils sont chargés
+        setBeerSound(beerSoundObject);
+        setWinnerSound(winnerSoundObject);
+      } catch (error) {
+        console.error('Erreur lors du chargement des fichiers audio:', error);
+      }
+    };
+
+    loadAudio();
+
+    // Nettoyer les ressources audio lors du démontage du composant
+    return () => {
+      if (beerSound !== null) {
+        beerSound.unloadAsync();
+      }
+      if (winnerSound !== null) {
+        winnerSound.unloadAsync();
+      }
+    };
+
   }, []);
+
+   // Fonction pour jouer le son de la bière
+   const playBeerSound = async () => {
+    if (beerSound !== null) {
+      try {
+        await beerSound.playAsync();
+      } catch (error) {
+        console.error('Erreur lors de la lecture du son de la bière:', error);
+      }
+    }
+  };
+
+  // Fonction pour jouer le son du gagnant
+  const playWinnerSound = async () => {
+    if (winnerSound !== null) {
+      try {
+        await winnerSound.playAsync();
+      } catch (error) {
+        console.error('Erreur lors de la lecture du son du gagnant:', error);
+      }
+    }
+  };
 
   const modifyCurrentGame = async (newDeck, newDiscard, updatedInconvenientCard) => {
       const modifyCurrent = await axios.put(`${process.env.EXPO_PUBLIC_PMU_API_URL}/api/currentGames/`, 
@@ -347,14 +403,14 @@ function Party() {
     socket.emit('navigate', {roomId, data:"Results"});
     navigation.navigate("Results");
   }
-  
+ 
   useEffect(() => {
     if (finishParty) {
-      beerRef.current.play();
+      playBeerSound();
     }
     const timeout = setTimeout(() => {
       if (finishParty) {
-        winnerRef.current.play();
+        playWinnerSound();
       }
       setShowFadeIn(finishParty);
     }, 3500); // Délai correspondant à la durée de la transition de l'overlay
@@ -364,13 +420,14 @@ function Party() {
   useEffect(() => {
     if (socket) {
       socket.on('navigate', (data) => {
+        console.log(data);
         navigation.navigate(data);
       });
       return () => {
         socket.off('navigate');
       };
     }
-  }, [socket, navigate]);
+  }, [socket, navigation]);
 
   const [winnerHorse, setWinnerHorse] = useState("");
 
@@ -387,90 +444,105 @@ function Party() {
   }, [positionHorse]);
 
   return (
-    <View style={styles.party}>
-      <View style={styles.tabs}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'jeu' && styles.activeTab]}
-          onPress={() => setActiveTab('jeu')}>
-          <Text>JEU</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'paris' && styles.activeTab]}
-          onPress={() => setActiveTab('paris')}>
-          <Text>PARIS</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.tabContent}>
-        {activeTab === 'jeu' ? (
-          <>
-            <Racetrack
-              roomId={roomId}
-              lengthRun={lengthRun}
-              cardsData={cardsData}
-              inconvenientCard={inconvenientCard}
-              setInconvenientCard={setInconvenientCard}
-              deck={deck}
-              discard={discard}
-              setStateInconvenient={setStateInconvenient}
-              positionHorse={positionHorse}
-              setPositionHorse={setPositionHorse}
-              modifyCurrentGame={(newDeck, newDiscard, updatedInconvenientCard) => modifyCurrentGame(newDeck, newDiscard, updatedInconvenientCard)}
-              finishParty={finishParty}
-              FontAwesomeIcon={FontAwesomeIcon}
-              faFlagCheckered={faFlagCheckered}
-              socket={socket}
-              isAdmin={isAdmin}
-            />
-            <Card 
-              roomId={roomId}
-              cardsData={cardsData}
-              FontAwesomeIcon={FontAwesomeIcon}
-              faFlagCheckered={faFlagCheckered}
-              useState={useState}
-              useEffect={useEffect}
-              deck={deck}
-              setDeck={setDeck}
-              discard={discard}
-              stateInconvenient={stateInconvenient}
-              setDiscard={setDiscard}
-              positionHorse={positionHorse}
-              setPositionHorse={setPositionHorse}
-              inconvenientCard={inconvenientCard}
-              modifyCurrentGame={(newDeck, newDiscard, updatedInconvenientCard) => modifyCurrentGame(newDeck, newDiscard, updatedInconvenientCard)}
-              lengthRun={lengthRun}
-              finishParty={finishParty}
-              setFinishParty={setFinishParty}
-              socket={socket}
-              isAdmin={isAdmin}
-            />
-          </>
-        ) : ( 
-          <ListPlayer
-            effectifPlayer={effectifPlayer}
-            numberPlayer={numberPlayer}
-            bets={bets}
-            cardsData={cardsData}
-          />
-        )}
+    <LinearGradient
+    colors={["#0E1C25", "#2E5958"]}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 0, y: 1 }}
+    style={{ flex: 1 }}
+    >
+      <View style={styles.party}>
+        <View style={styles.tabs}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'jeu' && styles.activeTab]}
+            onPress={() => setActiveTab('jeu')}>
+            <Text>JEU</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'paris' && styles.activeTab]}
+            onPress={() => setActiveTab('paris')}>
+            <Text>PARIS</Text>
+          </TouchableOpacity>
         </View>
-      {finishParty && isAdmin && (
-        <TouchableOpacity
-          style={styles.finishOverlay}
-          onPress={handleResultClick}>
-          <Image source={require('../../media/beer.png')} />
-        </TouchableOpacity>
-      )}
-      {showFadeIn && isAdmin && (
-        <TouchableOpacity
-          style={styles.fadeIn}
-          onPress={handleResultClick}>
-          <Image source={{ uri: winnerHorse.img }} />
-          <Text>Le grand gagnant est {winnerHorse.type} !!</Text>
-        </TouchableOpacity>
-      )}
-      <audio ref={beerRef} source={{ uri: '../../media/beer.mp3' }} />
-      <audio ref={winnerRef} source={{ uri: '../../media/horse.mp3' }} />
-    </View>
+        <View style={styles.tabContent}>
+          {activeTab === 'jeu' ? (
+            <>
+              <Racetrack
+                roomId={roomId}
+                lengthRun={lengthRun}
+                cardsData={cardsData}
+                inconvenientCard={inconvenientCard}
+                setInconvenientCard={setInconvenientCard}
+                deck={deck}
+                discard={discard}
+                setStateInconvenient={setStateInconvenient}
+                positionHorse={positionHorse}
+                setPositionHorse={setPositionHorse}
+                modifyCurrentGame={(newDeck, newDiscard, updatedInconvenientCard) => modifyCurrentGame(newDeck, newDiscard, updatedInconvenientCard)}
+                finishParty={finishParty}
+                FontAwesomeIcon={FontAwesomeIcon}
+                faFlagCheckered={faFlagCheckered}
+                socket={socket}
+                isAdmin={isAdmin}
+              />
+              <Card 
+                roomId={roomId}
+                cardsData={cardsData}
+                FontAwesomeIcon={FontAwesomeIcon}
+                faFlagCheckered={faFlagCheckered}
+                useState={useState}
+                useEffect={useEffect}
+                deck={deck}
+                setDeck={setDeck}
+                discard={discard}
+                stateInconvenient={stateInconvenient}
+                setDiscard={setDiscard}
+                positionHorse={positionHorse}
+                setPositionHorse={setPositionHorse}
+                inconvenientCard={inconvenientCard}
+                modifyCurrentGame={(newDeck, newDiscard, updatedInconvenientCard) => modifyCurrentGame(newDeck, newDiscard, updatedInconvenientCard)}
+                lengthRun={lengthRun}
+                finishParty={finishParty}
+                setFinishParty={setFinishParty}
+                socket={socket}
+                isAdmin={isAdmin}
+              />
+            </>
+          ) : ( 
+            <ListPlayer
+              effectifPlayer={effectifPlayer}
+              numberPlayer={numberPlayer}
+              bets={bets}
+              cardsData={cardsData}
+            />
+          )}
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.finishOverlay,
+              (finishParty && isAdmin) ? { cursor: "pointer", backgroundImage: "url(../../media/beer.png)" } : {backgroundImage: "url(/media/beer.png)"}
+            ]}
+            onPress={(finishParty && isAdmin) ? handleResultClick : null}>
+          </TouchableOpacity>
+        {showFadeIn && isAdmin && (
+          <TouchableOpacity
+            style={[styles.fadeIn,
+              (finishParty && isAdmin) ? {cursor:"pointer"} : null
+            ]}
+            onPress={(finishParty && isAdmin) ? handleResultClick : null}>
+            <Image source={{ uri: winnerHorse.img }} />
+            <Text>Le grand gagnant est {winnerHorse.type} !!</Text>
+          </TouchableOpacity>
+        )}
+        <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            duration={3000}
+            style={{ backgroundColor: snackbarVariant === 'error' ? 'red' : 'green' }}
+        >
+                {snackbarMessage}
+        </Snackbar>
+      </View>
+    </LinearGradient>
   );
   
   

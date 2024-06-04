@@ -15,13 +15,17 @@ function JoinParty() {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarVariant, setSnackbarVariant] = useState('error');
+    const [token, setToken] = useState(null);
+    const [id, setId] = useState(null);
     const navigation = useNavigation();
 
     useEffect(() => {
         const checkSession = async () => {
-            const id = await AsyncStorage.getItem("id");
-            const token = await AsyncStorage.getItem("token");
-            if (!token || !id) {
+            const idFromStorage = await AsyncStorage.getItem("id");
+            const tokenFromStorage = await AsyncStorage.getItem('token');
+            setToken(tokenFromStorage);
+            setId(idFromStorage);
+            if (!tokenFromStorage || !idFromStorage) {
                 navigation.navigate("Home");
             }
         };
@@ -47,7 +51,6 @@ function JoinParty() {
             showSnackbar('Le format du code est incorrect', 'error');
             return;
         }
-        const token = await AsyncStorage.getItem('token');
         const response = await axios.get(
           `${process.env.EXPO_PUBLIC_PMU_API_URL}/api/room/code/${codeRoom}`,
           {

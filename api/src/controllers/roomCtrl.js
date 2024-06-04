@@ -322,6 +322,8 @@ exports.deleteUser = (req, res) => {
 
 exports.join = (req, res) => {
   const { roomId, userId } = req.body;
+  console.log(roomId, userId);
+  console.log("coucou");
   const db = req.db;
   if (roomId && userId) {
     if (typeof roomId !== "number" || typeof userId !== "number") {

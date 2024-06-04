@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FlashMessage from "react-native-flash-message";
 import { AuthContext } from "./AuthContext";
+import { SocketIOContext } from "./SocketContext";
 import io from 'socket.io-client';
 
 //Components
@@ -18,7 +19,6 @@ import JoinParty from "./src/pages/JoinParty";
 import Room from "./src/pages/Room";
 import Party from "./src/pages/Party";
 import Results from "./src/pages/Results";
-export const SocketIOContext = createContext();
 const Stack = createStackNavigator();
 
 function App() {
@@ -40,7 +40,7 @@ function App() {
 
     getIdToken();
     if(!socket) {
-      const newSocket = io(process.env.REACT_APP_PMU_API_URL, {
+      const newSocket = io(process.env.EXPO_PUBLIC_PMU_API_URL, {
         // Envoyer l'ID de l'utilisateur et le token d'authentification lors de la connexion au socket
         query: {
           Authorization: `Bearer ${token}`,
@@ -58,9 +58,13 @@ function App() {
     }    
     
     // Fermez la connexion lorsque le composant est démonté
-    return () => socket.close();
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
 
-  }, []);
+  }, [socket, token, id]);
 
   const handleLogin = async (id, token) => {
     await AsyncStorage.setItem("id", id);
