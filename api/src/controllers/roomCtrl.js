@@ -124,7 +124,7 @@ exports.getByCode = (req, res) => {
 
 exports.get = (req, res) => {
   const db = req.db;
-  const roomId = req.params.id;
+  const roomId = Number(req.params.id);
 
   if (roomId) {
     const sqlQuery = "SELECT * FROM Room WHERE room_id = ? AND status = 1";
@@ -173,15 +173,15 @@ exports.getPlayers = (req, res) => {
         }
 
         const sqlQueryAdmin = `
-  SELECT u.user_id, u.pseudo, u.email
-  FROM User AS u 
-  JOIN Room AS r ON u.user_id = r.admin_id 
-  WHERE r.room_id = ?`;
-        const sqlQueryUsers = `
-  SELECT u.user_id, u.pseudo, u.email
-  FROM User AS u 
-  JOIN User_Room AS ur ON u.user_id = ur.user_id 
-  WHERE ur.room_id = ? AND u.user_id != (SELECT admin_id FROM Room WHERE room_id = ?)`;
+        SELECT u.user_id, u.pseudo, u.email
+        FROM User AS u 
+        JOIN Room AS r ON u.user_id = r.admin_id 
+        WHERE r.room_id = ?`;
+              const sqlQueryUsers = `
+        SELECT u.user_id, u.pseudo, u.email
+        FROM User AS u 
+        JOIN User_Room AS ur ON u.user_id = ur.user_id 
+        WHERE ur.room_id = ? AND u.user_id != (SELECT admin_id FROM Room WHERE room_id = ?)`;
 
         db.all(sqlQueryUsers, [roomId, roomId], (err, results) => {
           if (results.length === 0) {
@@ -322,8 +322,9 @@ exports.deleteUser = (req, res) => {
 
 exports.join = (req, res) => {
   const { roomId, userId } = req.body;
+  console.log(roomId, userId);
+  console.log("coucou");
   const db = req.db;
-
   if (roomId && userId) {
     if (typeof roomId !== "number" || typeof userId !== "number") {
       return res.status(400).json({
@@ -352,9 +353,10 @@ exports.join = (req, res) => {
               .json({ error: "Internal server error", errorCode: 2066 });
           }
           if (userRoom) {
-            return res
-              .status(409)
-              .json({ error: "User already in room", errorCode: 2061 });
+            return res.status(200).json({
+              message: "User joined room successfully",
+              numberRowsUpdated: this.changes,
+            });
           }
 
           const sqlQuery = "INSERT INTO User_Room (room_id, user_id) VALUES (?, ?)";

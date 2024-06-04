@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "nodemon --config ./nodemon.json",
     "generate": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-generator-cli generate -i ./src/utis/swagger.json -g typescript-axios -o ./src/utils/generated --additional-properties supportsES6=true"
   },
   "keywords": [],
