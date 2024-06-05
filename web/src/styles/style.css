@@ -1389,7 +1389,6 @@ h2 {
     line-height: 40px !important;
   }
 }
-
 .menu {
   padding: 4em 0;
 }
@@ -1451,12 +1450,13 @@ h2 {
   border-radius: 10px;
   padding-left: 10px;
 }
-.accordeon .form label .result {
+.accordeon .form label .result-mode-local {
   overflow: scroll;
   height: 125px;
+  margin-bottom: 0.5em;
 }
-.accordeon .form label .result .admin {
-  width: 75%;
+.accordeon .form label .result-mode-local .admin {
+  width: 40%;
   border: none;
   border-radius: 10px;
   padding: 8px 10px;
@@ -1465,19 +1465,40 @@ h2 {
   margin-bottom: 0.5em;
   font-size: 13px;
 }
-.accordeon .form label .result input {
+.accordeon .form label .result-mode-local input {
   margin-bottom: 0.5em;
 }
-.accordeon .form label .result .param {
+.accordeon .form label .result-mode-local .param {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.accordeon .form label .result .param .pseudo {
-  width: 75%;
+.accordeon .form label .result-mode-local .param .pseudo {
+  width: 40%;
 }
-.accordeon .form label .result .param .parie {
-  width: 20%;
+.accordeon .form label .result-mode-local .param .parie {
+  width: 15%;
+}
+.accordeon .form label .result-mode-local .param select {
+  width: 40%;
+}
+.accordeon .form label .result-mode-local .nom {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.accordeon .form label .result-mode-local .nom p {
+  text-align: center;
+}
+.accordeon .form label .result-mode-local .nom p:first-child {
+  width: 40%;
+}
+.accordeon .form label .result-mode-local .nom p:nth-child(2) {
+  width: 15%;
+}
+.accordeon .form label .result-mode-local .nom p:last-child {
+  width: 40%;
 }
 .accordeon .form label .range {
   display: flex;
@@ -1506,9 +1527,6 @@ h2 {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-}
-.accordeon .form label .result {
-  margin-bottom: 0.5em;
 }
 .accordeon .form button {
   width: 180px;

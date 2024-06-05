@@ -1,36 +1,149 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
+import { useSnackbar } from "notistack";
 
 function CreationParty() {
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const [showFormOnline, setShowFormOnline] = useState(true);
   const [showFormLocal, setShowFormLocal] = useState(false);
+  const [duration, setDuration] = useState();
 
-  const [online, setOnline] = useState();
+  const token = sessionStorage.getItem("token");
+  const idUser = Number(sessionStorage.getItem("id"));
+  const pseudo = sessionStorage.getItem("pseudo");
 
   const handleSubmitOnline = (event) => {
     event.preventDefault();
-    setOnline(true);
     // Traitez les données du formulaire ici
+    sessionStorage.setItem("isMulti", true);
+
+    //navigate("/room");
+  };
+
+  const fetchCreateLocal = async (duration) => {
+    const createRoom = await fetch(
+      `${process.env.REACT_APP_PMU_API_URL}/api/room`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          maxNbPlayers: 1,
+          userIds: [],
+          adminId: idUser,
+        }),
+      }
+    );
+    const response = await createRoom.json();
+    if (response.errorCode) {
+      switch (response.errorCode) {
+        case 2003:
+          console.log("Problème serveur...");
+          break;
+        case 2005:
+          console.log("Can't get the room object");
+          break;
+        case 2022:
+          console.log("id must be a number");
+          break;
+        default:
+          enqueueSnackbar("Une erreur inconnue est survenue", {
+            variant: "error",
+          });
+      }
+      return;
+    }
+    const createRound = await fetch(
+      `${process.env.REACT_APP_PMU_API_URL}/api/round`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          duration: duration,
+          roomId: response.roomId,
+        }),
+      }
+    );
+    const responseRound = await createRound.json();
+    if (response.errorCode) {
+      switch (response.errorCode) {
+        case 2003:
+          console.log("Problème serveur...");
+          break;
+        case 2005:
+          console.log("Can't get the room object");
+          break;
+        case 2022:
+          console.log("id must be a number");
+          break;
+        default:
+          enqueueSnackbar("Une erreur inconnue est survenue", {
+            variant: "error",
+          });
+      }
+      return;
+    }
+    sessionStorage.setItem("idRound", Number(responseRound.roundId));
   };
 
   const handleSubmitLocal = (event) => {
     event.preventDefault();
-    setOnline(false);
     // Traitez les données du formulaire ici
-  };
+    let count = 0;
+    infos.map((item) => {
+      if (item.bet && item.bet > 0) {
+        count += 1;
+      }
+    });
+    fetchCreateLocal(Number(duration));
 
-  sessionStorage.setItem("online", online);
+    sessionStorage.setItem("isMulti", false);
+    sessionStorage.setItem("numberPlayer", infos.length);
+    sessionStorage.setItem("effectifPLayer", count);
+    sessionStorage.setItem("bets", JSON.stringify(infos));
+    sessionStorage.setItem("duration", duration);
+    navigate("/party");
+  };
 
   const [rangeval, setRangeval] = useState(2);
 
   const [number, setNumber] = useState(2);
 
+  const [infos, setInfos] = useState([
+    { pseudo: pseudo, bet: 0, horse: "" },
+    { pseudo: "", bet: 0, horse: "" },
+  ]);
+
   const [FormData, setFormData] = useState({
     users: [],
   });
 
+  const handleAddPseudo = (e, index) => {
+    const copyInfos = [...infos];
+    copyInfos[index]["pseudo"] = e.target.value;
+    setInfos(copyInfos);
+  };
+
+  const handleAddInfos = (e, index) => {
+    const copyInfos = [...infos];
+    copyInfos[index]["bet"] = e.target.value;
+    setInfos(copyInfos);
+  };
+
+  const handleAddHorse = (e, index) => {
+    const copyInfos = [...infos];
+    copyInfos[index]["horse"] = e.target.value;
+    setInfos(copyInfos);
+  };
   const handleUserChange = (e, index) => {
     const updatedUsers = [...FormData.users];
     updatedUsers[index][e.target.name] = e.target.value;
@@ -49,23 +162,36 @@ function CreationParty() {
           return prevState;
         }
       });
+      setInfos((prevState) => [
+        ...prevState,
+        { pseudo: "", bet: 0, horse: "" },
+      ]);
     } else {
       alert(`Vous ne pouvez pas ajouter plus de ${maxPlayer} joueurs.`);
     }
   };
   const handleMoins = (index) => {
-    const updatedUsers = [...FormData.users];
-    updatedUsers.splice(index, 1);
-    setFormData({ ...FormData, users: updatedUsers });
-    setNumber((prevState) => {
-      if (prevState > 2) {
-        return prevState - 1;
-      } else {
-        return prevState;
-      }
-    });
+    if (FormData.users.length > 0) {
+      const updatedUsers = [...FormData.users];
+      updatedUsers.pop(index, 1);
+
+      const updatedinfos = [...infos];
+      updatedinfos.pop(index, 1);
+
+      setFormData({ ...FormData, users: updatedUsers });
+      setInfos(updatedinfos);
+
+      setNumber((prevState) => {
+        if (prevState > 2) {
+          return prevState - 1;
+        } else {
+          return prevState;
+        }
+      });
+    } else {
+      alert("Il doit y avoir au moins deux joueurs.");
+    }
   };
-  const pseudo = sessionStorage.getItem("pseudo");
 
   return (
     <div className="accordeon">
@@ -79,11 +205,11 @@ function CreationParty() {
       {showFormOnline && (
         <form className="form" onSubmit={handleSubmitOnline}>
           <label>
-            <p>Dificulté:</p>
+            <p>Difficultés:</p>
             <select>
               <option value="7">Shot (7)</option>
               <option value="9">Pinte (9)</option>
-              <option value="12">Girafe (12)</option>
+              <option value="10">Girafe (10)</option>
             </select>
           </label>
           <label>
@@ -112,13 +238,14 @@ function CreationParty() {
       </button>
 
       {showFormLocal && (
-        <form className="form" onSubmit={handleSubmitLocal}>
+        <form className="form" onSubmit={(event) => handleSubmitLocal(event)}>
           <label>
-            <p>Dificulté:</p>
-            <select>
+            <p>Difficultés:</p>
+            <select onChange={(e) => setDuration(e.target.value)}>
+              <option value="">Choisissez</option>
               <option value="7">Shot (7)</option>
               <option value="9">Pinte (9)</option>
-              <option value="12">Girafe (12)</option>
+              <option value="10">Girafe (10)</option>
             </select>
           </label>
           <label>
@@ -132,25 +259,40 @@ function CreationParty() {
                 <FontAwesomeIcon icon={faPlus} onClick={handlePlus} />
               </button>
             </div>
-            <div className="result">
-              <div className="param">
-                <p className="admin">Vous ({pseudo})</p>
-                <input className="parie" type="number" min="1"></input>
+            <div className="result-mode-local">
+              <div className="nom">
+                <p>Pseudo</p>
+                <p>Parie</p>
+                <p>Cheval</p>
               </div>
-              <div className="param">
-                <input className="pseudo" type="text"></input>
-                <input className="parie" type="number" min="1"></input>
-              </div>
-              {FormData.users.map((user, index) => (
+              {infos.map((item, index) => (
                 <div className="param" key={index}>
                   <input
                     type="text"
                     name="pseudo"
                     className="pseudo"
-                    value={user.pseudo}
-                    onChange={(e) => handleUserChange(e, index)}
+                    onChange={(e) => handleAddPseudo(e, index)}
+                    value={
+                      index === 0
+                        ? sessionStorage.getItem("pseudo") + " (admin)"
+                        : item.pseudo
+                    }
+                    disabled={index === 0}
+                    style={index === 0 ? { color: "white" } : {}}
                   ></input>
-                  <input className="parie" type="number" min="1"></input>
+                  <input
+                    className="parie"
+                    type="number"
+                    min="1"
+                    onChange={(e) => handleAddInfos(e, index)}
+                  ></input>
+                  <select onChange={(e) => handleAddHorse(e, index)}>
+                    <option value="">Choisissez</option>
+                    <option value="Roger">Roger</option>
+                    <option value="Marcel">Marcel</option>
+                    <option value="Gerard">Gérard</option>
+                    <option value="Jean-Jacques">Jean-Jacques</option>
+                  </select>
                 </div>
               ))}
             </div>
