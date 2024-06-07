@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +6,6 @@ import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function Signup({ setShowLogin }) {
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
