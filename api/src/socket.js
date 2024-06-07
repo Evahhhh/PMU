@@ -18,20 +18,24 @@ module.exports = function (server) {
     });
 
     // Fonction pour récupérer les joueurs d'une salle et renvoie un tableau de joueurs
-    async function getRoomPlayers(token, roomId) {
-        const response = await fetch(`${process.env.PMU_API}/room/players/${roomId}`, {
-            headers: {
-                'Authorization': token
+    async function getRoomPlayers(token, roomId, isMulti) {
+        if(isMulti === true){
+            const response = await fetch(`${process.env.PMU_API}/room/players/${roomId}`, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération de l\'ID de la salle');
             }
-        });
-        if (!response.ok) {
-            throw new Error('Erreur lors de la récupération de l\'ID de la salle');
+            const players = await response.json();
+            return [...players.users, players.admin];
         }
-        const players = await response.json();
-        return [...players.users, players.admin];
+        return;
     }
 
-    async function emitToRoom(socket, roomId, eventName, data) {
+    async function emitToRoom(socket, roomId, eventName, data, isMulti) {
+        if(isMulti === true){
         console.log('roomId', roomId)
         console.log('eventName', eventName)
 
@@ -45,6 +49,7 @@ module.exports = function (server) {
             if (connectedUsers[player.user_id]) {
                 io.to(connectedUsers[player.user_id]).emit(eventName, data);
             }
+        }
         }
     }
 

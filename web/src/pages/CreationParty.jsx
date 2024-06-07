@@ -59,6 +59,7 @@ function CreationParty() {
       }
       return;
     }
+    sessionStorage.setItem("roomId", Number(1));
     const createRound = await fetch(
       `${process.env.REACT_APP_PMU_API_URL}/api/round`,
       {

@@ -44,7 +44,7 @@ const cardsData = [
 const idRound = sessionStorage.getItem("idRound");
 const token = sessionStorage.getItem("token");
 const lengthRun = Number(sessionStorage.getItem("duration"));
-const isAdmin = JSON.parse(sessionStorage.getItem("isAdmin"));
+const isAdmin = Number(sessionStorage.getItem("id"));
 const isMulti = JSON.parse(sessionStorage.getItem("isMulti"));
 
 function Party() {
@@ -187,6 +187,7 @@ function Party() {
       setNumberPlayer(Number(sessionStorage.getItem("numberPlayer")));
       setEffectifPlayer(Number(sessionStorage.getItem("effectifPlayer") + 1));
       setBets(JSON.parse(sessionStorage.getItem("bets")));
+      setRoomId(sessionStorage.getItem("roomId"));
     }
   };
 
@@ -516,6 +517,7 @@ function Party() {
                   setFinishParty={setFinishParty}
                   socket={socket}
                   isAdmin={isAdmin}
+                  isMulti={isMulti}
                 />
               </>
             ) : (
@@ -570,6 +572,7 @@ function Party() {
             setFinishParty={setFinishParty}
             socket={socket}
             isAdmin={isAdmin}
+            isMulti={isMulti}
           />
           <Racetrack
             roomId={roomId}
